@@ -162,12 +162,15 @@ structural changes must be added here before code is moved or ownership changes.
 ## ADR-016 — Client-specific local stdio configuration
 
 - **Status:** Accepted
-- **Decision:** Generate Codex TOML under `mcp_servers.qa_hub` and native VS Code
-  JSON under `servers.qa_hub` with `type: stdio`. Provider credentials are never
-  embedded. Installing generated content is a distinct, explicit merge that
-  preserves unrelated settings and backs up before replacement.
-- **Reason:** Codex and native VS Code use different configuration contracts, and
-  treating them as interchangeable produces invalid or unsafe files.
-- **Consequence:** Both formats are parsed in tests. Other client dialects require
-  an explicit contract before support is claimed.
+- **Decision:** Generate Codex TOML under `mcp_servers.qa_hub`, Cursor JSON under
+  `mcpServers.qa_hub`, and native VS Code JSON under `servers.qa_hub`. Local
+  servers declare `type: stdio`. Provider credentials are never embedded.
+  Installing generated content is a distinct, explicit merge that preserves
+  unrelated settings and backs up before replacement.
+- **Reason:** Cursor, Codex, and native VS Code use different configuration
+  contracts, and treating them as interchangeable produces invalid or unsafe
+  files.
+- **Consequence:** All three formats are parsed in tests. Cursor's default launch
+  command is `uv run --project ${workspaceFolder} qa-mcp serve`. Other client
+  dialects require an explicit contract before support is claimed.
 

@@ -4,6 +4,13 @@ Milestone 01 configuration stores identities, paths, preferences, and opaque
 credential references. It cannot represent a plaintext credential. Provider
 connections are global records referenced by profiles so duplicate provider kinds
 remain valid while connection identity stays unambiguous.
+
+Purpose: define the versioned user-configuration contract.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: config.models
+Dependencies: Pydantic and the authentication reference models.
+Expected tests: schema validation, isolation, and unknown-provider rejection.
 """
 
 import re
@@ -17,7 +24,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from qa_mcp_hub.auth.models import AuthKind, CredentialReference
 from qa_mcp_hub.core.models import ProviderKind
 
-CURRENT_SCHEMA_VERSION = 1
+CURRENT_SCHEMA_VERSION: Literal[1] = 1
 IDENTIFIER_PATTERN = r"^[a-z0-9][a-z0-9._-]*$"
 ENVIRONMENT_NAME_PATTERN = r"^[A-Z][A-Z0-9_]*$"
 

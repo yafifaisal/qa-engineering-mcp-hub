@@ -14,8 +14,8 @@ MCP-client configuration generation. Every external provider remains
   [progress record](../implementation/PROGRESS.md) for the latest executed gates.
 - [Linux](linux.md) — setup instructions; path behavior is tested by simulation,
   not on a live Linux runner.
-- [Codex and VS Code registration](codex-vscode.md) — keeps Codex TOML/CLI
-  configuration separate from native VS Code JSON.
+- [Cursor, Codex, and VS Code registration](codex-vscode.md) — keeps Cursor
+  JSON, Codex TOML, and native VS Code JSON as separate contracts.
 
 ## What works through Milestone 01
 

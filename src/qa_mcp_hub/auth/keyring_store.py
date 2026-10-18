@@ -1,4 +1,12 @@
-"""Operating-system keyring backend with no plaintext fallback."""
+"""Operating-system keyring backend with no plaintext fallback.
+
+Purpose: store scoped credentials in the active OS keyring backend.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.keyring_store
+Dependencies: optional Python keyring.
+Expected tests: profile isolation and sanitized backend failure.
+"""
 
 from __future__ import annotations
 
@@ -70,6 +78,10 @@ class KeyringCredentialStore:
         except Exception:
             raise CredentialStoreUnavailableError(_UNAVAILABLE_MESSAGE) from None
         return facade
+
+    def describe_backend(self) -> str:
+        """Return the active backend type name without reading a credential."""
+        return type(self._facade().get_keyring()).__name__
 
     def _storage_key(self, reference: CredentialReference | str) -> str:
         if isinstance(reference, str):

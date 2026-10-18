@@ -1,12 +1,13 @@
 # MCP and integration errors
 
-## Server is absent from Codex
+## Server is absent from Cursor or Codex
 
 Verify absolute paths with `command -v uv`/`pwd` on macOS or Linux, or
 `(Get-Command uv).Source`/`(Get-Location).Path` in PowerShell. Run
-`uv run qa-mcp --help`, inspect `codex mcp list`, then restart the Codex extension.
-Use [Codex registration syntax](../getting-started/codex-vscode.md), not native VS
-Code MCP JSON.
+`uv run qa-mcp --help`. In Cursor, confirm `.cursor/mcp.json` and restart Cursor.
+In Codex, inspect `codex mcp list`, then restart the Codex extension.
+Use the matching contract in
+[Cursor, Codex, and VS Code registration](../getting-started/codex-vscode.md).
 
 ## Server starts and appears silent
 

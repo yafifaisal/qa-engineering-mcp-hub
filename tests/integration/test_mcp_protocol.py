@@ -36,7 +36,12 @@ async def test_mcp_tool_discovery_and_invocation() -> None:
         catalog = await client.call_tool("hub_capabilities", {})
         assert not catalog.is_error
         assert catalog.structured_content is not None
-        assert "profiles_and_credentials" in catalog.structured_content["planned"]
+        implemented = catalog.structured_content["implemented"]
+        planned = catalog.structured_content["planned"]
+        assert "profiles_and_credentials" in implemented
+        assert "interactive_setup" in implemented
+        assert "github_gitlab_bitbucket" in planned
+        assert "github_gitlab_bitbucket" not in implemented
 
 
 @pytest.mark.asyncio
@@ -54,7 +59,10 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         rendered = await client.get_prompt("qa_hub_orientation")
         assert len(rendered.messages) == 1
         prompt_text = rendered.messages[0].content.text
-        assert "Milestones 01–11 are not implemented" in prompt_text
+        assert "credential references are implemented" in prompt_text
+        assert "External providers and Milestones 02–11 are not implemented" in (
+            prompt_text
+        )
 
 
 @pytest.mark.asyncio

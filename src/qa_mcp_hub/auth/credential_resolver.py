@@ -1,4 +1,12 @@
-"""Profile-scoped credential resolution with explicit backend selection."""
+"""Profile-scoped credential resolution with explicit backend selection.
+
+Purpose: resolve one credential only from its declared backend and scope.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.credential_resolver
+Dependencies: credential stores and reference models.
+Expected tests: scope isolation, missing values, and expiry failure.
+"""
 
 from __future__ import annotations
 

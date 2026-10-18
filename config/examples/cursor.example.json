@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "qa_hub": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}",
+        "qa-mcp",
+        "serve"
+      ]
+    }
+  }
+}

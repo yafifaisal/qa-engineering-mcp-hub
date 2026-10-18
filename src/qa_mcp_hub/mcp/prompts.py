@@ -10,11 +10,12 @@ Expected tests: prompt discovery and rendered message content.
 
 
 def qa_hub_orientation() -> str:
-    """Explain how to interpret Milestone 00 status and future capability claims."""
+    """Explain how to interpret local capability status and future provider claims."""
     return (
         "Use QA Engineering MCP Hub capability results conservatively. "
-        "Treat only entries listed as implemented as callable. External providers "
-        "and Milestones 01–11 are not implemented. Classify conclusions as "
-        "VERIFIED, INFERRED, UNKNOWN, or CONFLICTING, and never treat AI prose as "
-        "PASS/FAIL evidence."
+        "Treat only entries listed as implemented as callable. Milestone 01 "
+        "local configuration, profiles, and credential references are implemented. "
+        "External providers and Milestones 02–11 are not implemented. Classify "
+        "conclusions as VERIFIED, INFERRED, UNKNOWN, or CONFLICTING, and never "
+        "treat AI prose as PASS/FAIL evidence."
     )

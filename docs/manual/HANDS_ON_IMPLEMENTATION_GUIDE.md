@@ -83,8 +83,8 @@ provider connectivity result is `NOT_IMPLEMENTED`, because no provider adapter i
 part of M01. OAuth state/PKCE and lifecycle infrastructure is testable locally, but
 no provider OAuth exchange or refresh flow is claimed.
 
-Never put secret values in YAML, MCP arguments, generated Codex TOML/native VS Code
-JSON, logs, or exceptions. Client installation is an explicit write with overwrite
+Never put secret values in YAML, MCP arguments, generated Cursor JSON, Codex
+TOML, native VS Code JSON, logs, or exceptions. Client installation is an explicit write with overwrite
 protection. A mocked keyring is offline evidence only; live Credential Manager,
 Keychain, or Secret Service support requires native verification.
 

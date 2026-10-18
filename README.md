@@ -23,7 +23,8 @@ remain explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
   variables; resolved values are redacted and never serialized.
 - `setup`, `profiles`, `integrations`, `config`, and `clients` commands manage and
   inspect local readiness. Integration tests do not make provider network calls.
-- Codex TOML and native VS Code JSON can be generated without provider credentials.
+- Cursor JSON, Codex TOML, and native VS Code JSON can be generated without
+  provider credentials. This repository includes `.cursor/mcp.json` for Cursor.
 
 No provider adapter, provider OAuth exchange, repository or ticket read, test
 execution, database query, Kafka operation, CI/CD action, test-management action,
@@ -60,8 +61,9 @@ codex mcp add qa_hub -- /ABSOLUTE/PATH/TO/uv run --project /ABSOLUTE/PATH/TO/qa-
 codex mcp list
 ```
 
-Codex uses `.codex/config.toml`; native VS Code/Copilot MCP JSON is a separate
-configuration dialect. See the [Codex setup guide](docs/getting-started/codex-vscode.md)
+Cursor uses `.cursor/mcp.json`. Codex uses `.codex/config.toml`. Native VS Code
+uses `.vscode/mcp.json`. These are separate dialects. See the
+[client setup guide](docs/getting-started/codex-vscode.md)
 and [platform guides](docs/getting-started/README.md).
 
 ## Architecture

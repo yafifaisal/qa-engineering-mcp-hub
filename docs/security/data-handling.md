@@ -22,6 +22,15 @@ Stdio protocol data goes between the configured local client and subprocess.
 Diagnostics belong on stderr; secret-shaped values must not be logged even in a
 future debug mode.
 
+## Milestone 01 configuration data
+
+User configuration stores profile names, connection metadata, repository and
+workspace paths, execution preferences, and opaque credential references. Secret
+values are read from an OS keyring or an explicitly named environment variable at
+the moment a local command needs them. They are not written to YAML, generated
+Codex TOML, native VS Code JSON, logs, or exception text. Removing a local
+reference does not revoke the credential at its provider.
+
 ## Configuration and examples
 
 Files under [`config/examples/`](../../config/examples/) contain reference names

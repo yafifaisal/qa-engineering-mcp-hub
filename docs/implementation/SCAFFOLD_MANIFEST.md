@@ -9,8 +9,10 @@ explainable and testable.
 
 ## Status meaning
 
-- `IMPLEMENTED` describes a complete Milestone 00 artifact: working M00 source,
-  tests, scripts, documentation, schemas, safe examples, or templates.
+- `IMPLEMENTED` describes a complete Milestone 00 or Milestone 01 artifact:
+  working source, tests, scripts, documentation, schemas, safe examples, or
+  templates. Milestone 01 implementation is local configuration and credential
+  infrastructure. It is not a provider adapter.
 - `SCAFFOLDED` describes a future Python ownership boundary. Its module docstring
   declares purpose, milestone, ownership, dependencies, and expected tests, but it
   exposes no provider or domain behavior.
@@ -50,9 +52,10 @@ were reconciled rather than deleted because they serve users without owning code
 | generic `services/` | owning domain packages | empty duplicate ownership removed |
 | `release/coverage.py`, `risk.py` | `coverage_engine.py`, `risk_engine.py` | empty obsolete names removed |
 
-The pre-existing credential protocol, keyring wrapper, and profile data models were
-moved into canonical ownership and isolated from the M00 runtime. They remain
-scaffolded and are not evidence that Milestone 01 works.
+Milestone 01 owns the implemented configuration, authentication, and local CLI
+modules. Those modules store credential references and can use an OS keyring or an
+approved environment variable. They do not call provider APIs. Provider adapters
+remain scaffolded.
 
 ## Audit command
 

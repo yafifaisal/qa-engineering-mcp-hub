@@ -34,7 +34,7 @@ from qa_mcp_hub.auth import (
 from qa_mcp_hub.core.models import ProviderKind
 
 NOW = datetime(2026, 10, 18, 12, 0, tzinfo=UTC)
-SECRET = "m01-sensitive-value-for-tests"  # noqa: S105 - synthetic test fixture
+FIXTURE_VALUE = "m01-sensitive-value-for-tests"
 
 
 def _scope(profile: str = "alpha", connection: str = "github-main") -> CredentialScope:
@@ -93,7 +93,7 @@ class _MemoryKeyring:
 class _ExplodingKeyring(_MemoryKeyring):
     def get_password(self, service_name: str, username: str) -> str | None:
         del service_name, username
-        raise RuntimeError(f"backend accidentally included {SECRET}")
+        raise RuntimeError(f"backend accidentally included {FIXTURE_VALUE}")
 
 
 def test_reference_is_typed_scoped_and_contains_no_secret_field() -> None:
@@ -102,7 +102,7 @@ def test_reference_is_typed_scoped_and_contains_no_secret_field() -> None:
     assert reference.scope.host == "api.github.com"
     assert reference.profile == "alpha"
     assert "secret" not in reference.model_dump()
-    assert SECRET not in reference.model_dump_json()
+    assert FIXTURE_VALUE not in reference.model_dump_json()
     with pytest.raises(ValidationError):
         CredentialReference(
             store="environment",
@@ -132,18 +132,18 @@ def test_keyring_values_are_isolated_by_complete_profile_scope() -> None:
 def test_environment_backend_is_allowlisted_and_read_only() -> None:
     reference = _reference(store=CredentialStoreKind.environment)
     store = EnvironmentCredentialStore(
-        environ={reference.reference: SECRET},
+        environ={reference.reference: FIXTURE_VALUE},
         allowed_names={reference.reference},
     )
 
-    assert store.get(reference) == SECRET
+    assert store.get(reference) == FIXTURE_VALUE
     with pytest.raises(CredentialWriteUnsupportedError):
         store.set(reference, "replacement")
     with pytest.raises(CredentialWriteUnsupportedError):
         store.delete(reference)
 
     unapproved = EnvironmentCredentialStore(
-        environ={reference.reference: SECRET},
+        environ={reference.reference: FIXTURE_VALUE},
         allowed_names=set(),
     )
     with pytest.raises(CredentialStorePolicyError):
@@ -153,15 +153,15 @@ def test_environment_backend_is_allowlisted_and_read_only() -> None:
 def test_resolver_enforces_scope_missing_value_and_expiry() -> None:
     reference = _reference(store=CredentialStoreKind.environment)
     store = EnvironmentCredentialStore(
-        environ={reference.reference: SECRET},
+        environ={reference.reference: FIXTURE_VALUE},
         allowed_names={reference.reference},
     )
     resolver = CredentialResolver([store], clock=lambda: NOW)
 
     resolved = resolver.resolve(reference, expected_scope=reference.scope)
-    assert resolved.secret.get_secret_value() == SECRET
-    assert SECRET not in repr(resolved)
-    assert SECRET not in resolved.model_dump_json()
+    assert resolved.secret.get_secret_value() == FIXTURE_VALUE
+    assert FIXTURE_VALUE not in repr(resolved)
+    assert FIXTURE_VALUE not in resolved.model_dump_json()
 
     with pytest.raises(CredentialScopeError):
         resolver.resolve(reference, expected_scope=_scope("beta"))
@@ -183,6 +183,16 @@ def test_resolver_enforces_scope_missing_value_and_expiry() -> None:
         resolver.resolve(expired)
 
 
+def test_keyring_probe_names_the_backend_without_reading_a_value() -> None:
+    backend = _MemoryKeyring()
+    assert KeyringCredentialStore(backend=backend).describe_backend() == (
+        "_BackendDescriptor"
+    )
+    unavailable = KeyringCredentialStore(backend=_MemoryKeyring(priority=0))
+    with pytest.raises(CredentialStoreUnavailableError, match="plaintext fallback"):
+        unavailable.describe_backend()
+
+
 def test_keyring_backend_failures_are_actionable_and_sanitized() -> None:
     unavailable = KeyringCredentialStore(backend=_MemoryKeyring(priority=0))
     with pytest.raises(CredentialStoreUnavailableError) as unavailable_error:
@@ -194,29 +204,29 @@ def test_keyring_backend_failures_are_actionable_and_sanitized() -> None:
     exploding = KeyringCredentialStore(backend=_ExplodingKeyring())
     with pytest.raises(CredentialStoreUnavailableError) as backend_error:
         exploding.get(_reference())
-    assert SECRET not in str(backend_error.value)
+    assert FIXTURE_VALUE not in str(backend_error.value)
 
 
 def test_nested_and_text_redaction_preserve_non_secret_references() -> None:
     value = {
         "credential_reference": "keyring-id",
         "nested": [
-            {"access_token": SECRET},
+            {"access_token": FIXTURE_VALUE},
             SecretStr("another-sensitive-value"),
         ],
-        "url": f"https://user:{SECRET}@example.invalid/path?token={SECRET}&mode=read",
+        "url": f"https://user:{FIXTURE_VALUE}@example.invalid/path?token={FIXTURE_VALUE}&mode=read",
     }
 
-    redacted = redact(value, secrets=(SECRET,))
+    redacted = redact(value, secrets=(FIXTURE_VALUE,))
     assert redacted["credential_reference"] == "keyring-id"
     assert redacted["nested"] == [{"access_token": REDACTED}, REDACTED]
-    assert SECRET not in str(redacted)
+    assert FIXTURE_VALUE not in str(redacted)
 
     text = redact_text(
-        f"Authorization: Bearer {SECRET}; password={SECRET}",
-        secrets=(SECRET,),
+        f"Authorization: Bearer {FIXTURE_VALUE}; password={FIXTURE_VALUE}",
+        secrets=(FIXTURE_VALUE,),
     )
-    assert SECRET not in text
+    assert FIXTURE_VALUE not in text
     assert REDACTED in text
 
 

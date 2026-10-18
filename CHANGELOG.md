@@ -7,6 +7,11 @@ its first public release is tagged.
 
 ### Added
 
+- Cursor `mcp.json` generation alongside the existing Codex and VS Code client
+  contracts. The repository includes a project `.cursor/mcp.json`.
+- Milestone 01 local setup wizard, profiles, connection records, credential
+  references, atomic configuration migration, and Codex/VS Code client generation.
+  Provider network connectivity and provider OAuth remain unimplemented.
 - Frozen canonical architecture and manifest-driven structure auditing.
 - Complete Milestone 00 FastMCP tool, resource, prompt, CLI, config, and packaging
   foundation.

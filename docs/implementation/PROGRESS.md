@@ -1,7 +1,7 @@
 # Implementation progress
 
 Last verified: 2026-10-18 (Asia/Jakarta)
-Local environment: macOS, Python 3.12.15, uv 0.13.1
+Local environment: macOS, Python 3.12.12, uv 0.8.22
 
 ## Milestone 00 — implemented and offline verified
 
@@ -54,8 +54,49 @@ freeze.
   same reason.
 - Python 3.13: CI-configured, execution `BLOCKED` in this session.
 
-## Milestones 01–11
+## Milestone 01 — implemented and offline verified
+
+- [x] Versioned user configuration supports multiple profiles and multiple
+  connections to the same provider.
+- [x] Setup, profile, integration, config, client, and doctor commands operate
+  on local files and credential references.
+- [x] Precedence is explicit CLI option, environment override, active profile,
+  user configuration, then application default. A resolved snapshot stays frozen
+  when the active profile later changes.
+- [x] Writes are atomic. Schema migration creates a backup and restores the
+  original bytes when replacement fails.
+- [x] Credentials resolve only for the bound profile, provider, connection, host,
+  and account. Environment storage is read-only. A missing keyring backend
+  returns an actionable error and does not write plaintext.
+- [x] OAuth PKCE/state and token-lifecycle decisions are local infrastructure.
+  Provider OAuth and provider network checks remain `NOT_IMPLEMENTED`.
+- [x] Generated Cursor JSON, Codex TOML, and native VS Code JSON parse and contain
+  no provider credential values. This repository includes `.cursor/mcp.json`.
+- [x] Milestone 00 serve, doctor, capabilities, help, version, and stdio protocol
+  tests still pass.
+
+## Executed verification — Milestone 01
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
+| `uv lock --check` | 0 | lock matches project metadata |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 282 files already formatted |
+| `uv run mypy src` | 0 | no issues in 182 source files |
+| `uv run pytest -q` | 0 | 62 passed, including the real stdio subprocess |
+| `uv build` | 0 | wheel and source distribution built |
+| `uv run python scripts/structure_audit.py` | 0 | 332 files, 100 directories, zero findings |
+| `uv run qa-mcp --help` | 0 | setup, profiles, integrations, config, clients, doctor, serve, and capabilities listed |
+| `uv run qa-mcp doctor` | 0 | local config absent; keyring backend name `Keyring` reported; provider network `NOT_IMPLEMENTED` |
+| `uv run qa-mcp capabilities` | 0 | local setup capabilities implemented; provider groups planned |
+
+`qa-mcp doctor` observed a usable macOS keyring backend without reading a secret.
+No credential was written to Keychain, Windows Credential Manager, or a Linux
+secret service in this session, so those stores are not `LIVE_VERIFIED`.
+
+## Milestones 02–11
 
 All remain `SCAFFOLDED` or `NOT_IMPLEMENTED`. No external integration is claimed as
-working. The repository is ready to begin Milestone 01 development locally, while
-native Windows/Linux CI evidence remains an outstanding release-confidence item.
+working. Native Windows/Linux execution and Python 3.13 execution remain `BLOCKED`
+on hosted-runner access.

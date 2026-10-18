@@ -16,7 +16,7 @@ STATUS_RESOURCE_URI = "qa-hub://status"
 
 
 def hub_status_resource() -> str:
-    """Render local M00 status as stable JSON with no machine secrets."""
+    """Render local hub status as stable JSON with no machine secrets."""
     payload = {
         "health": hub_health().model_dump(mode="json"),
         "capabilities": hub_capabilities().model_dump(mode="json"),

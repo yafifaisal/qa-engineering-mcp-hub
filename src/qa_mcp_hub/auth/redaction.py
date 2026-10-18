@@ -1,4 +1,12 @@
-"""Credential-aware redaction for diagnostic text and nested values."""
+"""Credential-aware redaction for diagnostic text and nested values.
+
+Purpose: remove secrets from diagnostics while preserving opaque references.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.redaction
+Dependencies: standard library text and URL parsing.
+Expected tests: nested values, URLs, and authorization text.
+"""
 
 from __future__ import annotations
 

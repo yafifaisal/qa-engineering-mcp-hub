@@ -4,32 +4,39 @@
 
 - Every external provider integration is `NOT_IMPLEMENTED`. Provider modules and
   documentation are scaffolds, not callable adapters.
-- Profiles, config persistence/migration, credential resolution, OAuth/token
-  lifecycle, repository access, knowledge indexing, planning, workflows, suite
-  execution, assertions, CI/CD, test management, evidence, and release intelligence
-  remain Milestones 01–10.
-- The pre-existing profile types, credential protocol, and keyring wrapper are
-  preserved but are not imported or registered by the M00 runtime. This project
-  declares Keyring only in the optional `credentials` extra; FastMCP 4.1.0 also
-  installs Keyring transitively, so it can still be present in a base environment.
+- Milestone 01 implements local configuration, profiles, credential references,
+  redaction, offline OAuth/PKCE state, and the setup/config CLI. It does not
+  perform a provider OAuth exchange, token refresh, or network connectivity test.
+- Repository access, knowledge indexing, planning, workflows, suite execution,
+  assertions, CI/CD, test management, evidence, and release intelligence remain
+  Milestones 03–10.
+- Python keyring is a direct development dependency and an optional `credentials`
+  extra. A missing or unusable backend fails closed. The application does not fall
+  back to a plaintext file.
 
 ## Runtime and client boundary
 
-- `qa-mcp doctor` checks only local package/settings readiness. It does not validate
-  a credential, connection, executable, provider permission, or external service.
-- Only local stdio is enabled. Remote HTTP, server authentication, and OAuth hosting
-  are absent.
+- `qa-mcp doctor` checks process settings, local configuration validity, and
+  keyring-backend availability. It does not read a stored secret, validate a
+  provider permission, or contact an external service.
+- `qa-mcp integrations test` checks the selected connection and credential
+  presence only. Its provider network result remains `NOT_IMPLEMENTED`.
+- Only local stdio is enabled. Remote HTTP, server authentication, and provider
+  OAuth hosting are absent.
 - MCP resources and prompts pass protocol tests, but their presentation in the Codex
   IDE UI was not observed in this session.
 
 ## Platform evidence
 
-- Local execution used macOS with Python 3.12.15 and uv 0.13.1.
+- Local execution for this milestone used macOS with Python 3.12.12 and uv 0.8.22.
+  `qa-mcp doctor` reported a usable keyring backend named `Keyring` without
+  reading a stored secret. That is not a live Keychain write/read round trip.
 - Windows 10/11 and Linux path behavior is deterministic simulation only. The
   checked-in CI matrix has not run in this session, so native Windows/Linux and
   Python 3.13 evidence is `BLOCKED` on hosted-runner access.
-- Keychain, Windows Credential Manager, and Linux Secret Service behavior is not
-  tested.
+- macOS Keychain, Windows Credential Manager, and Linux Secret Service read/write
+  round trips are not `LIVE_VERIFIED`. Keyring tests use an injected backend.
+  `qa-mcp doctor` may report the active backend name without reading a secret.
 
 ## Optional artifacts and external details
 
@@ -40,8 +47,8 @@
   verification” must be checked against current official documentation during the
   owning milestone.
 - The QA Workspace root and CI registry YAML files are syntax-checked and
-  manifest-audited, but do not yet have dedicated semantic schemas; those belong
-  with the Milestone 01 workspace/configuration loader.
+  manifest-audited. Milestone 01 stores a workspace path reference only; dedicated
+  workspace and CI semantic schemas remain future work.
 - No live provider, database, Kafka, CLI runner, or CI system was contacted.
 
 ## Audit limitations

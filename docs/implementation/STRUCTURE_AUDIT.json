@@ -1,89 +1,16 @@
 {
   "counts": {
-    "existing_expected_files": 326,
-    "expected_directories": 99,
-    "expected_files": 326,
-    "findings": 12,
+    "existing_expected_files": 332,
+    "expected_directories": 100,
+    "expected_files": 332,
+    "findings": 0,
     "missing_directories": 0,
     "missing_files": 0,
-    "unlisted_directories": 12,
+    "unlisted_directories": 0,
     "unlisted_files": 0,
     "zero_byte_files": 0
   },
-  "findings": [
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "coverage",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/documentation",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/indexing",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/modules",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/modules/evidence",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/modules/execution",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/modules/knowledge",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/modules/release",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/modules/test_management",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/modules/verification",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "src/qa_mcp_hub/services",
-      "severity": "ERROR"
-    },
-    {
-      "check": "unlisted-directory",
-      "message": "directory is not in the manifest",
-      "path": "tests/fixtures/docs",
-      "severity": "ERROR"
-    }
-  ],
+  "findings": [],
   "machine_manifest": "config/scaffold_manifest.yaml",
   "manifest_version": 1,
   "mcp_discovery": {
@@ -98,5 +25,5 @@
       "hub_health"
     ]
   },
-  "status": "FAIL"
+  "status": "PASS"
 }

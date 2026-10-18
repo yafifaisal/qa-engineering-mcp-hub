@@ -9,7 +9,7 @@ provider writes require a separate explicit decision.
 | Component | Reads | Writes / external effects |
 |---|---|---|
 | `qa-mcp --help` | Packaged CLI metadata | None |
-| `qa-mcp doctor` | Validated non-secret environment settings and native config path | None |
+| `qa-mcp doctor` | Validated non-secret environment settings, native config path, local YAML validity, and keyring backend name | None; no secret is read |
 | `qa-mcp capabilities` | Static local capability catalog | None |
 | `hub_health` | Version and non-secret local settings | None |
 | `hub_capabilities` | Static local capability catalog | None |
@@ -19,6 +19,20 @@ provider writes require a separate explicit decision.
 `qa-mcp serve` starts a local stdio subprocess. It does not listen on a port,
 read a repository, invoke a provider, execute a test suite, query a database,
 consume Kafka, trigger CI, or publish evidence.
+
+## Milestone 01 local permissions
+
+| Command | Local effect | Explicitly not allowed |
+|---|---|---|
+| `qa-mcp setup` | Create or reuse a profile and optional workspace path | Writing a secret into YAML |
+| `qa-mcp profiles` | Create, show, select, edit, or remove an empty profile | Deleting a profile that still owns integrations |
+| `qa-mcp integrations add/list` | Store or display connection metadata | Contacting the provider |
+| `qa-mcp integrations auth` | Store a keyring value or record an environment/OAuth reference | Printing the value or starting a provider OAuth flow |
+| `qa-mcp integrations test` | Check configuration and credential presence | Treating presence as network connectivity |
+| `qa-mcp integrations rotate/remove` | Replace or delete the exact scoped keyring value | Revoking the credential at the provider |
+| `qa-mcp config show/validate` | Redacted display and strict local validation | Provider calls |
+| `qa-mcp clients generate` | Print Codex TOML or VS Code JSON | Embedding provider credentials |
+| `qa-mcp clients install` | Merge `qa_hub` into an explicit destination, with backup | Replacing unrelated client settings |
 
 ## Future authorization defaults
 
@@ -39,8 +53,9 @@ The Hub must still deny any operation not enabled by its policy.
 ## Client configuration
 
 Use absolute executable/project paths and a trusted checkout. Do not pass secrets
-in client `args` or commit them to Codex TOML or VS Code JSON. Codex registration
-is described in [Codex and VS Code setup](../getting-started/codex-vscode.md).
+in client `args` or commit them to Cursor JSON, Codex TOML, or VS Code JSON.
+Registration for each client is described in
+[Cursor, Codex, and VS Code setup](../getting-started/codex-vscode.md).
 
 Provider-specific least-privilege requirements will be documented under
 [`docs/providers/`](../providers/) while each integration remains

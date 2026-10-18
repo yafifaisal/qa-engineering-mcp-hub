@@ -2,6 +2,13 @@
 
 The catalog distinguishes implemented local setup/configuration behavior from
 provider adapters and network verification that remain future work.
+
+Purpose: separate callable local capabilities from planned provider work.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: core.capabilities
+Dependencies: Pydantic.
+Expected tests: implemented local setup and planned provider identifiers.
 """
 
 from pydantic import BaseModel, ConfigDict

@@ -1,4 +1,12 @@
-"""Safe diagnostics for complete Milestone 01 user configuration."""
+"""Safe diagnostics for complete Milestone 01 user configuration.
+
+Purpose: reject invalid or secret-bearing documents without echoing values.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: config.validator
+Dependencies: Pydantic validation errors.
+Expected tests: plaintext field rejection and value-free diagnostics.
+"""
 
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass

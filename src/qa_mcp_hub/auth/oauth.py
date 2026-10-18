@@ -1,4 +1,12 @@
-"""Offline OAuth state and PKCE infrastructure without provider integration."""
+"""Offline OAuth state and PKCE infrastructure without provider integration.
+
+Purpose: create local PKCE and single-use state that never calls a provider.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.oauth
+Dependencies: hashlib and Pydantic.
+Expected tests: challenge derivation, scope binding, and replay rejection.
+"""
 
 from __future__ import annotations
 

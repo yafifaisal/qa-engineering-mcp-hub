@@ -3,6 +3,13 @@
 Configuration errors deliberately omit submitted values. A malformed document can
 contain a credential pasted by mistake, so propagating raw YAML or Pydantic error
 text would violate the command-line and logging redaction boundary.
+
+Purpose: load settings and versioned YAML without echoing rejected values.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: config.loader
+Dependencies: PyYAML and Pydantic Settings.
+Expected tests: malformed YAML, duplicate keys, and secret-free errors.
 """
 
 from collections.abc import Mapping

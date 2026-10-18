@@ -170,9 +170,10 @@ opaque reference. Keyring failures are actionable errors and never trigger a
 plaintext fallback. OAuth models, state/PKCE helpers, and lifecycle metadata are
 local infrastructure only; no provider OAuth flow is claimed in M01.
 
-Client generation emits either Codex TOML (`mcp_servers.qa_hub`) or native VS Code
-JSON (`servers.qa_hub`, type `stdio`). Generated launch configuration contains no
-provider credential values. Installation preserves unrelated client settings,
+Client generation emits Codex TOML (`mcp_servers.qa_hub`), Cursor JSON
+(`mcpServers.qa_hub`, type `stdio`), or native VS Code JSON (`servers.qa_hub`,
+type `stdio`). Generated launch configuration contains no provider credential
+values. Installation preserves unrelated client settings,
 backs up before replacement, and requires `--force` for a conflicting `qa_hub`
 entry; generation itself is side-effect free.
 
@@ -233,8 +234,8 @@ tested through injected paths is `OFFLINE_VERIFIED (simulated)`, never
 
 M01 adds deterministic schema/round-trip/precedence tests, profile and credential
 isolation tests, migration rollback and atomic-write tests, redaction and unavailable
-keyring tests, parsed Codex TOML/native VS Code JSON tests, and mocked-terminal CLI
-wizard tests. Mocked keyring tests and simulated platform paths are offline evidence;
+keyring tests, parsed Codex TOML, Cursor JSON, and native VS Code JSON tests, and
+mocked-terminal CLI wizard tests. Mocked keyring tests and simulated platform paths are offline evidence;
 they do not establish a live OS credential backend or provider connection.
 
 ## Milestone boundary

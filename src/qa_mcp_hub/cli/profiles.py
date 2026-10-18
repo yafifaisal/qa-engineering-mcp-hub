@@ -11,6 +11,7 @@ Expected tests: Duplicates, active selection, isolation, edits, and safe deletio
 from __future__ import annotations
 
 from pathlib import Path
+from typing import NoReturn
 
 import typer
 from pydantic import ValidationError
@@ -85,7 +86,9 @@ def add_profile_record(
         raise CLIConfigError("profile values are invalid") from exc
     profiles = dict(config.profiles)
     profiles[name] = profile
-    active_profile = name if make_active or config.active_profile is None else config.active_profile
+    active_profile = (
+        name if make_active or config.active_profile is None else config.active_profile
+    )
     return update_config(
         config,
         profiles=profiles,
@@ -125,7 +128,7 @@ def remove_profile_record(
     return update_config(config, profiles=profiles, active_profile=active_profile)
 
 
-def _handle_error(exc: Exception) -> None:
+def _handle_error(exc: Exception) -> NoReturn:
     if isinstance(exc, (CLIConfigError, ConfigLoadError, ConfigWriteError)):
         fail(str(exc))
     fail("profile operation failed")

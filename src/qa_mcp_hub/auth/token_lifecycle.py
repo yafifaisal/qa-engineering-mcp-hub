@@ -1,4 +1,12 @@
-"""Deterministic credential expiry and rotation decisions."""
+"""Deterministic credential expiry and rotation decisions.
+
+Purpose: decide use, rotate, or refresh from metadata alone.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.token_lifecycle
+Dependencies: credential reference models.
+Expected tests: missing, expiring, and expired metadata.
+"""
 
 from __future__ import annotations
 

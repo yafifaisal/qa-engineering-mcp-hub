@@ -45,5 +45,24 @@ module.
 | Packaging | locked sync, source build, isolated exact-wheel install and smoke |
 | Structure | zero mandatory findings and exact MCP allowlist |
 
+## Milestone 01 matrix
+
+| Area | Required evidence |
+|---|---|
+| Schema | valid and invalid profiles, connections, enums, duplicates, and references |
+| Precedence | explicit, environment, profile, user, and default provenance |
+| Persistence | YAML round trip, owner-only permissions, atomic replacement |
+| Migration | backup, idempotent rerun, and rollback after a failed replacement |
+| Credentials | profile isolation, environment read-only mode, missing/expired metadata |
+| Keyring | injected backend success and sanitized unavailable-backend failure |
+| Redaction | nested values, generated client files, and CLI output |
+| CLI | mocked wizard input, cancellation, safe rerun, and command exit codes |
+| Clients | parsed Codex TOML, Cursor JSON, and native VS Code JSON, merge, and no embedded secrets |
+| Doctor | local configuration validity and keyring availability without secret reads |
+
+Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
+They do not establish a live Credential Manager, Keychain, or Secret Service round
+trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.
+
 CI is configured for Windows, macOS, and Linux with Python 3.12/3.13, but a workflow
 file is not live evidence. Record actual runner results in the progress document.

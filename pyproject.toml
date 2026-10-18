@@ -58,3 +58,5 @@ select = ["E", "F", "I", "UP", "B", "S"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = ["S101"]
+# Typer requires option and argument objects as parameter defaults.
+"src/qa_mcp_hub/cli/**/*.py" = ["B008"]
