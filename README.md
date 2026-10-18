@@ -1,43 +1,29 @@
 # QA Engineering MCP Hub
 
-QA Engineering MCP Hub is a local-first, cross-platform FastMCP foundation for
-governed QA workflows. Milestones 00 and 01 provide the MCP foundation and secure
-local configuration control plane. Milestone 02 adds provider contracts and local
-repository registration. Milestone 03 adds read-only GitHub, GitLab, Bitbucket,
-and Jira access. Milestone 04 adds read-only Confluence and Google Docs
-retrieval. Milestone 05 adds a local knowledge index over approved Git
-checkouts. Milestone 06 runs registered Bruno and Newman suites from approved
-API workflows. Milestone 07 adds registered read-only database assertions,
-bounded Kafka observation, and E2E workflow verification. Milestone 08 reads
-registered Bitbucket Pipelines, GitHub Actions, and Jenkins metadata. A
-pipeline status is not a QA assertion result. Remote triggering is not an MCP
-tool. Milestone 09 maps Xray, TestRail, CSV, XLSX, and Google Sheets into one
-canonical case. Result publication is not an MCP tool. Milestone 10 collects
-evidence from checks that ran and can recommend release review. That
-recommendation does not approve a release. Community release remains
-`NOT_IMPLEMENTED`. Live CI,
-database, Kafka, Xray, TestRail, and Google Sheets systems were not contacted.
+QA Engineering MCP Hub is a local-first FastMCP server for governed QA workflows.
+Milestone 11 packages the Community Edition. An external engineer can install the
+built wheel, configure a profile, register an MCP client, and use the tools that
+earlier milestones implemented. This repository has not been published to PyPI,
+and no provider in it is LIVE_VERIFIED. Live CI, database, Kafka, Xray, TestRail,
+Google Sheets, and evidence publication were not contacted.
 
-## What works through Milestone 10
+## What works through Milestone 11
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
-- `hub_health` reports local process readiness.
-- `hub_capabilities` separates callable features from future work.
-- `qa-hub://status` is a read-only JSON MCP resource.
-- `qa_hub_orientation` is a reusable MCP prompt.
-- `qa-mcp doctor`, `qa-mcp capabilities`, `qa-mcp --help`, and
-  `qa-mcp --version` provide local CLI diagnostics.
-- Pydantic Settings validates non-secret `QA_MCP_` environment configuration.
-- Portable configuration paths and simulated Windows/macOS/Linux behavior are
-  tested.
-- Versioned YAML supports named profiles, multiple connections per provider,
-  repository/workspace references, execution preferences, and strict validation.
-- Credentials are referenced through an OS keyring or explicitly named environment
-  variables; resolved values are redacted and never serialized.
-- `setup`, `profiles`, `integrations`, `config`, and `clients` commands manage and
-  inspect local readiness. Integration tests do not make provider network calls.
+- The registered tools cover health, read-only providers, knowledge, registered
+  API and E2E runs, CI inspection, test-case mapping, evidence, and release
+  recommendations. A release recommendation does not approve a release.
+- `qa-mcp doctor`, `qa-mcp setup`, `qa-mcp profiles list`,
+  `qa-mcp integrations list`, `qa-mcp repositories list`,
+  `qa-mcp workflows list`, and `qa-mcp clients install` are the onboarding
+  commands. `workflows list` does not execute a workflow.
+- Credentials are referenced through an OS keyring or an explicitly named
+  environment variable. Resolved values are redacted and are not written to
+  YAML or generated client configuration.
 - Cursor JSON, Codex TOML, and native VS Code JSON can be generated without
-  provider credentials. This repository includes `.cursor/mcp.json` for Cursor.
+  provider credentials.
+- `uv build` produces a wheel and a source distribution. `scripts/build_package.py`
+  also writes a CycloneDX SBOM and scans those artifacts. It does not publish.
 - `qa-mcp repositories` registers, lists, removes, discovers, and validates
   repositories. Discovery stays inside the profile workspace. Validation can
   read local Git branch, HEAD, remote URL, and dirty state.

@@ -7,9 +7,10 @@ adapters marked **OFFLINE_VERIFIED**. Bruno and Postman registered-suite executi
 is **OFFLINE_VERIFIED** with local fixtures. PostgreSQL, MySQL, and Kafka
 registered checks are **OFFLINE_VERIFIED** with fixture sessions and an in-memory
 observer. Bitbucket Pipelines, GitHub Actions, and Jenkins reads are
-**OFFLINE_VERIFIED** with mocked HTTP. Their generic provider ports still
-return contract stubs. No live database, Kafka, or CI system was contacted.
-Test management and publication flows are not opened.
+**OFFLINE_VERIFIED** with mocked HTTP. Xray, TestRail, CSV/XLSX, and Google
+Sheets mapping is **OFFLINE_VERIFIED**. Their generic `read_case` port still
+returns a contract stub. No live database, Kafka, CI, or test-management system
+was contacted. Evidence publication to those systems was not performed.
 
 Documentation examples use the versioned M01 configuration shape, contain only
 credential references, and remain disabled. A schema-valid local connection is not

@@ -1,7 +1,7 @@
 """FastMCP application factory.
 
 Purpose: construct a fresh server with the Milestone 00 through 10 registries.
-Milestone: 10
+Milestone: 11
 Status: IMPLEMENTED
 Ownership: app.fastmcp_factory
 Dependencies: standalone FastMCP and the local registry.

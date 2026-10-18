@@ -1,8 +1,8 @@
 # Linux setup
 
-Verification status: **OFFLINE_VERIFIED (simulated paths only)**. The repository
-tests Linux path selection from another operating system. Milestones 00 and 01 have not
-been `LIVE_VERIFIED` on a native Linux runner.
+Verification status: **OFFLINE_VERIFIED (simulated paths only)**. Native Linux
+execution of this milestone was not observed. The checked-in CI workflow names
+`ubuntu-latest`, and that workflow has not run in this session.
 
 ## Prerequisites
 
@@ -25,7 +25,8 @@ uv run qa-mcp doctor
 uv run qa-mcp capabilities
 uv run qa-mcp setup
 uv run qa-mcp config validate
-uv run pytest -q
+uv run qa-mcp workflows list
+uv run python scripts/build_package.py
 ```
 
 The native user configuration directory is

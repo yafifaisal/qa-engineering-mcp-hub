@@ -49,7 +49,7 @@ def doctor_command(
     console.print(f"Server: {settings.server_name}")
     console.print(f"Transport: {settings.transport}")
     console.print(f"Config directory: {default_config_dir()}")
-    console.print("External integrations: not implemented")
+    console.print("External integrations: live connectivity is not implemented")
 
     config_path = path.expanduser() if path is not None else default_config_path()
     exit_code = 0

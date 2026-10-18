@@ -159,9 +159,22 @@ module.
 | Publication | denied by default, one POST, no automatic retry |
 | Release | coverage uses executed mappings; a recommendation does not approve |
 
+## Milestone 11 matrix
+
+| Area | Required evidence |
+|---|---|
+| Package | wheel and source distribution install, then uninstall, in a clean environment |
+| uvx | `qa-mcp --version` runs from the built wheel |
+| Onboarding | setup, doctor, profiles, integrations, repositories, workflows, and client install |
+| Companies | Company A and Company C profiles do not share connections, repositories, or artifacts |
+| Scanning | known token shapes and unsafe archive paths fail the distribution scan |
+| Publish | the release workflow builds artifacts and does not publish unless explicitly approved |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.
 
 CI is configured for Windows, macOS, and Linux with Python 3.12/3.13, but a workflow
 file is not live evidence. Record actual runner results in the progress document.
+Hosted runner execution for this milestone remains `BLOCKED` until that workflow
+has been observed.

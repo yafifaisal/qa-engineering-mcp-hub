@@ -59,8 +59,11 @@ Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
 | R10-01 | Evidence policies, redaction, collection, completeness, manifest | 10 | `evidence/` | `tests/unit/test_evidence.py` | IMPLEMENTED | OFFLINE_VERIFIED | API-only omission, missing E2E evidence, hashes, escaping | No live provider call |
 | R10-02 | Authorized evidence publishing | 10 | `evidence/publisher.py` | `tests/security/test_publication.py` | IMPLEMENTED | OFFLINE_VERIFIED | denied external publish, one POST, no automatic retry | No live Jira, Xray, or TestRail call |
 | R10-03 | Coverage, risk, and release reporting | 10 | `release/` | `tests/unit/test_release.py` | IMPLEMENTED | OFFLINE_VERIFIED | mapped coverage, critical defects, recommendation leaves review unchanged | No automatic release approval |
-| R11-01 | Community release and live compatibility evidence | 11 | `.github/workflows/release.yml`, release documentation | hosted release tests (planned) | SCAFFOLDED | BLOCKED | local artifact build only | No hosted CI, signing, or public release performed |
+| R11-01 | Community package, SBOM, and artifact scan | 11 | `scripts/build_package.py`, `security/secret_scanner.py` | `tests/packaging/test_distribution.py`, `tests/security/test_release_scan.py` | IMPLEMENTED | OFFLINE_VERIFIED | local wheel install, uvx, secret scan | Hosted runners not observed. Package not published |
+| R11-02 | Onboarding CLI and profile isolation | 11 | `cli/workflows.py`, `cli/main.py` | `tests/packaging/test_onboarding.py` | IMPLEMENTED | OFFLINE_VERIFIED | Company A and Company C separation, evidence from stored runs | No live provider call |
+| R11-03 | Trusted publishing workflow | 11 | `.github/workflows/release.yml` | workflow review | IMPLEMENTED | BLOCKED | publish job requires `APPROVE_PUBLIC_RELEASE` | Workflow was not dispatched and nothing was uploaded |
 
-No requirement row is `LIVE_VERIFIED`. Milestone 11 remains `SCAFFOLDED`.
+No requirement row is `LIVE_VERIFIED`. Hosted CI execution remains `BLOCKED`.
+The Community Edition package was not published.
 Provider pages document intended contracts and official references; they do not
 replace an executed live check.

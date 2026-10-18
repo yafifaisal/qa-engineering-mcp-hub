@@ -10,15 +10,24 @@ and a minimal redacted reproduction.
 
 ## Supported versions
 
-No stable public release exists yet. Security fixes apply to the current development
-branch until a version support policy is published.
+| Version | Status |
+|---|---|
+| 0.1.0 | Development Community Edition. Not published to PyPI. |
+
+There is no public support window yet. A tag must be `v` plus the version in
+`pyproject.toml`. CI does not create tags. The release workflow builds artifacts
+on a tag or on manual dispatch. The publish job runs only when the dispatch input
+is exactly `APPROVE_PUBLIC_RELEASE` and the protected `pypi` environment approves
+trusted publishing. This repository has not been published.
 
 ## Security boundaries
 
-Milestone 00 exposes only local read-only introspection over stdio. Provider access,
-credential lifecycle, arbitrary process execution, arbitrary SQL, remote hosting,
-and evidence publication are not implemented. Configuration examples contain
-credential references only.
+The server speaks stdio. Provider adapters that exist are read-oriented or
+approval-gated, and their live calls are not claimed. Configuration examples
+contain credential references only. `scripts/build_package.py` writes a CycloneDX
+SBOM and scans the wheel and source distribution for known token shapes and
+unsafe archive paths. A clean scan does not prove that arbitrary text contains no
+sensitive business data.
 
 See the [threat model](docs/security/THREAT_MODEL.md),
 [permissions model](docs/security/permissions.md), and

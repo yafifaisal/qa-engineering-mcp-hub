@@ -97,7 +97,8 @@ TestRail publication was made, so this exit is not LIVE_VERIFIED.
 
 ## 11 — community release
 
-Owns supported-version policy, complete OS/Python CI, release/security workflows,
-artifact provenance, migration notes, support documentation, and public release.
-Exit: all claimed matrices are genuinely executed; mocks and simulations remain
-clearly labeled offline evidence.
+Owns the Community Edition wheel, source distribution, SBOM, artifact scan,
+onboarding CLI, and the unpublished trusted-publishing workflow. Exit status:
+OFFLINE_VERIFIED on the local macOS package install. Hosted Windows, macOS, and
+Linux runners were not observed, so that matrix is BLOCKED. No provider is
+LIVE_VERIFIED. The package was not published.

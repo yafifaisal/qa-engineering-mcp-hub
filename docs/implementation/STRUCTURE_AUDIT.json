@@ -1,8 +1,8 @@
 {
   "counts": {
-    "existing_expected_files": 369,
+    "existing_expected_files": 373,
     "expected_directories": 101,
-    "expected_files": 369,
+    "expected_files": 373,
     "findings": 0,
     "missing_directories": 0,
     "missing_files": 0,

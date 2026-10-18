@@ -9,9 +9,9 @@ explainable and testable.
 
 ## Status meaning
 
-- `IMPLEMENTED` describes a complete Milestone 00 through 10 artifact:
-  working source, tests, scripts, documentation, schemas, safe examples, or
-  templates. Milestone 10 collects evidence from stored executions. It does
+- `IMPLEMENTED` describes a complete Milestone 00 through 11 artifact.
+  Milestone 11 builds the Community Edition package and does not publish it.
+  Milestone 10 collects evidence from stored executions. It does
   not approve a release and it does not contact a live publication target.
 - `SCAFFOLDED` describes a future Python ownership boundary. Its module docstring
   declares purpose, milestone, ownership, dependencies, and expected tests, but it

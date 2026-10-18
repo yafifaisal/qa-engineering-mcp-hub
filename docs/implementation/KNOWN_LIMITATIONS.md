@@ -9,7 +9,8 @@
   refresh token is not returned by MCP tools. Interactive browser login is not
   implemented.
 - The generic `read_case` port stays unavailable even though the Milestone 09
-  tools read through reviewed mappings. Community release remains Milestone 11.
+  tools read through reviewed mappings. The Community Edition package is built
+  locally and is not published.
 - Milestone 01 implements local configuration, profiles, credential references,
   redaction, offline OAuth/PKCE state, and the setup/config CLI. It does not
   perform a provider OAuth exchange, token refresh, or network connectivity test.
@@ -66,21 +67,24 @@
 
 ## Platform evidence
 
-- Local execution for this milestone used macOS with Python 3.12.12 and uv 0.8.22.
-  `qa-mcp doctor` reported a usable keyring backend named `Keyring` without
-  reading a stored secret. That is not a live Keychain write/read round trip.
+- Local execution for Milestone 11 used macOS with the commands recorded in
+  the progress document. `qa-mcp doctor` may report a keyring backend name
+  without reading a stored secret. That is not a live Keychain write/read
+  round trip.
 - Windows 10/11 and Linux path behavior is deterministic simulation only. The
-  checked-in CI matrix has not run in this session, so native Windows/Linux and
-  Python 3.13 evidence is `BLOCKED` on hosted-runner access.
+  checked-in CI matrix names those runners and has not been observed, so native
+  Windows/Linux and Python 3.13 evidence is `BLOCKED`.
 - macOS Keychain, Windows Credential Manager, and Linux Secret Service read/write
   round trips are not `LIVE_VERIFIED`. Keyring tests use an injected backend.
-  `qa-mcp doctor` may report the active backend name without reading a secret.
+  Environment-variable references are the documented fallback when a backend is
+  unavailable. The application does not write a plaintext credential file.
 
 ## Optional artifacts and external details
 
 - Docker was not installed in the authoring environment, so the Dockerfile and
-  Compose file were syntax-reviewed scaffolding but not built or run.
-- Jinja2 is a future optional dependency; evidence templates were not rendered.
+  Compose file were syntax-reviewed and not built or run.
+- Evidence HTML is rendered by the repository template engine. Jinja2 is not a
+  dependency.
 - Provider editions, scopes, endpoints, and rate limits marked “Requires
   verification” must be checked against current official documentation during the
   owning milestone.

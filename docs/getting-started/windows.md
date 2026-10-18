@@ -1,8 +1,8 @@
 # Windows 10/11 setup
 
-Verification status: **OFFLINE_VERIFIED (simulated paths only)**. The repository
-tests Windows path selection from another operating system. Milestones 00 and 01 have not
-been `LIVE_VERIFIED` on a native Windows runner.
+Verification status: **OFFLINE_VERIFIED (simulated paths only)**. Native Windows
+10/11 execution of this milestone was not observed. The checked-in CI workflow
+names `windows-latest`, and that workflow has not run in this session.
 
 ## Prerequisites
 
@@ -31,7 +31,8 @@ uv run qa-mcp doctor
 uv run qa-mcp capabilities
 uv run qa-mcp setup
 uv run qa-mcp config validate
-uv run pytest -q
+uv run qa-mcp workflows list
+uv run python scripts/build_package.py
 ```
 
 The native user configuration directory resolves beneath

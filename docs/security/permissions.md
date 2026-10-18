@@ -88,6 +88,8 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
   call a provider. `publish_approved_evidence` requires an explicit review
   value, mutation permission, and a single-use approval. Checked-in policies
   deny external publication. A release recommendation cannot approve a release.
+- Community packaging builds a wheel and source distribution locally. Publishing
+  to PyPI requires an explicit approval input and is not performed by tests.
 
 An API token with broad permissions does not broaden the Hub's authorized scope.
 The Hub must still deny any operation not enabled by its policy.
@@ -99,6 +101,5 @@ in client `args` or commit them to Cursor JSON, Codex TOML, or VS Code JSON.
 Registration for each client is described in
 [Cursor, Codex, and VS Code setup](../getting-started/codex-vscode.md).
 
-Provider-specific least-privilege requirements will be documented under
-[`docs/providers/`](../providers/) while each integration remains
-`NOT_IMPLEMENTED` in M00.
+Provider pages record the current adapter boundary. An OFFLINE_VERIFIED page is
+not a live provider call.

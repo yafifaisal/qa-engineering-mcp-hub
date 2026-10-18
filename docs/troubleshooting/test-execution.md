@@ -19,6 +19,11 @@ is reported and not downloaded. `prepare_pipeline_trigger` does not start a
 pipeline. The tests mock HTTP. They do not prove that Bitbucket, GitHub
 Actions, or Jenkins is reachable.
 
+Evidence is generated from a stored execution id. An API-only policy does not
+add database or Kafka sections. A missing mandatory check cannot be an overall
+PASS. `prepare_evidence_publication` does not send a request. A release report
+keeps release approval false.
+
 Use the locked environment and preserve the first real diagnostic:
 
 ```sh

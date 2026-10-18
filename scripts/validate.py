@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Run the complete local Milestone 00 quality gate in a fixed order.
+"""Run the local quality gate in a fixed order. This command does not publish.
 
 Purpose: provide one deterministic developer validation entry point.
-Milestone: 00
+Milestone: 11
 Status: IMPLEMENTED
 Ownership: scripts.validation_orchestrator
 Dependencies: uv and the locked development environment.
@@ -23,7 +23,7 @@ COMMANDS = (
     ("mypy", "run", "mypy", "src"),
     ("pytest", "run", "pytest", "-v"),
     ("structure", "run", "python", "scripts/structure_audit.py"),
-    ("build", "build", "--no-sources"),
+    ("package", "run", "python", "scripts/build_package.py"),
 )
 
 

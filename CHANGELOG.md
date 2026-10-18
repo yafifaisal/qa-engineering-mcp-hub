@@ -7,6 +7,12 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 11 packages the Community Edition as a pinned wheel and source
+  distribution, adds `qa-mcp workflows list`, and scans built artifacts. Company
+  A and Company C profile separation is OFFLINE_VERIFIED through the CLI. The
+  release workflow can publish only after an explicit approval input. This
+  session did not publish, tag, or run the hosted CI matrix, so Windows, Linux,
+  and live providers are not LIVE_VERIFIED.
 - Milestone 10 collects sanitized evidence from checks that actually ran,
   rejects an overall PASS when mandatory evidence is missing, and publishes
   only after an explicit review and a single-use approval. Release

@@ -9,47 +9,10 @@ from fastmcp import Client
 from fastmcp.client.transports import StdioTransport
 
 from qa_mcp_hub import __version__
+from qa_mcp_hub.mcp.registry import REGISTERED_TOOL_NAMES
 from qa_mcp_hub.server import mcp
 
-EXPECTED_TOOLS = {
-    "hub_health",
-    "hub_capabilities",
-    "search_repository_code",
-    "get_repository_changes",
-    "analyze_jira_ticket",
-    "find_related_implementation",
-    "search_documents",
-    "read_document",
-    "search_knowledge",
-    "find_implementation",
-    "trace_cross_repo_flow",
-    "analyze_change_impact",
-    "generate_test_scenario_draft",
-    "list_registered_suites",
-    "list_workflows",
-    "explain_workflow",
-    "submit_test_run",
-    "get_test_run",
-    "list_registered_assertions",
-    "run_database_assertion",
-    "find_kafka_event",
-    "verify_e2e_workflow",
-    "list_pipeline_runs",
-    "get_pipeline_status",
-    "get_pipeline_artifacts",
-    "prepare_pipeline_trigger",
-    "search_test_cases",
-    "compare_test_cases",
-    "preview_test_case_import",
-    "export_test_cases",
-    "prepare_result_publication",
-    "generate_evidence",
-    "validate_evidence_completeness",
-    "prepare_evidence_publication",
-    "publish_approved_evidence",
-    "assess_release_readiness",
-    "generate_release_report",
-}
+EXPECTED_TOOLS = set(REGISTERED_TOOL_NAMES)
 EXPECTED_RESOURCES = {"qa-hub://status"}
 EXPECTED_PROMPTS = {"qa_hub_orientation"}
 
@@ -117,7 +80,8 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         assert "Milestone 08 reads registered" in prompt_text
         assert "Milestone 09 maps" in prompt_text
         assert "Milestone 10 collects evidence" in prompt_text
-        assert "Milestone 11 is not implemented" in prompt_text
+        assert "Milestone 11 packages the Community Edition" in prompt_text
+        assert "does not publish" in prompt_text
 
 
 @pytest.mark.asyncio

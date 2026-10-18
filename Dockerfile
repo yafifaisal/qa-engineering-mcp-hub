@@ -1,4 +1,4 @@
-# Optional local packaging convenience. Containers are not required for M00.
+# Community Edition image. It is not published from this repository.
 FROM ghcr.io/astral-sh/uv:0.13.1 AS uv
 
 FROM python:3.12-slim

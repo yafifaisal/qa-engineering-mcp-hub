@@ -276,3 +276,18 @@ structural changes must be added here before code is moved or ownership changes.
   The checked-in policies keep external publication denied. No live Jira, Xray,
   or TestRail system was contacted.
 
+## ADR-023 — Community package stays unpublished until approved
+
+- **Status:** Accepted
+- **Decision:** Milestone 11 builds a pinned wheel and source distribution,
+  writes a CycloneDX SBOM, scans those artifacts for known token shapes, and
+  documents a trusted-publishing workflow. The publish job runs only after a
+  maintainer types `APPROVE_PUBLIC_RELEASE` on a protected environment. Tests
+  install the local wheel. They do not upload it. A release recommendation
+  from Milestone 10 still does not approve the product release.
+- **Reason:** An external engineer needs a reproducible install path, and a
+  workflow file must not publish because it exists.
+- **Consequence:** Local macOS installation is OFFLINE_VERIFIED for the package
+  itself. Hosted Windows, macOS, and Linux runners were not observed, so that
+  matrix remains BLOCKED. No provider in this package is LIVE_VERIFIED.
+

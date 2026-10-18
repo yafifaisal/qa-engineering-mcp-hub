@@ -18,9 +18,10 @@ configuration.
 
 ## Unexpected tools are visible
 
-M00 must expose exactly `hub_health` and `hub_capabilities`. Restart the client to
-clear old processes, then run `uv run python scripts/structure_audit.py`. A future
-tool appearing in discovery is a mandatory architecture violation.
+Compare the client's tool list with `qa_mcp_hub.mcp.registry.REGISTERED_TOOL_NAMES`.
+Restart the client to clear an old process, then run
+`uv run python scripts/structure_audit.py`. A tool outside that set is an
+architecture violation.
 
 ## Local integration test cannot reach a provider
 

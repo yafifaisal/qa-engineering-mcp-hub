@@ -77,7 +77,7 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 
 ## Canonical package ownership
 
-| Package | Sole responsibility | State through Milestone 01 |
+| Package | Sole responsibility | State through Milestone 11 |
 |---|---|---|
 | `app.py` | Construct the FastMCP application and register M00 components | IMPLEMENTED |
 | `server.py` | Start the approved stdio transport | IMPLEMENTED |
@@ -85,12 +85,12 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `mcp/tools/system.py` | `hub_health` and `hub_capabilities` thin tools | IMPLEMENTED |
 | `mcp/resources.py` | Read-only hub status resource | IMPLEMENTED |
 | `mcp/prompts.py` | Reusable M00 orientation prompt | IMPLEMENTED |
-| `cli/` | Typer commands and Rich presentation | M00 system, M01 setup, and M02 repository commands implemented |
-| `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for M01 local configuration, with M02 repository fields |
-| `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for M01 local credential handling; provider OAuth is not implemented |
-| `core/` | Stable types, results, capability declarations, policy boundaries | M02 contracts, results, errors, context, policies, and retry implemented; CI trigger approvals are implemented and deny by default |
-| `providers/` | Provider-neutral contracts, descriptors, and registry | IMPLEMENTED as contracts and stubs; no vendor I/O |
-| `adapters/` | One implementation boundary per supported provider | Git, Jira, Confluence, Google Docs, Bruno/Newman, PostgreSQL, MySQL, Kafka observation, and CI/CD reads are IMPLEMENTED; test-management adapters remain SCAFFOLDED |
+| `cli/` | Typer commands and Rich presentation | setup, doctor, profiles, integrations, repositories, workflows list, and client install are IMPLEMENTED |
+| `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for local configuration and repository fields |
+| `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for keyring and environment references; interactive provider OAuth is not implemented |
+| `core/` | Stable types, results, capability declarations, policy boundaries | contracts, results, errors, context, policies, and approvals are IMPLEMENTED |
+| `providers/` | Provider-neutral contracts, descriptors, and registry | IMPLEMENTED as contracts. Vendor I/O lives in adapters |
+| `adapters/` | One implementation boundary per supported provider | Git, Jira, Confluence, Google Docs, Bruno/Newman, PostgreSQL, MySQL, Kafka observation, CI/CD, and test management are IMPLEMENTED and OFFLINE_VERIFIED |
 | `repositories/` | Local/remote repository registration and discovery | IMPLEMENTED for registration, discovery, validation, and local Git metadata; `plan_index` does not read files; `execute_index` does |
 | `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | IMPLEMENTED for local checkouts and supplied documents; OFFLINE_VERIFIED |
 | `planning/` | Ticket analysis, impact, scenarios, and coverage plans | IMPLEMENTED for read-only ticket analysis and non-executable drafts |
@@ -98,10 +98,10 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `workflows/` | Approved workflow discovery, validation, planning, and state | IMPLEMENTED for registered API and E2E workflows; OFFLINE_VERIFIED |
 | `runners/` | Bounded approved-process execution and normalized results | IMPLEMENTED for registered argument lists; OFFLINE_VERIFIED with fixtures |
 | `verification/` | Registered deterministic assertions and correlation | IMPLEMENTED; OFFLINE_VERIFIED with fixture sessions and an in-memory Kafka observer |
-| `evidence/` | Redacted evidence collection, manifests, rendering, publishing | SCAFFOLDED; API and E2E runs persist a minimal evidence record for Milestone 10 |
-| `release/` | Deterministic coverage and risk facts; never automatic sign-off | SCAFFOLDED |
-| `storage/` | Local persistence abstractions and migrations | index and execution SQLite IMPLEMENTED, including per-step rows; other stores remain scaffolded |
-| `security/` | Path/URL/process/SQL policy and secret detection | path allowlist, process policy, and SQL policy IMPLEMENTED; other security policies remain scaffolded |
+| `evidence/` | Redacted evidence collection, manifests, rendering, publishing | IMPLEMENTED; OFFLINE_VERIFIED from stored executions |
+| `release/` | Deterministic coverage and risk facts; never automatic sign-off | IMPLEMENTED; a recommendation cannot approve a release |
+| `storage/` | Local persistence abstractions and migrations | index, execution, and artifact stores are IMPLEMENTED; generic migration module remains scaffolded |
+| `security/` | Path/URL/process/SQL policy and secret detection | path allowlist, process policy, SQL policy, and distribution secret scanning are IMPLEMENTED |
 
 The exact file inventory and ownership metadata are recorded in
 [`../implementation/SCAFFOLD_MANIFEST.md`](../implementation/SCAFFOLD_MANIFEST.md).
@@ -124,9 +124,9 @@ providers.
 Milestone 00 registers only `hub_health`, `hub_capabilities`, `qa-hub://status`,
 and `qa_hub_orientation`. Later milestones add read-only providers, knowledge
 tools, registered API execution, registered database, Kafka, and E2E
-verification, and registered CI inspection. Test-management, evidence
-publication, and release modules are not imported during server construction. The registry owns the allowlist, so
-creating a future file does not expose a tool.
+verification, registered CI inspection, test-management mapping, and evidence
+and release tools. The registry owns the allowlist. Milestone 11 packages that
+server. It does not add a provider and it does not publish the package.
 
 ## Configuration and profile model
 

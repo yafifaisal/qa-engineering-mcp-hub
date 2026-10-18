@@ -1,11 +1,11 @@
-"""Typer command application for Milestone 00 and local Milestone 01 commands.
+"""Typer command application for local setup and community onboarding.
 
 Purpose: expose serve, doctor, capabilities, and local setup/configuration commands.
-Milestone: 01
+Milestone: 11
 Status: IMPLEMENTED
 Ownership: cli.root_application
-Dependencies: Typer, Rich, and local M00/M01 command modules.
-Expected tests: help, version, doctor, capabilities, and M01 command registration.
+Dependencies: Typer, Rich, and local command modules.
+Expected tests: help, version, doctor, capabilities, and workflow listing.
 """
 
 from typing import Annotated
@@ -21,6 +21,7 @@ from qa_mcp_hub.cli.integrations import app as integrations_app
 from qa_mcp_hub.cli.profiles import app as profiles_app
 from qa_mcp_hub.cli.repositories import app as repositories_app
 from qa_mcp_hub.cli.setup import setup_command
+from qa_mcp_hub.cli.workflows import app as workflows_app
 from qa_mcp_hub.core.capabilities import list_capabilities
 
 app = typer.Typer(
@@ -36,6 +37,7 @@ app.add_typer(integrations_app, name="integrations")
 app.add_typer(config_app, name="config")
 app.add_typer(clients_app, name="clients")
 app.add_typer(repositories_app, name="repositories")
+app.add_typer(workflows_app, name="workflows")
 
 
 @app.command("serve")

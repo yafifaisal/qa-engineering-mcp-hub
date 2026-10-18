@@ -1,7 +1,6 @@
-"""Truthful local capability catalog through Milestone 06.
+"""Truthful local capability catalog through Milestone 11.
 
-The catalog distinguishes registered API execution and read-only provider tools
-from providers that remain future work.
+The catalog distinguishes registered tools from work that is not published.
 
 Purpose: separate callable local capabilities from planned provider work.
 Milestone: 06
@@ -71,6 +70,7 @@ def list_capabilities() -> CapabilityCatalog:
             "publish_approved_evidence",
             "assess_release_readiness",
             "generate_release_report",
+            "community_package",
         ),
-        planned=("community_release",),
+        planned=(),
     )

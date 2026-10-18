@@ -394,8 +394,41 @@ used mocked HTTP. No Jira, Xray, TestRail, Google Sheets, Bitbucket, GitHub
 Actions, Jenkins, PostgreSQL, MySQL, Kafka, Bruno CLI, Newman CLI, Confluence,
 or Git host was called. Windows and Linux execution remains `BLOCKED`.
 
-## Milestone 11
+## Milestone 11 — packaged locally, not published
 
-Community release remains `SCAFFOLDED`. Native Windows/Linux execution and
-Python 3.13 hosted-runner evidence remain `BLOCKED`. Interactive browser OAuth
-is not implemented.
+- [x] `qa-mcp workflows list` lists registered workflow documents and does not
+  execute them.
+- [x] A clean environment installed the built wheel, ran `qa-mcp` and `uvx`,
+  uninstalled the package, and installed it again.
+- [x] Company A and Company C profiles keep separate connections, repositories,
+  workflows, and evidence artifacts. The simulation does not call those vendors.
+- [x] The distribution scan rejects known token shapes and unsafe archive paths.
+  The built wheel and source distribution were clean.
+- [x] OSV was queried for the 91 locked packages and returned no findings on
+  this date. That query is point-in-time evidence, not a standing guarantee.
+- [x] The release workflow builds artifacts and publishes only when the dispatch
+  input is `APPROVE_PUBLIC_RELEASE`. It was not dispatched.
+- [ ] Hosted Windows, macOS, and Linux runners were not observed, so that matrix
+  is `BLOCKED`. No provider is `LIVE_VERIFIED`. The package was not published.
+
+## Executed verification — Milestone 11
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | audited 85 packages |
+| `uv lock --check` | 0 | resolved 91 packages |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 309 files already formatted |
+| `uv run mypy src` | 0 | no issues in 183 source files |
+| `uv run pytest -q` | 0 | 180 passed, 1 skipped |
+| `uv build --no-sources` | 0 | sdist and wheel built |
+| `uv run python scripts/build_package.py --query-osv` | 0 | SBOM written, OSV findings 0, published false |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 373 files, 101 directories, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py` because live
+provider calls are not enabled. `QA_MCP_LIVE_PROVIDERS` was not set. The wheel
+install used the local distribution. OSV was the only external query, and it
+asked about locked package versions. No Jira, Xray, TestRail, Google, Git host,
+CI system, database, or Kafka broker was called. Windows and Linux execution
+remains `BLOCKED`. Public release is not approved.
+
