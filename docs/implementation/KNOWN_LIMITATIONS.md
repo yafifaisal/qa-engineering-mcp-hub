@@ -15,12 +15,16 @@
   perform a provider OAuth exchange, token refresh, or network connectivity test.
 - Milestone 02 registers local and remote repository definitions, discovers Git
   checkouts inside an approved workspace, and reads local branch, HEAD, remote
-  URL, and dirty state. It does not call GitHub, GitLab, or Bitbucket, and it
-  does not index file contents.
-- Knowledge indexing, scenario planning, workflows, suite execution, assertions,
-  CI/CD, test management, evidence, and release intelligence remain Milestones
-  05–10. Document records from Milestone 04 are untrusted data for that later
-  index. Ticket analysis does not call a language model.
+  URL, and dirty state. `plan_index` still does not read file contents.
+- Milestone 05 indexes git-tracked files in an explicitly permitted local
+  checkout. Pattern parsers for Go, Java, JavaScript, and TypeScript are
+  INFERRED. Unsupported languages stay UNKNOWN. A source reference is not a
+  runtime observation, and no trace claims a complete call graph. Community
+  Edition does not call a hosted embedding service. Confluence and Google Docs
+  enter the index only after an authorized read is passed to the engine.
+- Workflows, suite execution, assertions, CI/CD, test management, evidence, and
+  release intelligence remain Milestones 06–10. Ticket analysis does not call a
+  language model.
 - Python keyring is a direct development dependency and an optional `credentials`
   extra. A missing or unusable backend fails closed. The application does not fall
   back to a plaintext file.

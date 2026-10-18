@@ -193,10 +193,38 @@ was not set, so no Confluence or Google host was called. Those reads are
 `OFFLINE_VERIFIED` from respx mocks and are not `LIVE_VERIFIED`. Windows and
 Linux execution remains `BLOCKED`.
 
-## Milestones 05–11
+## Milestone 05 — implemented and offline verified
 
-Indexing execution, scenario planning, workflows, suite execution, assertions,
-evidence, and release intelligence remain `SCAFFOLDED` or `NOT_IMPLEMENTED`.
-Native Windows/Linux execution and Python 3.13 execution remain `BLOCKED`.
-Writes, Google Sheets, and the interactive browser OAuth flow are not
-implemented.
+- [x] Permitted local Git checkouts can be indexed. Secret paths, generated
+  artifacts, and untracked files are skipped.
+- [x] Keyword search returns citations with path, lines, commit SHA, and
+  retrieval time. Stale HEAD revisions produce a warning before refresh.
+- [x] Python symbols use the standard-library parser. Go, Java, JavaScript, and
+  TypeScript use pattern parsers labeled INFERRED. Other languages stay UNKNOWN.
+- [x] Dependency traces stay partial. `complete_graph` is false.
+- [x] Scenario drafts are not executable and do not create workflows.
+- [ ] No hosted embedding service is included. No live provider call was made.
+
+## Executed verification — Milestone 05
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
+| `uv lock --check` | 0 | lock matches project metadata |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 292 files already formatted |
+| `uv run mypy src` | 0 | no issues in 182 source files |
+| `uv run pytest -q` | 0 | 113 passed, 1 skipped |
+| `uv build` | 0 | sdist and wheel built |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 342 files, 100 directories, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py`. `QA_MCP_LIVE_PROVIDERS`
+was not set. Knowledge tests used local Git fixtures. No Confluence, Google, or
+Git host was called. Windows and Linux execution remains `BLOCKED`.
+
+## Milestones 06–11
+
+Workflows, suite execution, assertions, evidence, and release intelligence
+remain `SCAFFOLDED` or `NOT_IMPLEMENTED`. Native Windows/Linux execution and
+Python 3.13 execution remain `BLOCKED`. Writes, Google Sheets, and the
+interactive browser OAuth flow are not implemented.

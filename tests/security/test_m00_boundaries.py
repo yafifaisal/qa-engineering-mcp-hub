@@ -21,7 +21,7 @@ def test_server_has_no_remote_transport_configuration() -> None:
 
 
 def test_runtime_does_not_import_future_domains() -> None:
-    """A server process may load M03 read adapters, not later domains."""
+    """A server process may load knowledge indexing, not later execution domains."""
     project_root = Path(__file__).resolve().parents[2]
     probe = """
 import json
@@ -35,13 +35,10 @@ future_domains = (
     "qa_mcp_hub.adapters.streaming",
     "qa_mcp_hub.adapters.test_management",
     "qa_mcp_hub.evidence",
-    "qa_mcp_hub.knowledge.chunker",
-    "qa_mcp_hub.knowledge.indexer",
-    "qa_mcp_hub.knowledge.retriever",
-    "qa_mcp_hub.knowledge.service",
     "qa_mcp_hub.release",
     "qa_mcp_hub.runners",
-    "qa_mcp_hub.storage",
+    "qa_mcp_hub.storage.artifact_store",
+    "qa_mcp_hub.storage.execution_store",
     "qa_mcp_hub.suites",
     "qa_mcp_hub.verification",
     "qa_mcp_hub.workflows",

@@ -7,6 +7,10 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 05 local knowledge index for permitted Git checkouts, with keyword
+  retrieval, partial dependency traces, and non-executable scenario drafts.
+  Mocked and local-fixture tests are OFFLINE_VERIFIED. No complete call graph
+  is claimed.
 - Milestone 04 read-only Confluence and Google Docs retrieval, including space-
   limited search, document citations, and Google access-token refresh. Mocked
   tests are OFFLINE_VERIFIED. Live provider calls were not executed.

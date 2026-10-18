@@ -1,14 +1,21 @@
-"""Read-only Jira analysis tools.
+"""Read-only Jira analysis and local planning drafts.
 
-Purpose: read an issue and find code mentions of its key.
-Milestone: 03
+Purpose: read an issue, find code mentions, and draft review scenarios.
+Milestone: 05
 Status: IMPLEMENTED
 Ownership: mcp.tools.planning
-Dependencies: Planning service and ticket analysis models.
-Expected tests: issue-key search, permission warnings, and no secret arguments.
+Dependencies: Planning service, change impact, and scenario drafts.
+Expected tests: issue-key search, impact citations, and no workflow creation.
 """
 
-from qa_mcp_hub.planning.models import RelatedImplementation, TicketAnalysis
+from qa_mcp_hub.planning.change_impact import analyze_change_impact
+from qa_mcp_hub.planning.models import (
+    ImpactReport,
+    RelatedImplementation,
+    ScenarioDraft,
+    TicketAnalysis,
+)
+from qa_mcp_hub.planning.scenario_builder import generate_test_scenario_draft
 from qa_mcp_hub.planning.service import (
     analyze_jira_ticket,
     find_related_implementation,
@@ -47,5 +54,33 @@ def find_related_implementation_tool(
         repository,
         connection_id=connection_id,
         git_connection_id=git_connection_id,
+        profile=profile,
+    )
+
+
+def analyze_change_impact_tool(
+    repository_id: str,
+    paths: list[str] | None = None,
+    profile: str | None = None,
+) -> ImpactReport:
+    """Describe source references in the named files. This does not run tests.
+
+    The report is not a complete runtime blast radius.
+    """
+    return analyze_change_impact(repository_id, paths, profile)
+
+
+def generate_test_scenario_draft_tool(
+    issue_key: str,
+    requirements: list[str] | None = None,
+    profile: str | None = None,
+) -> ScenarioDraft:
+    """Draft review steps for an issue key. The draft is not an executable test.
+
+    No workflow definition is created.
+    """
+    return generate_test_scenario_draft(
+        issue_key,
+        requirements=requirements,
         profile=profile,
     )

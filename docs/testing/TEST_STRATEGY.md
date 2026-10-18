@@ -92,6 +92,18 @@ module.
 | Secrets | refresh tokens and client secrets stay out of tool results |
 | MCP tools | in-memory `search_documents` and `read_document` against mocked HTTP |
 
+## Milestone 05 matrix
+
+| Area | Required evidence |
+|---|---|
+| Indexing | repeatable chunks, incremental updates, and skipped secret paths |
+| Languages | Python AST is VERIFIED; pattern parsers are INFERRED; other files are UNKNOWN |
+| Freshness | stale HEAD warnings, missing files, and conflicting line hashes |
+| Isolation | one profile cannot read another profile's chunks |
+| Traces | cross-repository edges stay partial and `complete_graph` is false |
+| Drafts | scenario text is not executable and no workflow file is written |
+| MCP tools | in-memory knowledge and planning tools against a local Git fixture |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

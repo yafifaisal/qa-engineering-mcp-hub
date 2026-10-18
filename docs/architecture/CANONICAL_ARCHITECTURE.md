@@ -91,16 +91,16 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `core/` | Stable types, results, capability declarations, policy boundaries | M02 contracts, results, errors, context, policies, and retry implemented; other core modules remain scaffolded |
 | `providers/` | Provider-neutral contracts, descriptors, and registry | IMPLEMENTED as contracts and stubs; no vendor I/O |
 | `adapters/` | One implementation boundary per supported provider | SCAFFOLDED |
-| `repositories/` | Local/remote repository registration and discovery | IMPLEMENTED for registration, discovery, validation, and local Git metadata; content indexing is not executed |
-| `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | SCAFFOLDED |
-| `planning/` | Ticket analysis, impact, scenarios, and coverage plans | SCAFFOLDED |
+| `repositories/` | Local/remote repository registration and discovery | IMPLEMENTED for registration, discovery, validation, and local Git metadata; `plan_index` does not read files; `execute_index` does |
+| `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | IMPLEMENTED for local checkouts and supplied documents; OFFLINE_VERIFIED |
+| `planning/` | Ticket analysis, impact, scenarios, and coverage plans | IMPLEMENTED for read-only ticket analysis and non-executable drafts |
 | `suites/` | Approved executable-suite registry | SCAFFOLDED |
 | `workflows/` | Approved workflow discovery, validation, planning, and state | SCAFFOLDED |
 | `runners/` | Bounded approved-process execution and normalized results | SCAFFOLDED |
 | `verification/` | Registered deterministic assertions and correlation | SCAFFOLDED |
 | `evidence/` | Redacted evidence collection, manifests, rendering, publishing | SCAFFOLDED |
 | `release/` | Deterministic coverage and risk facts; never automatic sign-off | SCAFFOLDED |
-| `storage/` | Local persistence abstractions and migrations | SCAFFOLDED |
+| `storage/` | Local persistence abstractions and migrations | index SQLite IMPLEMENTED; other stores remain scaffolded |
 | `security/` | Path/URL/process/SQL policy and secret detection | path allowlist IMPLEMENTED; other security policies remain scaffolded |
 
 The exact file inventory and ownership metadata are recorded in

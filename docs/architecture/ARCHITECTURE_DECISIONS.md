@@ -174,3 +174,18 @@ structural changes must be added here before code is moved or ownership changes.
   command is `uv run --project ${workspaceFolder} qa-mcp serve`. Other client
   dialects require an explicit contract before support is claimed.
 
+## ADR-017 — Local knowledge index and partial traces
+
+- **Status:** Accepted
+- **Decision:** Milestone 05 indexes only git-tracked files in a profile-approved
+  checkout, plus documents the caller has already retrieved. Keyword search is
+  the Community Edition baseline. Embeddings are an injected interface.
+  Dependency traces record source references and never claim a complete runtime
+  call graph. Scenario drafts are not executable tests and do not write
+  workflows.
+- **Reason:** A source match can be cited. It cannot prove production behavior,
+  and a hosted embedding service would make the community build depend on a
+  network the project does not operate.
+- **Consequence:** Unsupported parsers stay UNKNOWN. Secret paths and untracked
+  files are not indexed. `plan_index` remains a non-executing plan record.
+

@@ -43,15 +43,6 @@ files:
     - "src/qa_mcp_hub/evidence/renderer.py"
     - "src/qa_mcp_hub/evidence/service.py"
     - "src/qa_mcp_hub/knowledge/__init__.py"
-    - "src/qa_mcp_hub/knowledge/chunker.py"
-    - "src/qa_mcp_hub/knowledge/code_parser.py"
-    - "src/qa_mcp_hub/knowledge/dependency_graph.py"
-    - "src/qa_mcp_hub/knowledge/freshness.py"
-    - "src/qa_mcp_hub/knowledge/indexer.py"
-    - "src/qa_mcp_hub/knowledge/retriever.py"
-    - "src/qa_mcp_hub/knowledge/service.py"
-    - "src/qa_mcp_hub/knowledge/source_verifier.py"
-    - "src/qa_mcp_hub/knowledge/symbol_extractor.py"
     - "src/qa_mcp_hub/mcp/tools/__init__.py"
     - "src/qa_mcp_hub/mcp/tools/cicd.py"
     - "src/qa_mcp_hub/mcp/tools/evidence.py"
@@ -60,8 +51,6 @@ files:
     - "src/qa_mcp_hub/mcp/tools/test_management.py"
     - "src/qa_mcp_hub/mcp/tools/verification.py"
     - "src/qa_mcp_hub/planning/__init__.py"
-    - "src/qa_mcp_hub/planning/coverage_mapper.py"
-    - "src/qa_mcp_hub/planning/scenario_builder.py"
     - "src/qa_mcp_hub/release/__init__.py"
     - "src/qa_mcp_hub/release/coverage_engine.py"
     - "src/qa_mcp_hub/release/models.py"
@@ -85,10 +74,8 @@ files:
     - "src/qa_mcp_hub/storage/__init__.py"
     - "src/qa_mcp_hub/storage/artifact_store.py"
     - "src/qa_mcp_hub/storage/execution_store.py"
-    - "src/qa_mcp_hub/storage/index_store.py"
     - "src/qa_mcp_hub/storage/migrations.py"
     - "src/qa_mcp_hub/storage/paths.py"
-    - "src/qa_mcp_hub/storage/sqlite_store.py"
     - "src/qa_mcp_hub/suites/__init__.py"
     - "src/qa_mcp_hub/suites/models.py"
     - "src/qa_mcp_hub/suites/registry.py"
@@ -263,7 +250,16 @@ files:
     - "src/qa_mcp_hub/core/policies.py"
     - "src/qa_mcp_hub/core/results.py"
     - "src/qa_mcp_hub/core/retry.py"
+    - "src/qa_mcp_hub/knowledge/chunker.py"
+    - "src/qa_mcp_hub/knowledge/code_parser.py"
+    - "src/qa_mcp_hub/knowledge/dependency_graph.py"
+    - "src/qa_mcp_hub/knowledge/freshness.py"
+    - "src/qa_mcp_hub/knowledge/indexer.py"
     - "src/qa_mcp_hub/knowledge/models.py"
+    - "src/qa_mcp_hub/knowledge/retriever.py"
+    - "src/qa_mcp_hub/knowledge/service.py"
+    - "src/qa_mcp_hub/knowledge/source_verifier.py"
+    - "src/qa_mcp_hub/knowledge/symbol_extractor.py"
     - "src/qa_mcp_hub/mcp/__init__.py"
     - "src/qa_mcp_hub/mcp/prompts.py"
     - "src/qa_mcp_hub/mcp/registry.py"
@@ -272,7 +268,9 @@ files:
     - "src/qa_mcp_hub/mcp/tools/planning.py"
     - "src/qa_mcp_hub/mcp/tools/system.py"
     - "src/qa_mcp_hub/planning/change_impact.py"
+    - "src/qa_mcp_hub/planning/coverage_mapper.py"
     - "src/qa_mcp_hub/planning/models.py"
+    - "src/qa_mcp_hub/planning/scenario_builder.py"
     - "src/qa_mcp_hub/planning/service.py"
     - "src/qa_mcp_hub/planning/ticket_analyzer.py"
     - "src/qa_mcp_hub/providers/__init__.py"
@@ -289,6 +287,8 @@ files:
     - "src/qa_mcp_hub/repositories/validator.py"
     - "src/qa_mcp_hub/security/path_allowlist.py"
     - "src/qa_mcp_hub/server.py"
+    - "src/qa_mcp_hub/storage/index_store.py"
+    - "src/qa_mcp_hub/storage/sqlite_store.py"
     - "src/qa_mcp_hub/version.py"
     - "templates/evidence/report.html.j2"
     - "templates/evidence/styles.css"
@@ -332,6 +332,7 @@ files:
     - "tests/integration/test_cli_m01.py"
     - "tests/integration/test_mcp_documentation.py"
     - "tests/integration/test_mcp_git_jira.py"
+    - "tests/integration/test_mcp_knowledge.py"
     - "tests/integration/test_mcp_protocol.py"
     - "tests/integration/test_provider_live.py"
     - "tests/packaging/test_package.py"
@@ -340,20 +341,26 @@ files:
     - "tests/security/test_repository_paths.py"
     - "tests/unit/test_config_m01.py"
     - "tests/unit/test_core.py"
+    - "tests/unit/test_knowledge_m05.py"
     - "tests/unit/test_repositories_m02.py"
     - "uv.lock"
 allowed_empty:
   - "src/qa_mcp_hub/py.typed"
 expected_mcp:
   tools:
+    - analyze_change_impact
     - analyze_jira_ticket
+    - find_implementation
     - find_related_implementation
+    - generate_test_scenario_draft
     - get_repository_changes
     - hub_capabilities
     - hub_health
     - read_document
     - search_documents
+    - search_knowledge
     - search_repository_code
+    - trace_cross_repo_flow
   resources: ["qa-hub://status"]
   prompts: ["qa_hub_orientation"]
 json_schemas:

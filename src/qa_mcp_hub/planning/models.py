@@ -9,10 +9,12 @@ Expected tests: source URLs, truncation flags, and untrusted content fields.
 """
 
 from datetime import datetime
+from typing import Literal
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from qa_mcp_hub.adapters.git.base import ChangeSet, CodeHit
+from qa_mcp_hub.core.enums import EpistemicStatus
 
 
 class CodeSearchResult(BaseModel):
@@ -65,4 +67,64 @@ class RelatedImplementation(BaseModel):
     hits: tuple[CodeHit, ...] = ()
     changes: ChangeSet | None = None
     warnings: tuple[str, ...] = ()
+    untrusted_content: bool = True
+
+
+class ImpactFinding(BaseModel):
+    """One grounded observation about a changed path."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    statement: str
+    evidence: EpistemicStatus
+    path: str
+    symbol: str | None = None
+    runtime_observed: Literal[False] = False
+
+
+class ImpactReport(BaseModel):
+    """Source-level impact. This is not a complete runtime blast radius."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    repository_id: str
+    paths: tuple[str, ...] = ()
+    findings: tuple[ImpactFinding, ...] = ()
+    unknown_relationships: tuple[str, ...] = ()
+    complete_graph: Literal[False] = False
+    untrusted_content: bool = True
+
+
+class CoverageItem(BaseModel):
+    """One requirement line and whether a draft mentions it. Tests are not run."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    requirement: str
+    evidence: EpistemicStatus
+    tests_executed: Literal[False] = False
+
+
+class CoverageMap(BaseModel):
+    """Draft overlap only. Nothing in this map is an executed test result."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    items: tuple[CoverageItem, ...] = ()
+    tests_executed: Literal[False] = False
+
+
+class ScenarioDraft(BaseModel):
+    """A reviewable suggestion. It is not an executable test or a workflow."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    title: str
+    issue_key: str
+    steps: tuple[str, ...] = ()
+    executable: Literal[False] = False
+    workflow_created: Literal[False] = False
+    evidence: EpistemicStatus
+    unknowns: tuple[str, ...] = ()
+    coverage: CoverageMap = Field(default_factory=CoverageMap)
     untrusted_content: bool = True

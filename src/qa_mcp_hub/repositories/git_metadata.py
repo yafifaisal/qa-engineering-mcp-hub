@@ -10,6 +10,7 @@ Expected tests: detached heads, multiple remotes, dirty state, timeouts, and red
 
 import shutil
 import subprocess
+from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
@@ -85,6 +86,67 @@ def _remote_url(repository: Path) -> str | None:
     if not url:
         return None
     return redact_git_url(url)
+
+
+def list_tracked_files(
+    repository: Path,
+    roots: tuple[Path, ...] | list[Path],
+) -> tuple[str, ...]:
+    """Return tracked paths. Untracked files are omitted and are not indexed."""
+    approved = resolve_within(repository, roots)
+    output = _git(approved, ["ls-files", "-z"])
+    return tuple(
+        item for item in output.split("\0") if item and ".." not in item.split("/")
+    )
+
+
+def last_commit_for_path(
+    repository: Path,
+    roots: tuple[Path, ...] | list[Path],
+    relative_path: str,
+) -> tuple[str, datetime | None]:
+    """Return the last commit that touched one tracked file, plus its timestamp."""
+    approved = resolve_within(repository, roots)
+    if relative_path.startswith("/") or ".." in relative_path.split("/"):
+        raise PathAllowlistError("file path is not inside the repository")
+    completed = _run(
+        approved,
+        ["log", "-1", "--format=%H%x09%cI", "--", relative_path],
+    )
+    if completed.returncode != 0:
+        raise GitInspectionError("file revision is unavailable")
+    line = completed.stdout.strip()
+    sha, separator, stamp = line.partition("\t")
+    valid = len(sha) == 40 and all(character in "0123456789abcdef" for character in sha)
+    if not separator or not valid:
+        raise GitInspectionError("file revision is unavailable")
+    parsed: datetime | None
+    try:
+        parsed = datetime.fromisoformat(stamp)
+    except ValueError:
+        parsed = None
+    return sha, parsed
+
+
+def changed_tracked_paths(
+    repository: Path,
+    roots: tuple[Path, ...] | list[Path],
+) -> tuple[str, ...]:
+    """Return tracked paths that ``git status`` reports as changed."""
+    approved = resolve_within(repository, roots)
+    if not read_git_metadata(approved, roots).dirty:
+        return ()
+    completed = _run(approved, ["status", "--porcelain"])
+    if completed.returncode != 0:
+        raise GitInspectionError("git status could not be read")
+    tracked = set(list_tracked_files(approved, roots))
+    names: list[str] = []
+    for line in completed.stdout.splitlines():
+        path = line[3:].strip().replace("\\", "/")
+        if ".." in path.split("/") or path not in tracked:
+            continue
+        names.append(path)
+    return tuple(dict.fromkeys(names))
 
 
 def _git(repository: Path, args: list[str]) -> str:

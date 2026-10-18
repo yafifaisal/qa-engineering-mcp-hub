@@ -12,7 +12,10 @@ from pathlib import Path
 
 from qa_mcp_hub.adapters.git.base import ChangeSet
 from qa_mcp_hub.config.models import HubConfig
+from qa_mcp_hub.core.enums import EpistemicStatus
 from qa_mcp_hub.core.errors import GitInspectionError, PathAllowlistError
+from qa_mcp_hub.knowledge.models import DependencyEdge, SymbolRecord
+from qa_mcp_hub.planning.models import ImpactFinding, ImpactReport
 from qa_mcp_hub.repositories.git_metadata import read_git_metadata
 from qa_mcp_hub.repositories.registry import approved_roots, list_repositories
 
@@ -47,6 +50,75 @@ def with_local_checkout(
             "local_dirty": metadata.dirty,
             "revisions_differ": metadata.head_sha != change.remote_head_sha,
         }
+    )
+
+
+def analyze_change_impact(
+    repository_id: str,
+    paths: list[str] | None = None,
+    profile: str | None = None,
+) -> ImpactReport:
+    """Describe source references touched by the named paths. Tests are not run."""
+    from qa_mcp_hub.knowledge.service import open_engine
+
+    engine = open_engine()
+    try:
+        selected = tuple(paths) if paths is not None else None
+        return engine.analyze_impact(repository_id, selected, profile)
+    finally:
+        engine.close()
+
+
+def build_impact(
+    repository_id: str,
+    paths: tuple[str, ...],
+    symbols: tuple[SymbolRecord, ...],
+    edges: tuple[DependencyEdge, ...],
+) -> ImpactReport:
+    """Build findings from symbols and edges that touch the changed paths."""
+    path_set = set(paths)
+    findings: list[ImpactFinding] = []
+    unknown: list[str] = []
+    if not path_set:
+        unknown.append("no changed paths were supplied")
+    for symbol in symbols:
+        same_repo = symbol.citation.source_id == repository_id
+        if not same_repo or symbol.citation.path not in path_set:
+            continue
+        findings.append(
+            ImpactFinding(
+                statement=f"{symbol.kind} {symbol.name} is defined in a changed file",
+                evidence=symbol.evidence,
+                path=symbol.citation.path,
+                symbol=symbol.name,
+            )
+        )
+    for edge in edges:
+        source_hit = (
+            edge.source_repository == repository_id and edge.source_path in path_set
+        )
+        target_hit = (
+            edge.target_repository == repository_id and edge.target_path in path_set
+        )
+        if not source_hit and not target_hit:
+            continue
+        findings.append(
+            ImpactFinding(
+                statement=edge.reason,
+                evidence=edge.evidence,
+                path=edge.source_path,
+                symbol=edge.source_symbol,
+            )
+        )
+        if edge.evidence is EpistemicStatus.unknown or edge.target_path is None:
+            unknown.append(edge.reason)
+    if path_set and not findings:
+        unknown.append("no dependency evidence for this change")
+    return ImpactReport(
+        repository_id=repository_id,
+        paths=tuple(sorted(path_set)),
+        findings=tuple(findings),
+        unknown_relationships=tuple(dict.fromkeys(unknown)),
     )
 
 

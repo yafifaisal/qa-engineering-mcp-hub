@@ -34,7 +34,8 @@ Future module placeholders are allowed only when their manifest and AST metadata
 `SCAFFOLDED`. Milestone 03 moved the Git adapters, Jira adapter, planning service,
 and the knowledge/planning MCP tools to `IMPLEMENTED`. Milestone 04 moved the
 Confluence adapter, Google Docs adapter, and knowledge document models to
-`IMPLEMENTED`.
+`IMPLEMENTED`. Milestone 05 moved the knowledge engine, index store, and
+planning drafts to `IMPLEMENTED`.
 
 Meaningful README files preserve otherwise-empty QA Workspace and test directories.
 The extra machine manifest and `STRUCTURE_AUDIT.json` provide deterministic input

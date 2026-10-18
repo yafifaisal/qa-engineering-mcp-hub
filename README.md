@@ -5,10 +5,11 @@ governed QA workflows. Milestones 00 and 01 provide the MCP foundation and secur
 local configuration control plane. Milestone 02 adds provider contracts and local
 repository registration. Milestone 03 adds read-only GitHub, GitLab, Bitbucket,
 and Jira access. Milestone 04 adds read-only Confluence and Google Docs
-retrieval. Other provider APIs and QA execution features remain
+retrieval. Milestone 05 adds a local knowledge index over approved Git
+checkouts. Other provider APIs and QA execution features remain
 `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 
-## What works through Milestone 04
+## What works through Milestone 05
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -38,6 +39,10 @@ retrieval. Other provider APIs and QA execution features remain
 - `search_documents` and `read_document` read Confluence pages in named spaces
   and Google Docs. Results include a source link, revision, and retrieval time.
   Document text is untrusted data. A Google refresh token is not returned.
+- `search_knowledge`, `find_implementation`, `trace_cross_repo_flow`,
+  `analyze_change_impact`, and `generate_test_scenario_draft` use the local
+  index. Results cite path, lines, and commit SHA. Traces do not claim a
+  complete call graph. Scenario drafts are not executable tests.
 
 Interactive browser OAuth, Git and Jira writes, test execution, database query,
 Kafka operation, CI/CD action, test-management action, evidence publication, and

@@ -59,6 +59,9 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
 - Confluence search is limited to space keys supplied for that call. Google
   Drive queries are limited to Google Docs in the user corpus. Document text
   cannot change tool permissions.
+- Knowledge indexing reads git-tracked files inside an approved workspace.
+  Secret paths and untracked files are skipped. Indexed text cannot change tool
+  permissions or mark a call graph complete.
 - Restrict suite execution, SQL, topics, workflows, and CI jobs to registries.
 - Require preview and explicit user approval for provider writes, CI triggers,
   imports, overwrites, and evidence publication.

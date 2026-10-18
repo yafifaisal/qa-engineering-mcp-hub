@@ -31,6 +31,9 @@ def test_catalog_distinguishes_future_work() -> None:
     assert "analyze_jira_ticket" in catalog.implemented
     assert "search_documents" in catalog.implemented
     assert "read_document" in catalog.implemented
+    assert "search_knowledge" in catalog.implemented
+    assert "find_implementation" in catalog.implemented
+    assert "analyze_change_impact" in catalog.implemented
     assert "bruno_postman" in catalog.planned
     assert "bruno_postman" not in catalog.implemented
 

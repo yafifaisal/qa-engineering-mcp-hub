@@ -49,8 +49,9 @@ are executed. General unrestricted Drive browsing is outside scope.
 
 Owns indexing coordination, chunking, parsers, symbols, dependency graph, retrieval,
 freshness/source verification, ticket/change analysis, scenarios, and coverage maps.
-Exit: repeatable indexes, stale/access tests, grounded citations, and curated
-cross-repository traces.
+Exit: repeatable local indexes, stale and permission tests, grounded citations,
+and partial cross-repository traces are OFFLINE_VERIFIED. A trace is not a
+complete runtime call graph. Live provider calls are not part of this exit.
 
 ## 06 — API automation execution
 

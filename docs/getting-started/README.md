@@ -7,7 +7,8 @@ MCP-client configuration generation. Milestone 02 adds provider contracts and
 `qa-mcp repositories` for local registration and remote definitions. Milestone 03
 adds read-only GitHub, GitLab, Bitbucket, and Jira tools. Milestone 04 adds
 read-only Confluence and Google Docs tools. Other provider APIs remain
-`NOT_IMPLEMENTED`. Live provider calls are not claimed.
+`NOT_IMPLEMENTED`. Milestone 05 indexes permitted local Git checkouts.
+Live provider calls are not claimed.
 
 ## Choose your platform
 
