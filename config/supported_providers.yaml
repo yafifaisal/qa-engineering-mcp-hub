@@ -1,0 +1,63 @@
+schema_version: 1
+milestone: "00"
+providers:
+  - id: github
+    category: git
+    implementation_status: NOT_IMPLEMENTED
+  - id: gitlab
+    category: git
+    implementation_status: NOT_IMPLEMENTED
+  - id: bitbucket
+    category: git
+    variants: [cloud, self_managed]
+    implementation_status: NOT_IMPLEMENTED
+  - id: jira
+    category: tickets
+    variants: [cloud, self_managed]
+    implementation_status: NOT_IMPLEMENTED
+  - id: confluence
+    category: documentation
+    variants: [cloud, self_managed]
+    implementation_status: NOT_IMPLEMENTED
+  - id: google_docs
+    category: documentation
+    implementation_status: NOT_IMPLEMENTED
+  - id: bruno
+    category: api_automation
+    implementation_status: NOT_IMPLEMENTED
+  - id: postman
+    category: api_automation
+    implementation_status: NOT_IMPLEMENTED
+  - id: postgresql
+    category: database
+    implementation_status: NOT_IMPLEMENTED
+  - id: mysql
+    category: database
+    implementation_status: NOT_IMPLEMENTED
+  - id: kafka
+    category: streaming
+    implementation_status: NOT_IMPLEMENTED
+  - id: bitbucket_pipelines
+    category: cicd
+    implementation_status: NOT_IMPLEMENTED
+  - id: github_actions
+    category: cicd
+    implementation_status: NOT_IMPLEMENTED
+  - id: jenkins
+    category: cicd
+    variants: [self_managed]
+    implementation_status: NOT_IMPLEMENTED
+  - id: xray
+    category: test_management
+    variants: [cloud, self_managed]
+    implementation_status: NOT_IMPLEMENTED
+  - id: testrail
+    category: test_management
+    implementation_status: NOT_IMPLEMENTED
+  - id: spreadsheet
+    category: test_management
+    formats: [csv, xlsx]
+    implementation_status: NOT_IMPLEMENTED
+  - id: google_sheets
+    category: test_management
+    implementation_status: NOT_IMPLEMENTED

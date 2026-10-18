@@ -1,0 +1,10 @@
+schema_version: 1
+id: security-redaction
+name: Secret and sensitive-data redaction
+implementation_status: SCAFFOLDED
+required_checks: [security_redaction]
+optional_checks: []
+missing_required_result: FAILED
+redaction:
+  profile: strict
+  block_on_secret_detection: true

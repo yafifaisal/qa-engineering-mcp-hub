@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-mcp-hub.example/schemas/connection.schema.json",
+  "title": "Milestone 01 provider connection fragment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "connections"],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "provider": {
+      "enum": [
+        "github", "gitlab", "bitbucket", "jira", "confluence",
+        "google_docs", "bruno", "postman", "postgresql", "mysql",
+        "kafka", "bitbucket_pipelines", "github_actions", "jenkins",
+        "xray", "testrail", "spreadsheet", "google_sheets"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profile", "provider", "connection_id"],
+      "properties": {
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]*$"
+        },
+        "provider": {"$ref": "#/$defs/provider"},
+        "connection_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]*$"
+        },
+        "host": {"type": ["string", "null"], "maxLength": 253},
+        "account": {"type": ["string", "null"], "minLength": 1, "maxLength": 320}
+      }
+    },
+    "credential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["store", "reference", "scope", "kind"],
+      "properties": {
+        "store": {"enum": ["environment", "keyring", "oauth_reference"]},
+        "reference": {"type": "string", "minLength": 1, "maxLength": 512},
+        "scope": {"$ref": "#/$defs/scope"},
+        "kind": {"enum": ["api_token", "pat", "oauth"]},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provider", "deployment", "auth_kind", "enabled"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "provider": {"$ref": "#/$defs/provider"},
+        "deployment": {"enum": ["cloud", "self_managed", "local", "file"]},
+        "base_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "account": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "auth_kind": {"enum": ["api_token", "pat", "oauth", "none"]},
+        "credential": {"anyOf": [{"$ref": "#/$defs/credential"}, {"type": "null"}]},
+        "enabled": {"type": "boolean"}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "auth_kind": {"const": "none"},
+            "credential": {"type": "null"}
+          }
+        },
+        {"properties": {"auth_kind": {"enum": ["api_token", "pat", "oauth"]}}}
+      ],
+      "allOf": [
+        {
+          "if": {"properties": {"auth_kind": {"const": "api_token"}}},
+          "then": {"properties": {"credential": {"properties": {"kind": {"const": "api_token"}}}}}
+        },
+        {
+          "if": {"properties": {"auth_kind": {"const": "pat"}}},
+          "then": {"properties": {"credential": {"properties": {"kind": {"const": "pat"}}}}}
+        },
+        {
+          "if": {"properties": {"auth_kind": {"const": "oauth"}}},
+          "then": {"properties": {"credential": {"properties": {"kind": {"const": "oauth"}}}}}
+        }
+      ]
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 1},
+    "connections": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/connection"}
+    }
+  }
+}

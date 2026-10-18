@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-mcp-hub.example/schemas/profile.schema.json",
+  "title": "Milestone 01 profile registry fragment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "profiles"],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "executionOverrides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeout_seconds": {"type": ["integer", "null"], "minimum": 1, "maximum": 3600},
+        "max_concurrency": {"type": ["integer", "null"], "minimum": 1, "maximum": 32},
+        "dry_run": {"type": ["boolean", "null"]},
+        "allow_mutations": {"type": ["boolean", "null"]}
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {"type": ["string", "null"], "maxLength": 500},
+        "workspace_id": {
+          "anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]
+        },
+        "repository_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/identifier"},
+          "uniqueItems": true
+        },
+        "connection_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/identifier"},
+          "uniqueItems": true
+        },
+        "execution": {"$ref": "#/$defs/executionOverrides"},
+        "log_level": {
+          "type": ["string", "null"],
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", null]
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 1},
+    "profiles": {
+      "type": "object",
+      "propertyNames": {"$ref": "#/$defs/identifier"},
+      "additionalProperties": {"$ref": "#/$defs/profile"}
+    }
+  }
+}

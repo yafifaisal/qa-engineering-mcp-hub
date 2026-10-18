@@ -1,0 +1,23 @@
+schema_version: 1
+implementation_status: SCAFFOLDED
+authorization:
+  read_operations: deny_until_configured
+  write_operations: deny
+  external_execution: deny
+approvals:
+  provider_writes: explicit_user_approval
+  ci_triggers: explicit_user_approval
+  evidence_publication: explicit_user_approval
+execution:
+  registered_suites_only: true
+  arbitrary_shell: deny
+  allowed_repository_roots: []
+verification:
+  registered_assertions_only: true
+  arbitrary_sql: deny
+  database_writes: deny
+  kafka_offset_commits: deny
+evidence:
+  redact_secrets_before_persisting: true
+  missing_required_checks: INCONCLUSIVE
+  retention_days: 30

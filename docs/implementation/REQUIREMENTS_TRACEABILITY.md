@@ -1,10 +1,62 @@
-# Requirements traceability — M00
+# Requirements traceability
 
-| Requirement | Source | Test |
-|---|---|---|
-| Python package and CLI | `pyproject.toml`, `src/qa_mcp_hub/cli.py` | `tests/integration/test_cli.py` |
-| Health tool | `src/qa_mcp_hub/server.py` | `tests/unit/test_core.py`, `tests/integration/test_mcp_protocol.py` |
-| Capability catalog | `src/qa_mcp_hub/capabilities.py` | Both unit and MCP protocol tests |
-| Typed settings | `src/qa_mcp_hub/config.py` | `tests/unit/test_core.py` |
-| Windows/macOS/Linux config paths | `src/qa_mcp_hub/config.py` | `tests/unit/test_core.py` |
-| Package build | `pyproject.toml` | `uv build` (pending online validation) |
+Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
+`SCAFFOLDED`, `IMPLEMENTED`, `OFFLINE_VERIFIED`, `LIVE_VERIFIED`, and `BLOCKED`.
+`OFFLINE_VERIFIED` never implies a live provider or native operating-system run.
+
+| ID | Requirement | Milestone | Implementation file | Test file | Implementation status | Verification status | Evidence | Known limitation |
+|---|---|---:|---|---|---|---|---|---|
+| R00-01 | Python 3.12+ uv package using `src/` and pinned dependencies | 00 | `pyproject.toml`, `uv.lock` | `tests/packaging/test_package.py` | IMPLEMENTED | OFFLINE_VERIFIED | `uv sync --frozen`; `uv lock --check`; fresh wheel/sdist | Only Python 3.12.15 executed locally |
+| R00-02 | Package import and console/module entry points | 00 | `src/qa_mcp_hub/__init__.py`, `__main__.py`, `cli/main.py` | `tests/packaging/test_package.py`, `tests/integration/test_cli.py` | IMPLEMENTED | OFFLINE_VERIFIED | editable and isolated-wheel import/help smoke | No public release install tested |
+| R00-03 | Standalone FastMCP application and stdio transport | 00 | `app.py`, `server.py`, `mcp/registry.py` | `tests/integration/test_mcp_protocol.py` | IMPLEMENTED | OFFLINE_VERIFIED | real `StdioTransport` subprocess passed | No remote transport by design |
+| R00-04 | Typed `hub_health` tool | 00 | `mcp/tools/system.py` | `tests/unit/test_core.py`, `tests/integration/test_mcp_protocol.py` | IMPLEMENTED | OFFLINE_VERIFIED | direct, in-memory, and stdio invocation | Local process only; no provider health |
+| R00-05 | Truthful `hub_capabilities` tool | 00 | `core/capabilities.py`, `mcp/tools/system.py` | `tests/unit/test_core.py`, `tests/integration/test_mcp_protocol.py` | IMPLEMENTED | OFFLINE_VERIFIED | exact discovery and planned-status assertions | Static M00 catalog |
+| R00-06 | Read-only MCP resource | 00 | `mcp/resources.py` | `tests/integration/test_mcp_protocol.py` | IMPLEMENTED | OFFLINE_VERIFIED | `resources/list` and `resources/read` passed | Client UI display not verified |
+| R00-07 | Reusable MCP prompt | 00 | `mcp/prompts.py` | `tests/integration/test_mcp_protocol.py` | IMPLEMENTED | OFFLINE_VERIFIED | `prompts/list` and `prompts/get` passed | Client UI display not verified |
+| R00-08 | Typer/Rich help, version, serve, doctor, capabilities | 00 | `cli/main.py` | `tests/integration/test_cli.py` | IMPLEMENTED | OFFLINE_VERIFIED | CLI tests and manual command exits 0 | Doctor checks local foundation only |
+| R00-09 | Typed non-secret environment settings | 00 | `config/models.py`, `config/loader.py` | `tests/unit/test_core.py`, `tests/security/test_m00_boundaries.py` | IMPLEMENTED | OFFLINE_VERIFIED | defaults/overrides/invalid transport/no-secret fields passed | File-based user config is M01 |
+| R00-10 | Portable application config paths | 00 | `config/paths.py` | `tests/unit/test_core.py` | IMPLEMENTED | OFFLINE_VERIFIED | native macOS plus deterministic three-platform simulations | Windows/Linux not natively executed |
+| R00-11 | Runtime excludes future milestone imports/tools | 00 | `mcp/registry.py` | `tests/security/test_m00_boundaries.py`, `tests/integration/test_mcp_protocol.py` | IMPLEMENTED | OFFLINE_VERIFIED | exact component sets and import-boundary test | Future code remains packaged scaffold |
+| R00-12 | Complete canonical file scaffold and ownership | 00 | `config/scaffold_manifest.yaml` | `scripts/structure_audit.py` | IMPLEMENTED | OFFLINE_VERIFIED | 326 files/99 directories; zero findings | Manifest maintenance is required for every new file |
+| R00-13 | Automated syntax/schema/link/ownership/secret audit | 00 | `scripts/structure_audit.py` | self-auditing quality gate | IMPLEMENTED | OFFLINE_VERIFIED | machine and Markdown reports pass | Heuristics supplement, not replace, security review |
+| R00-14 | QA Workspace generic template | 00 | `templates/qa-workspace/` | structure audit | IMPLEMENTED | OFFLINE_VERIFIED | complete manifest inventory, YAML syntax checks, and non-empty disabled examples | Dedicated workspace/CI schemas and runtime loading are future work |
+| R00-15 | Cross-platform machine/client config examples | 00 | `config/examples/`, `docs/getting-started/` | structure/schema audit | IMPLEMENTED | OFFLINE_VERIFIED | YAML/JSON/TOML parse and schema checks | Actual clients/OS runners not exercised |
+| R00-16 | Security boundary and no embedded credentials | 00 | `docs/security/`, `.env.example` | `tests/security/test_m00_boundaries.py`, structure audit | IMPLEMENTED | OFFLINE_VERIFIED | AST/structured/pattern secret scan passes | Secret scanners cannot prove absence of all sensitive data |
+| R00-17 | Fresh build and isolated installation | 00 | `pyproject.toml`, `scripts/smoke_test.py` | `tests/packaging/test_package.py` | IMPLEMENTED | OFFLINE_VERIFIED | wheel/sdist built; exact wheel import/help/protocol smoke passed | Only local macOS/Python 3.12 environment |
+| R00-18 | Windows/macOS/Linux CI matrix | 00 | `.github/workflows/ci.yml` | workflow quality job | SCAFFOLDED | BLOCKED | workflow definition reviewed locally | No hosted runner execution available in this session |
+| R01-01 | Named profiles and active profile | 01 | `config/resolver.py`, `cli/profiles.py` | `tests/unit/test_profiles.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | ownership docstrings and schemas | No loader, resolver, or CLI behavior |
+| R01-02 | Multiple connections per provider and cloud/self-managed variants | 01 | `core/models.py`, `config/examples/connections.example.yaml` | `tests/unit/test_connections.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | preserved types and schema/example only | No active connection resolution |
+| R01-03 | Credential references, keyring/environment stores, OAuth lifecycle | 01 | `auth/` | `tests/security/test_credentials.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | pre-existing contracts isolated from runtime | No live keyring/OAuth/rotation validation |
+| R01-04 | Safe config migration, validation, atomic writer, client generation | 01 | `config/migration.py`, `validator.py`, `writer.py`, `cli/clients.py` | `tests/unit/test_config_persistence.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | ownership and schemas only | M00 never writes user config |
+| R02-01 | Typed provider contracts/models/registry | 02 | `providers/` | `tests/contracts/test_provider_contracts.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | canonical ownership exists | No adapter factory or provider behavior |
+| R03-01 | GitHub adapter | 03 | `adapters/git/github.py` | `tests/contracts/test_github.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No API call or authentication |
+| R03-02 | GitLab adapter | 03 | `adapters/git/gitlab.py` | `tests/contracts/test_gitlab.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No API call or authentication |
+| R03-03 | Bitbucket Cloud/self-managed adapter | 03 | `adapters/git/bitbucket.py` | `tests/contracts/test_bitbucket.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | Edition behavior requires verification |
+| R03-04 | Jira adapter | 03 | `adapters/tickets/jira.py` | `tests/contracts/test_jira.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No Cloud/Data Center verification |
+| R03-05 | Registered repositories, paths, metadata, indexing coordination | 03 | `repositories/` | `tests/unit/test_repositories.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | schema and module ownership | No repository access or allowlist enforcement |
+| R04-01 | Confluence adapter | 04 | `adapters/documentation/confluence.py` | `tests/contracts/test_confluence.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No Cloud/Data Center verification |
+| R04-02 | Google Docs adapter | 04 | `adapters/documentation/google_docs.py` | `tests/contracts/test_google_docs.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No OAuth or document read |
+| R05-01 | Grounded knowledge index/retrieval/freshness | 05 | `knowledge/` | `tests/unit/test_knowledge.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | complete module ownership | No parser, index, or retrieval |
+| R05-02 | Ticket/change analysis, scenarios, and coverage planning | 05 | `planning/` | `tests/unit/test_planning.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | complete module ownership | AI output cannot be evidence |
+| R06-01 | Bruno adapter and registered suite execution | 06 | `adapters/api_automation/bruno.py`, `suites/`, `runners/` | `tests/contracts/test_bruno.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page, templates, ownership | No CLI discovery or execution |
+| R06-02 | Postman adapter and registered collection execution | 06 | `adapters/api_automation/postman.py`, `suites/`, `runners/` | `tests/contracts/test_postman.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page, templates, ownership | No Postman/Newman execution |
+| R06-03 | Approved workflows and dependency/state engine | 06 | `workflows/` | `tests/unit/test_workflows.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | disabled workspace examples | No discovery, planning, or execution |
+| R07-01 | PostgreSQL read-only assertions | 07 | `adapters/database/postgresql.py`, `verification/` | `tests/contracts/test_postgresql.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider/security docs | No driver, connection, or SQL execution |
+| R07-02 | MySQL read-only assertions | 07 | `adapters/database/mysql.py`, `verification/` | `tests/contracts/test_mysql.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider/security docs | No driver, connection, or SQL execution |
+| R07-03 | Kafka bounded correlation assertions | 07 | `adapters/streaming/kafka.py`, `verification/` | `tests/contracts/test_kafka.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider/security docs | No client, topic read, or offset operation |
+| R07-04 | Registered deterministic assertions/invariants | 07 | `verification/` | `tests/unit/test_verification.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | assertion schema/workspace directories | No assertion evaluator or PASS/FAIL engine |
+| R08-01 | Bitbucket Pipelines adapter | 08 | `adapters/cicd/bitbucket_pipelines.py` | `tests/contracts/test_bitbucket_pipelines.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No reads, artifacts, or trigger |
+| R08-02 | GitHub Actions adapter | 08 | `adapters/cicd/github_actions.py` | `tests/contracts/test_github_actions.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No reads, artifacts, or dispatch |
+| R08-03 | Jenkins adapter | 08 | `adapters/cicd/jenkins.py` | `tests/contracts/test_jenkins.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | Instance behavior requires verification |
+| R09-01 | Xray adapter | 09 | `adapters/test_management/xray.py` | `tests/contracts/test_xray.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and mapping dirs | No Cloud/Data Center verification |
+| R09-02 | TestRail adapter | 09 | `adapters/test_management/testrail.py` | `tests/contracts/test_testrail.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and mapping dirs | No API read/write |
+| R09-03 | CSV/XLSX spreadsheet mapping | 09 | `adapters/test_management/spreadsheet.py` | `tests/contracts/test_spreadsheet.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | mapping template/provider page | No parser/export/formula safety behavior |
+| R09-04 | Google Sheets adapter | 09 | `adapters/test_management/google_sheets.py` | `tests/contracts/test_google_sheets.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No OAuth or sheet access |
+| R10-01 | Evidence policies, redaction, collection, completeness, manifest | 10 | `evidence/` | `tests/unit/test_evidence.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | four policy templates and renderer templates | No persistence or generated evidence |
+| R10-02 | Authorized evidence publishing | 10 | `evidence/publisher.py` | `tests/security/test_publication.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | deny-by-default policy | No destination or approval flow |
+| R10-03 | Coverage, risk, and release reporting | 10 | `release/` | `tests/unit/test_release.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | complete module ownership | No automatic sign-off or report generation |
+| R11-01 | Community release and live compatibility evidence | 11 | `.github/workflows/release.yml`, release documentation | hosted release tests (planned) | SCAFFOLDED | BLOCKED | local artifact build only | No hosted CI, signing, or public release performed |
+
+No future-provider row is `IMPLEMENTED` or `LIVE_VERIFIED`. Provider pages document
+intended contracts and official references; they do not constitute execution
+evidence.

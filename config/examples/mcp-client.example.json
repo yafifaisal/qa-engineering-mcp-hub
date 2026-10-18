@@ -1,0 +1,9 @@
+{
+  "servers": {
+    "qa_hub": {
+      "type": "stdio",
+      "command": "qa-mcp",
+      "args": ["serve"]
+    }
+  }
+}

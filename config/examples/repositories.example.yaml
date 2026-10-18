@@ -1,0 +1,10 @@
+# Repository-registry fragment for review and schema validation.
+# Copy `repositories` into one consolidated config.yaml.
+schema_version: 1
+repositories:
+  - id: sample-service
+    display_name: Sample service
+    path_env: QA_MCP_SAMPLE_REPOSITORY_PATH
+    connection_id: github-cloud-readonly
+    default_branch: main
+    enabled: false

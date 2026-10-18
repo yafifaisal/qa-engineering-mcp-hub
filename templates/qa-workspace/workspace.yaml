@@ -1,0 +1,21 @@
+schema_version: 1
+workspace_id: example-workspace
+name: Example QA Workspace
+implementation_status: SCAFFOLDED
+framework_compatibility: ">=0.1,<1"
+registries:
+  suites: ./suites/suites.yaml
+  workflows:
+    - ./workflows/api
+    - ./workflows/e2e
+  assertions: ./assertions
+  evidence_policies: ./evidence-policies
+  test_management: ./test-management
+  ci: ./ci
+  knowledge: ./knowledge
+defaults:
+  evidence_policy: api-only
+safety:
+  arbitrary_shell: deny
+  arbitrary_sql: deny
+  provider_writes: require_explicit_approval

@@ -1,0 +1,98 @@
+"""Public non-secret configuration API for Milestones 00 and 01."""
+
+from qa_mcp_hub.config.loader import (
+    ConfigLoadError,
+    ConfigNotFoundError,
+    DuplicateKeyError,
+    SettingsLoadError,
+    load_config,
+    load_settings,
+    load_yaml_document,
+    load_yaml_text,
+    parse_config,
+)
+from qa_mcp_hub.config.migration import (
+    ConfigMigrationError,
+    ConfigRollbackError,
+    MigrationResult,
+    migrate_config,
+    migrate_document,
+)
+from qa_mcp_hub.config.models import (
+    CURRENT_SCHEMA_VERSION,
+    ApplicationConfig,
+    ConnectionConfig,
+    DeploymentKind,
+    ExecutionOverrides,
+    ExecutionPreferences,
+    HubConfig,
+    HubSettings,
+    ProfileConfig,
+    QAWorkspaceReference,
+    RepositoryReference,
+)
+from qa_mcp_hub.config.paths import default_config_dir, default_config_path
+from qa_mcp_hub.config.resolver import (
+    ConfigResolutionError,
+    ResolutionSource,
+    ResolvedConfig,
+    ResolvedFieldSource,
+    resolve_config,
+)
+from qa_mcp_hub.config.validator import (
+    ConfigIssue,
+    ConfigValidationError,
+    ConfigValidationReport,
+    inspect_config,
+    validate_config,
+)
+from qa_mcp_hub.config.writer import (
+    ConfigWriteError,
+    atomic_write_text,
+    save_config,
+    serialize_config,
+)
+
+__all__ = [
+    "CURRENT_SCHEMA_VERSION",
+    "ApplicationConfig",
+    "ConfigIssue",
+    "ConfigLoadError",
+    "ConfigMigrationError",
+    "ConfigNotFoundError",
+    "ConfigResolutionError",
+    "ConfigRollbackError",
+    "ConfigValidationError",
+    "ConfigValidationReport",
+    "ConfigWriteError",
+    "ConnectionConfig",
+    "DeploymentKind",
+    "DuplicateKeyError",
+    "ExecutionOverrides",
+    "ExecutionPreferences",
+    "HubConfig",
+    "HubSettings",
+    "MigrationResult",
+    "ProfileConfig",
+    "QAWorkspaceReference",
+    "RepositoryReference",
+    "ResolvedConfig",
+    "ResolvedFieldSource",
+    "ResolutionSource",
+    "SettingsLoadError",
+    "atomic_write_text",
+    "default_config_dir",
+    "default_config_path",
+    "inspect_config",
+    "load_config",
+    "load_settings",
+    "load_yaml_document",
+    "load_yaml_text",
+    "migrate_config",
+    "migrate_document",
+    "parse_config",
+    "resolve_config",
+    "save_config",
+    "serialize_config",
+    "validate_config",
+]
