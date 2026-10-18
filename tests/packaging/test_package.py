@@ -13,6 +13,8 @@ def test_package_imports() -> None:
 
 def test_console_entrypoint_metadata() -> None:
     metadata = distribution("qa-engineering-mcp-hub")
+    assert metadata.version == qa_mcp_hub.__version__
+    assert metadata.metadata["License-Expression"] == "MIT"
     entry_points = {
         entry.name: entry.value
         for entry in metadata.entry_points

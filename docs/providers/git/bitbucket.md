@@ -40,22 +40,39 @@ Configuration will store only a credential reference. Secret material must be re
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Bitbucket:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [bitbucket-primary]
 connections:
   - id: bitbucket-primary
     provider: bitbucket
+    deployment: cloud
     base_url: https://api.bitbucket.org/2.0
-    credential_ref: personal-dev/bitbucket/bitbucket.org/qa-user
-    enabled: true
+    account: qa-user
+    auth_kind: api_token
+    credential:
+      store: environment
+      reference: QA_MCP_BITBUCKET_TOKEN
+      scope:
+        profile: provider-example
+        provider: bitbucket
+        connection_id: bitbucket-primary
+        host: api.bitbucket.org
+        account: qa-user
+      kind: api_token
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Record an explicit edition and allowlisted base URL in the future connection model, store credentials externally, and run an edition-specific read diagnostic. Current configuration cannot perform these steps.
 
-Stop at documentation/configuration during Milestone 00; there is no working adapter to test.
+Stop after M01 local configuration; there is no working adapter or network test.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ The APIs are cross-platform; keyring backends, enterprise certificates, proxies,
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Bitbucket in Milestone 00. Future vendor-neutral tools may read repositories and revisions, analyze pull-request changes, and ground QA findings.
+No MCP tool uses Bitbucket through Milestone 01. Future vendor-neutral tools may read repositories and revisions, analyze pull-request changes, and ground QA findings.
 
 ## 12. Read/write authorization behavior
 

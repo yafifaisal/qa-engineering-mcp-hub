@@ -40,22 +40,32 @@ Only a credential reference may appear in configuration. Secrets must be resolve
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local identity, but Kafka authentication and connectivity are not implemented:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [kafka-uat]
 connections:
   - id: kafka-uat
     provider: kafka
-    base_url: kafka://broker.example.invalid:9093
-    credential_ref: personal-dev/kafka/broker.example.invalid/qa-reader
-    enabled: true
+    deployment: self_managed
+    account: qa-reader
+    auth_kind: none
+    enabled: false
 ```
+
+M01's authentication contract does not model SASL secrets, client certificates, or
+broker lists. Do not encode them as fake API-token references; the owning adapter
+milestone must add a typed contract before any connection can be enabled.
 
 ## 9. Setup instructions
 
 Choose a non-disruptive diagnostic strategy, configure allowlisted brokers/topics, provision least-privilege credentials, set TLS/SASL policy, and test only in an approved sandbox.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +73,7 @@ Native Kafka client libraries, certificate paths, DNS, firewall policy, and bina
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Kafka in Milestone 00. Future verification tools may query an approved correlation source or bounded diagnostic consumer by registered assertion ID.
+No MCP tool uses Kafka through Milestone 01. Future verification tools may query an approved correlation source or bounded diagnostic consumer by registered assertion ID.
 
 ## 12. Read/write authorization behavior
 

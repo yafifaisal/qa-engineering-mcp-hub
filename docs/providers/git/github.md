@@ -40,22 +40,39 @@ Configuration will store only a credential reference. Secret material must be re
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact GitHub:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [github-primary]
 connections:
   - id: github-primary
     provider: github
+    deployment: cloud
     base_url: https://api.github.com
-    credential_ref: personal-dev/github/github.com/qa-user
-    enabled: true
+    account: qa-user
+    auth_kind: pat
+    credential:
+      store: environment
+      reference: QA_MCP_GITHUB_TOKEN
+      scope:
+        profile: provider-example
+        provider: github
+        connection_id: github-primary
+        host: api.github.com
+        account: qa-user
+      kind: pat
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Create a named connection, allowlist its host, and store the credential through the future credential resolver rather than YAML. A future diagnostic must confirm identity, edition, permissions, and repository visibility without writing.
 
-Stop at documentation/configuration during Milestone 00; there is no working adapter to test.
+Stop after M01 local configuration; there is no working adapter or network test.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ The HTTP API is platform-neutral. Windows, macOS, and Linux still differ in keyr
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses GitHub in Milestone 00. Future vendor-neutral capabilities may include repository search, exact-revision reads, change analysis, and related pull-request lookup.
+No MCP tool uses GitHub through Milestone 01. Future vendor-neutral capabilities may include repository search, exact-revision reads, change analysis, and related pull-request lookup.
 
 ## 12. Read/write authorization behavior
 

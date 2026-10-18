@@ -1,11 +1,7 @@
-"""Truthful Milestone 00 capability catalog.
+"""Truthful local capability catalog through Milestone 01.
 
-Purpose: distinguish callable local features from planned milestone ownership.
-Milestone: 00
-Status: IMPLEMENTED
-Ownership: core.capability_catalog
-Dependencies: Pydantic v2.
-Expected tests: unit catalog assertions and MCP/CLI discovery tests.
+The catalog distinguishes implemented local setup/configuration behavior from
+provider adapters and network verification that remain future work.
 """
 
 from pydantic import BaseModel, ConfigDict
@@ -14,23 +10,25 @@ from pydantic import BaseModel, ConfigDict
 class CapabilityCatalog(BaseModel):
     """Immutable implemented-versus-planned capability response."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(extra="forbid", frozen=True)
 
     implemented: tuple[str, ...]
     planned: tuple[str, ...]
 
 
 def list_capabilities() -> CapabilityCatalog:
-    """Return the fixed M00 catalog without probing future integrations."""
+    """Return local capabilities without probing or claiming provider support."""
     return CapabilityCatalog(
         implemented=(
             "hub_health",
             "hub_capabilities",
             "qa-hub://status",
             "qa_hub_orientation",
+            "profiles_and_credentials",
+            "interactive_setup",
+            "mcp_client_config_generation",
         ),
         planned=(
-            "profiles_and_credentials",
             "github_gitlab_bitbucket",
             "jira_confluence_google_docs",
             "bruno_postman",

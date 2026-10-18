@@ -12,11 +12,17 @@ Install Python 3.12+ and uv, then run:
 ```sh
 uv sync --frozen
 uv run qa-mcp --help
+uv run qa-mcp config validate
 ```
 
 Keep changes within the owning milestone and module. A future provider scaffold is
 not permission to implement that provider. External-system tests must be opt-in and
 must identify whether they are mocked, offline, or live.
+
+Milestone 01 configuration tests must use temporary directories and fake credential
+stores. Never read, overwrite, or assert against a developer's real user config or
+OS credential records. A local credential-presence result is not provider
+connectivity evidence.
 
 ## Required checks
 

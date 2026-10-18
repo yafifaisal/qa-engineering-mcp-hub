@@ -1,10 +1,11 @@
 # QA Engineering MCP Hub
 
 QA Engineering MCP Hub is a local-first, cross-platform FastMCP foundation for
-governed QA workflows. Milestone 00 is implemented; all external providers and QA
-execution features remain explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
+governed QA workflows. Milestones 00 and 01 provide the MCP foundation and secure
+local configuration control plane. All external providers and QA execution features
+remain explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 
-## What works in Milestone 00
+## What works through Milestone 01
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -16,10 +17,17 @@ execution features remain explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 - Pydantic Settings validates non-secret `QA_MCP_` environment configuration.
 - Portable configuration paths and simulated Windows/macOS/Linux behavior are
   tested.
+- Versioned YAML supports named profiles, multiple connections per provider,
+  repository/workspace references, execution preferences, and strict validation.
+- Credentials are referenced through an OS keyring or explicitly named environment
+  variables; resolved values are redacted and never serialized.
+- `setup`, `profiles`, `integrations`, `config`, and `clients` commands manage and
+  inspect local readiness. Integration tests do not make provider network calls.
+- Codex TOML and native VS Code JSON can be generated without provider credentials.
 
-No provider authentication, repository access, ticket access, test execution,
-database query, Kafka operation, CI/CD action, test-management action, evidence
-publication, or release approval is implemented.
+No provider adapter, provider OAuth exchange, repository or ticket read, test
+execution, database query, Kafka operation, CI/CD action, test-management action,
+evidence publication, or release approval is implemented.
 
 ## Prerequisites and setup
 
@@ -30,6 +38,8 @@ uv sync --frozen
 uv run qa-mcp --help
 uv run qa-mcp doctor
 uv run qa-mcp capabilities
+uv run qa-mcp setup
+uv run qa-mcp config validate
 ```
 
 Start the server:
@@ -46,7 +56,7 @@ reserved for MCP protocol messages.
 Use absolute paths for both uv and this repository:
 
 ```sh
-codex mcp add qa-hub -- /ABSOLUTE/PATH/TO/uv run --project /ABSOLUTE/PATH/TO/qa-engineering-mcp-hub qa-mcp serve
+codex mcp add qa_hub -- /ABSOLUTE/PATH/TO/uv run --project /ABSOLUTE/PATH/TO/qa-engineering-mcp-hub qa-mcp serve
 codex mcp list
 ```
 

@@ -40,20 +40,27 @@ Configuration may contain only a credential reference. Secrets must be resolved 
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot read or write spreadsheets:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [spreadsheet-local]
 connections:
   - id: spreadsheet-local
     provider: spreadsheet
-    enabled: true
+    deployment: file
+    auth_kind: none
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Register mapping definitions and fixed input/output roots in the future QA Workspace, select encoding/dialect or sheet/table explicitly, preview conversion, review loss warnings, then approve export if needed.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, read, write, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, read, write, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -61,7 +68,7 @@ Newlines, default encodings, path syntax, file locks, case sensitivity, Excel be
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses spreadsheets in Milestone 00. Future test-management tools may preview imports and produce an explicitly approved export through registered mappings.
+No MCP tool uses spreadsheets through Milestone 01. Future test-management tools may preview imports and produce an explicitly approved export through registered mappings.
 
 ## 12. Read/write authorization behavior
 

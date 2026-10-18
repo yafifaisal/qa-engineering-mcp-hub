@@ -1,13 +1,15 @@
 # Provider documentation index
 
 The QA Engineering MCP Hub recognizes only the provider families listed here.
-At Milestone 00 every provider integration is **NOT_IMPLEMENTED**. The Python
-files are ownership scaffolds: they contain no network clients, authentication
-flows, subprocess runners, database sessions, Kafka consumers, or publication
-logic.
+Through Milestone 01 every provider integration is **NOT_IMPLEMENTED**. M01 can
+validate connection identities and credential references locally, but the Python
+adapter files remain ownership scaffolds: they contain no network clients,
+provider OAuth flows, subprocess runners, database sessions, Kafka consumers, or
+publication logic.
 
-Documentation examples describe a future target shape. They are not accepted by
-the current runtime and are not evidence of a working connection.
+Documentation examples use the versioned M01 configuration shape, contain only
+credential references, and remain disabled. A schema-valid local connection is not
+evidence of provider connectivity.
 
 ## Status meanings
 
@@ -18,7 +20,8 @@ the current runtime and are not evidence of a working connection.
 - **LIVE_VERIFIED**: a separately authorized sandbox check has passed.
 - **BLOCKED**: validation could not proceed and the reason is recorded.
 
-No provider on this page is currently OFFLINE_VERIFIED or LIVE_VERIFIED.
+No provider on this page is currently OFFLINE_VERIFIED or LIVE_VERIFIED. A local
+credential-presence check does not advance provider verification status.
 
 ## Supported provider scope
 
@@ -52,7 +55,8 @@ limits, and runner versions must be checked against current official
 documentation immediately before implementation. Unresearched details are
 marked **Requires verification** rather than guessed.
 
-Provider access will use named connections and credential references. Tokens,
+Provider access will use named connections and credential references. M01 stores
+and validates those local records but does not consume them through an adapter. Tokens,
 passwords, private keys, and connection strings containing secrets must remain
 outside plaintext project and user configuration. Future write operations must
 be separately allowlisted and explicitly approved; scaffolding never grants

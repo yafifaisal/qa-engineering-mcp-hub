@@ -1,7 +1,7 @@
 # Register the local MCP server with Codex or native VS Code
 
-Milestone 00 uses local stdio. It does not expose an HTTP endpoint and requires no
-provider credentials.
+The hub uses local stdio and does not expose an HTTP endpoint. M01 can generate or
+install client launch configuration, but it never embeds provider credentials.
 
 ## Codex CLI and Codex IDE extension
 
@@ -10,7 +10,7 @@ file is normally `~/.codex/config.toml`; a trusted project may also provide
 `.codex/config.toml`. The preferred registration path is the CLI:
 
 ```sh
-codex mcp add qa-hub -- /absolute/path/to/uv run --project /absolute/path/to/qa-engineering-mcp-hub qa-mcp serve
+codex mcp add qa_hub -- /absolute/path/to/uv run --project /absolute/path/to/qa-engineering-mcp-hub qa-mcp serve
 codex mcp list
 ```
 
@@ -51,7 +51,7 @@ format uses `.vscode/mcp.json` and a `servers` object:
 ```json
 {
   "servers": {
-    "qa-engineering-hub": {
+    "qa_hub": {
       "type": "stdio",
       "command": "/absolute/path/to/uv",
       "args": [
@@ -70,7 +70,24 @@ VS Code schemas and supported locations can change independently. Check the
 [official VS Code MCP documentation](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
 for the installed version. Do not paste this JSON into Codex `config.toml`.
 
-## Verify the M00 surface
+## Generate or install with qa-mcp
+
+M01 provides parser-checked generation for both formats:
+
+```sh
+qa-mcp clients generate codex
+qa-mcp clients generate vscode
+qa-mcp clients install --help
+```
+
+Generation is side-effect free. Installation merges the `qa_hub` entry while
+preserving unrelated client settings. It is idempotent, refuses to replace a
+different `qa_hub` entry unless `--force` is explicit, and creates a backup before
+replacement. Use `--command` when `qa-mcp` is not on the MCP client's PATH.
+Generated content contains only the local launch command; provider tokens remain in
+the configured credential backend.
+
+## Verify the MCP surface
 
 After restarting the client, verify that the server starts and that exactly these
 components are discoverable through protocol tests:
@@ -82,7 +99,7 @@ components are discoverable through protocol tests:
 Client interfaces do not all display resources and prompts in the same way. Do
 not interpret a missing UI panel as protocol proof; use the repository MCP tests.
 No Git, Jira, document, API-runner, database, Kafka, CI/CD, or test-management
-tool should be exposed in Milestone 00.
+tool should be exposed through Milestone 01.
 
 See [integration troubleshooting](../troubleshooting/integration-errors.md) if
 the server is absent or exits early.

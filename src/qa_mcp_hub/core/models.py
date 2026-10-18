@@ -1,22 +1,27 @@
-"""Scaffolded shared models with pre-existing configuration types preserved.
+"""Shared provider identity and compatibility imports.
 
-Purpose: Reserve shared identities while retaining compatible existing models.
-Owning Milestone: 02
-Status: SCAFFOLDED
-Ownership: core.models
-Dependencies: Pydantic v2 and Python enumerations.
-Expected tests: Validation, serialization, duplicates, and M00 runtime absence.
-
-Implementation note: These classes pre-date the scaffold and remain for compatibility.
-They are not MCP tools or registered by the Milestone 00 application.
+``qa_mcp_hub.config.models`` owns the Milestone 01 configuration schema. The
+provider enum remains in ``core`` because authentication and configuration both
+depend on it. Legacy ``Connection``, ``Profile``, and ``HubConfig`` imports are
+resolved lazily so existing callers receive the canonical models without
+creating a ``config.models -> core.models -> config.models`` import cycle.
 """
 
 from enum import StrEnum
+from typing import TYPE_CHECKING
+from warnings import warn
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel
+
+if TYPE_CHECKING:
+    from qa_mcp_hub.config.models import ConnectionConfig as Connection
+    from qa_mcp_hub.config.models import HubConfig
+    from qa_mcp_hub.config.models import ProfileConfig as Profile
 
 
 class ProviderKind(StrEnum):
+    """Provider identifiers accepted by the versioned configuration schema."""
+
     github = "github"
     gitlab = "gitlab"
     bitbucket = "bitbucket"
@@ -37,35 +42,34 @@ class ProviderKind(StrEnum):
     google_sheets = "google_sheets"
 
 
-class Connection(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    id: str = Field(min_length=1)
-    provider: ProviderKind
-    base_url: str | None = None
-    credential_ref: str | None = None  # reference only
-    enabled: bool = True
+_LEGACY_MODEL_NAMES = frozenset({"Connection", "Profile", "HubConfig"})
 
 
-class Profile(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    connections: list[Connection] = Field(default_factory=list)
+def __getattr__(name: str) -> type[BaseModel]:
+    """Resolve removed legacy model names to their canonical M01 equivalents."""
+    if name not in _LEGACY_MODEL_NAMES:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
-    @model_validator(mode="after")
-    def unique_connections(self) -> "Profile":
-        ids = [item.id for item in self.connections]
-        if len(ids) != len(set(ids)):
-            raise ValueError("Duplicate connection id in profile")
-        return self
+    # Deliberately local: importing config models at module import time would be a
+    # cycle because those models use ProviderKind from this module.
+    from qa_mcp_hub.config.models import (
+        ConnectionConfig,
+        HubConfig,
+        ProfileConfig,
+    )
+
+    aliases: dict[str, type[BaseModel]] = {
+        "Connection": ConnectionConfig,
+        "Profile": ProfileConfig,
+        "HubConfig": HubConfig,
+    }
+    warn(
+        f"qa_mcp_hub.core.models.{name} is deprecated; import the canonical "
+        "model from qa_mcp_hub.config instead",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return aliases[name]
 
 
-class HubConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    schema_version: int = 1
-    active_profile: str
-    profiles: dict[str, Profile]
-
-    @model_validator(mode="after")
-    def active_profile_exists(self) -> "HubConfig":
-        if self.active_profile not in self.profiles:
-            raise ValueError("Active profile does not exist")
-        return self
+__all__ = ["Connection", "HubConfig", "Profile", "ProviderKind"]

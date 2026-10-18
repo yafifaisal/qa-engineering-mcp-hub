@@ -1,27 +1,56 @@
+# Connection-registry fragment for review and schema validation.
+# Copy `connections` into one consolidated config.yaml; this fragment is not loaded
+# independently because credential scopes must match profile membership.
 schema_version: 1
-implementation_status: SCAFFOLDED
 connections:
   - id: github-cloud-readonly
     provider: github
     deployment: cloud
     base_url: https://api.github.com
+    account: qa-user
+    auth_kind: pat
     credential:
       store: environment
       reference: QA_MCP_GITHUB_TOKEN
+      scope:
+        profile: local-development
+        provider: github
+        connection_id: github-cloud-readonly
+        host: api.github.com
+        account: qa-user
+      kind: pat
     enabled: false
   - id: jira-cloud-primary
     provider: jira
     deployment: cloud
     base_url: https://example.atlassian.net
+    account: qa-user@example.invalid
+    auth_kind: api_token
     credential:
       store: keyring
-      reference: local-development/jira-cloud-primary
+      reference: jira-cloud-primary-token
+      scope:
+        profile: local-development
+        provider: jira
+        connection_id: jira-cloud-primary
+        host: example.atlassian.net
+        account: qa-user@example.invalid
+      kind: api_token
     enabled: false
   - id: jira-self-managed-lab
     provider: jira
     deployment: self_managed
     base_url: https://jira.example.invalid
+    account: qa-lab-reader
+    auth_kind: pat
     credential:
       store: environment
       reference: QA_MCP_JIRA_LAB_TOKEN
+      scope:
+        profile: isolated-lab
+        provider: jira
+        connection_id: jira-self-managed-lab
+        host: jira.example.invalid
+        account: qa-lab-reader
+      kind: pat
     enabled: false

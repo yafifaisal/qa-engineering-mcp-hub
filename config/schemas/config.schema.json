@@ -1,32 +1,214 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://qa-mcp-hub.example/schemas/config.schema.json",
-  "title": "QA MCP Hub configuration index",
+  "title": "QA MCP Hub Milestone 01 user configuration",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "schema_version",
-    "implementation_status",
-    "active_profile",
-    "workspace_path",
-    "registries",
-    "default_policies"
-  ],
-  "properties": {
-    "schema_version": {"const": 1},
-    "implementation_status": {"enum": ["SCAFFOLDED", "IMPLEMENTED"]},
-    "active_profile": {"type": "string", "minLength": 1},
-    "workspace_path": {"type": "string", "minLength": 1},
-    "registries": {
+  "required": ["schema_version"],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9._-]*$"
+    },
+    "provider": {
+      "enum": [
+        "github", "gitlab", "bitbucket", "jira", "confluence",
+        "google_docs", "bruno", "postman", "postgresql", "mysql",
+        "kafka", "bitbucket_pipelines", "github_actions", "jenkins",
+        "xray", "testrail", "spreadsheet", "google_sheets"
+      ]
+    },
+    "authKind": {
+      "enum": ["api_token", "pat", "oauth", "none"]
+    },
+    "credentialScope": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["repositories", "connections", "profiles"],
+      "required": ["profile", "provider", "connection_id"],
       "properties": {
-        "repositories": {"type": "string", "minLength": 1},
-        "connections": {"type": "string", "minLength": 1},
-        "profiles": {"type": "string", "minLength": 1}
+        "profile": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]*$"
+        },
+        "provider": {"$ref": "#/$defs/provider"},
+        "connection_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9._-]*$"
+        },
+        "host": {"type": ["string", "null"], "maxLength": 253},
+        "account": {
+          "type": ["string", "null"],
+          "minLength": 1,
+          "maxLength": 320
+        }
       }
     },
-    "default_policies": {"type": "string", "minLength": 1}
+    "credential": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["store", "reference", "scope", "kind"],
+      "properties": {
+        "store": {"enum": ["environment", "keyring", "oauth_reference"]},
+        "reference": {"type": "string", "minLength": 1, "maxLength": 512},
+        "scope": {"$ref": "#/$defs/credentialScope"},
+        "kind": {"enum": ["api_token", "pat", "oauth"]},
+        "expires_at": {"type": ["string", "null"], "format": "date-time"}
+      }
+    },
+    "connection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "provider", "deployment", "auth_kind", "enabled"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "provider": {"$ref": "#/$defs/provider"},
+        "deployment": {"enum": ["cloud", "self_managed", "local", "file"]},
+        "base_url": {
+          "type": ["string", "null"],
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "account": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "auth_kind": {"$ref": "#/$defs/authKind"},
+        "credential": {
+          "anyOf": [{"$ref": "#/$defs/credential"}, {"type": "null"}]
+        },
+        "enabled": {"type": "boolean"}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "auth_kind": {"const": "none"},
+            "credential": {"type": "null"}
+          }
+        },
+        {
+          "properties": {"auth_kind": {"enum": ["api_token", "pat", "oauth"]}}
+        }
+      ],
+      "allOf": [
+        {
+          "if": {"properties": {"auth_kind": {"const": "api_token"}}},
+          "then": {"properties": {"credential": {"properties": {"kind": {"const": "api_token"}}}}}
+        },
+        {
+          "if": {"properties": {"auth_kind": {"const": "pat"}}},
+          "then": {"properties": {"credential": {"properties": {"kind": {"const": "pat"}}}}}
+        },
+        {
+          "if": {"properties": {"auth_kind": {"const": "oauth"}}},
+          "then": {"properties": {"credential": {"properties": {"kind": {"const": "oauth"}}}}}
+        }
+      ]
+    },
+    "executionOverrides": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeout_seconds": {"type": ["integer", "null"], "minimum": 1, "maximum": 3600},
+        "max_concurrency": {"type": ["integer", "null"], "minimum": 1, "maximum": 32},
+        "dry_run": {"type": ["boolean", "null"]},
+        "allow_mutations": {"type": ["boolean", "null"]}
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {"type": ["string", "null"], "maxLength": 500},
+        "workspace_id": {
+          "anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]
+        },
+        "repository_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/identifier"},
+          "uniqueItems": true
+        },
+        "connection_ids": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/identifier"},
+          "uniqueItems": true
+        },
+        "execution": {"$ref": "#/$defs/executionOverrides"},
+        "log_level": {
+          "type": ["string", "null"],
+          "enum": ["DEBUG", "INFO", "WARNING", "ERROR", null]
+        }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "display_name", "default_branch", "enabled"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "display_name": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "path": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "path_env": {
+          "type": ["string", "null"],
+          "maxLength": 256,
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        },
+        "connection_id": {
+          "anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]
+        },
+        "default_branch": {"type": "string", "minLength": 1, "maxLength": 1024},
+        "enabled": {"type": "boolean"}
+      },
+      "oneOf": [
+        {"required": ["path"], "not": {"required": ["path_env"]}},
+        {"required": ["path_env"], "not": {"required": ["path"]}}
+      ]
+    },
+    "workspace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"},
+        "path": {"type": "string", "minLength": 1, "maxLength": 1024}
+      }
+    },
+    "executionPreferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "timeout_seconds": {"type": "integer", "minimum": 1, "maximum": 3600},
+        "max_concurrency": {"type": "integer", "minimum": 1, "maximum": 32},
+        "dry_run": {"type": "boolean"},
+        "allow_mutations": {"type": "boolean"}
+      }
+    }
+  },
+  "properties": {
+    "schema_version": {"const": 1},
+    "active_profile": {
+      "anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]
+    },
+    "profiles": {
+      "type": "object",
+      "propertyNames": {"$ref": "#/$defs/identifier"},
+      "additionalProperties": {"$ref": "#/$defs/profile"}
+    },
+    "connections": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/connection"}
+    },
+    "repositories": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/repository"}
+    },
+    "workspaces": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/workspace"}
+    },
+    "execution": {"$ref": "#/$defs/executionPreferences"},
+    "log_level": {"enum": ["DEBUG", "INFO", "WARNING", "ERROR"]}
   }
 }

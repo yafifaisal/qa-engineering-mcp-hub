@@ -40,22 +40,39 @@ Configuration will store only a credential reference. Secret material must be re
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Jira:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [jira-primary]
 connections:
   - id: jira-primary
     provider: jira
+    deployment: cloud
     base_url: https://example.atlassian.net
-    credential_ref: personal-dev/jira/example.atlassian.net/qa-user
-    enabled: true
+    account: qa-user@example.invalid
+    auth_kind: api_token
+    credential:
+      store: keyring
+      reference: jira-primary-token
+      scope:
+        profile: provider-example
+        provider: jira
+        connection_id: jira-primary
+        host: example.atlassian.net
+        account: qa-user@example.invalid
+      kind: api_token
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Create an edition-specific connection, keep the credential in an approved secret store, choose allowlisted projects, and run a future read diagnostic. Do not paste Jira credentials into configuration or MCP arguments.
 
-Stop at documentation/configuration during Milestone 00; there is no working adapter to test.
+Stop after M01 local configuration; there is no working adapter or network test.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ Jira HTTP APIs are OS-neutral. Keyring support, browser OAuth callbacks, proxies
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Jira in Milestone 00. Future vendor-neutral capabilities may read issues and analyze ticket context; write-oriented tools are not part of the initial adapter.
+No MCP tool uses Jira through Milestone 01. Future vendor-neutral capabilities may read issues and analyze ticket context; write-oriented tools are not part of the initial adapter.
 
 ## 12. Read/write authorization behavior
 

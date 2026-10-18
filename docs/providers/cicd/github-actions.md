@@ -40,22 +40,39 @@ Configuration may contain only a credential reference. Secrets must be resolved 
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact GitHub Actions:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [github-actions-primary]
 connections:
   - id: github-actions-primary
     provider: github_actions
+    deployment: cloud
     base_url: https://api.github.com
-    credential_ref: personal-dev/github_actions/github.com/qa-app
-    enabled: true
+    account: qa-app
+    auth_kind: pat
+    credential:
+      store: keyring
+      reference: github-actions-primary-token
+      scope:
+        profile: provider-example
+        provider: github_actions
+        connection_id: github-actions-primary
+        host: api.github.com
+        account: qa-app
+      kind: pat
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Register the GitHub edition, repositories, workflows, and API origin; store credentials externally; then run a future read-only diagnostic against a harmless completed workflow.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, read, write, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, read, write, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ The API is portable, but keyrings, GHES CAs/proxies, log/artifact paths, and sel
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses GitHub Actions in Milestone 00. Future CI/CD tools may list/read approved workflow runs, jobs, logs, and artifacts through normalized services.
+No MCP tool uses GitHub Actions through Milestone 01. Future CI/CD tools may list/read approved workflow runs, jobs, logs, and artifacts through normalized services.
 
 ## 12. Read/write authorization behavior
 

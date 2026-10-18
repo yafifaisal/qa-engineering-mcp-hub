@@ -35,7 +35,7 @@ Tools are thin. They do not call vendor HTTP APIs, provider CLIs, databases, or
 Kafka directly. The explicit MCP registry prevents a future scaffold module from
 becoming callable merely because a file exists.
 
-## Implemented M00 surface
+## Implemented local surface
 
 The local stdio server registers exactly two tools (`hub_health`,
 `hub_capabilities`), one read-only resource (`qa-hub://status`), and one reusable
@@ -46,11 +46,17 @@ MCP tools are invoked operations. Resources are URI-addressed client context.
 Prompts are client-requested message templates. None of the four M00 components
 tests an external integration.
 
+Milestone 01 adds versioned local YAML, profiles and connection identities, scoped
+credential references, OS-keyring/environment backends, redaction, migration,
+setup/profile/integration/config/client CLI commands, and client configuration
+generation. These capabilities establish local readiness only. They do not create a
+provider adapter or prove network connectivity.
+
 ## Why local stdio first?
 
 A local MCP client owns the subprocess lifecycle. Protocol messages use stdout,
-so diagnostics must go to stderr. M00 opens no listener and implements no remote
-transport or OAuth flow.
+so diagnostics must go to stderr. The local server opens no listener. M01 includes
+testable OAuth infrastructure but no provider OAuth flow or remote transport.
 
 ## Supporting architecture guides
 

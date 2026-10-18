@@ -3,7 +3,13 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from qa_mcp_hub.config import HubSettings, default_config_dir
+from qa_mcp_hub.config import (
+    ConnectionConfig,
+    HubConfig,
+    HubSettings,
+    ProfileConfig,
+    default_config_dir,
+)
 from qa_mcp_hub.core.capabilities import list_capabilities
 from qa_mcp_hub.server import hub_health
 
@@ -18,8 +24,24 @@ def test_health_result() -> None:
 def test_catalog_distinguishes_future_work() -> None:
     catalog = list_capabilities()
     assert "hub_health" in catalog.implemented
-    assert "profiles_and_credentials" not in catalog.implemented
-    assert "profiles_and_credentials" in catalog.planned
+    assert "profiles_and_credentials" in catalog.implemented
+    assert "interactive_setup" in catalog.implemented
+    assert "mcp_client_config_generation" in catalog.implemented
+    assert "github_gitlab_bitbucket" in catalog.planned
+    assert "github_gitlab_bitbucket" not in catalog.implemented
+
+
+def test_legacy_core_config_names_resolve_to_canonical_models() -> None:
+    with pytest.warns(DeprecationWarning):
+        from qa_mcp_hub.core.models import Connection as LegacyConnection
+    with pytest.warns(DeprecationWarning):
+        from qa_mcp_hub.core.models import HubConfig as LegacyHubConfig
+    with pytest.warns(DeprecationWarning):
+        from qa_mcp_hub.core.models import Profile as LegacyProfile
+
+    assert LegacyConnection is ConnectionConfig
+    assert LegacyHubConfig is HubConfig
+    assert LegacyProfile is ProfileConfig
 
 
 def test_typed_environment_settings(monkeypatch: pytest.MonkeyPatch) -> None:

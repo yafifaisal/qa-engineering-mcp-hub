@@ -40,22 +40,39 @@ Configuration will store only a credential reference. Secret material must be re
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact GitLab:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [gitlab-primary]
 connections:
   - id: gitlab-primary
     provider: gitlab
+    deployment: cloud
     base_url: https://gitlab.com
-    credential_ref: personal-dev/gitlab/gitlab.com/qa-user
-    enabled: true
+    account: qa-user
+    auth_kind: pat
+    credential:
+      store: environment
+      reference: QA_MCP_GITLAB_TOKEN
+      scope:
+        profile: provider-example
+        provider: gitlab
+        connection_id: gitlab-primary
+        host: gitlab.com
+        account: qa-user
+      kind: pat
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Register the exact GitLab host and connection ID, store credentials outside YAML, then use a future read-only diagnostic to identify the user, edition, and visible projects. No diagnostic exists now.
 
-Stop at documentation/configuration during Milestone 00; there is no working adapter to test.
+Stop after M01 local configuration; there is no working adapter or network test.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ API behavior is OS-independent, but local keyrings, enterprise CA bundles, proxi
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses GitLab in Milestone 00. Future vendor-neutral capabilities may search authorized code, read exact revisions, analyze changes, and resolve related merge requests.
+No MCP tool uses GitLab through Milestone 01. Future vendor-neutral capabilities may search authorized code, read exact revisions, analyze changes, and resolve related merge requests.
 
 ## 12. Read/write authorization behavior
 

@@ -40,22 +40,40 @@ Configuration will store only a credential reference. Secret material must be re
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Confluence:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [confluence-primary]
 connections:
   - id: confluence-primary
     provider: confluence
+    deployment: cloud
     base_url: https://example.atlassian.net/wiki
-    credential_ref: personal-dev/confluence/example.atlassian.net/qa-user
-    enabled: true
+    account: qa-user@example.invalid
+    auth_kind: api_token
+    credential:
+      store: keyring
+      reference: confluence-primary-token
+      scope:
+        profile: provider-example
+        provider: confluence
+        connection_id: confluence-primary
+        host: example.atlassian.net
+        account: qa-user@example.invalid
+      kind: api_token
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
-Register an edition-specific allowlisted origin, store credentials outside YAML, identify allowed spaces, and use a future diagnostic to read a harmless page. No connection test exists in Milestone 00.
+Register an edition-specific allowlisted origin, store credentials outside YAML,
+and identify allowed spaces. M01 can test local credential presence only.
 
-Stop at documentation/configuration during Milestone 00; there is no working adapter to test.
+Stop after M01 local configuration; there is no working adapter or network test.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +81,7 @@ The API is cross-platform, while keyrings, OAuth browser callbacks, enterprise C
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Confluence in Milestone 00. Future knowledge tools may search and retrieve grounded documents through a service that enforces profile and page authorization.
+No MCP tool uses Confluence through Milestone 01. Future knowledge tools may search and retrieve grounded documents through a service that enforces profile and page authorization.
 
 ## 12. Read/write authorization behavior
 

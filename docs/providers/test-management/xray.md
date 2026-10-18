@@ -40,22 +40,39 @@ Configuration may contain only a credential reference. Secrets must be resolved 
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Xray:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [xray-primary]
 connections:
   - id: xray-primary
     provider: xray
+    deployment: cloud
     base_url: https://xray.cloud.getxray.app
-    credential_ref: personal-dev/xray/xray-cloud/qa-client
-    enabled: true
+    account: qa-client
+    auth_kind: api_token
+    credential:
+      store: keyring
+      reference: xray-primary-token
+      scope:
+        profile: provider-example
+        provider: xray
+        connection_id: xray-primary
+        host: xray.cloud.getxray.app
+        account: qa-client
+      kind: api_token
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Select the edition, register Jira/Xray origins and approved projects, store credentials externally, define canonical field mappings, and use a future read-only diagnostic before considering publication.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, read, write, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, read, write, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ The API is cross-platform. Keyrings, OAuth/token workflows, proxies, enterprise 
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Xray in Milestone 00. Future test-management tools may search/read normalized cases and preview approved mappings; publication needs a separate authorized tool.
+No MCP tool uses Xray through Milestone 01. Future test-management tools may search/read normalized cases and preview approved mappings; publication needs a separate authorized tool.
 
 ## 12. Read/write authorization behavior
 

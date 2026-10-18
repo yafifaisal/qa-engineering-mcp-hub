@@ -40,22 +40,32 @@ Only a credential reference may appear in configuration. Secrets must be resolve
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local identity, but database authentication and connectivity are not implemented:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [postgresql-uat]
 connections:
   - id: postgresql-uat
     provider: postgresql
-    base_url: postgresql://db.example.invalid:5432/qa
-    credential_ref: personal-dev/postgresql/db.example.invalid/qa-reader
-    enabled: true
+    deployment: self_managed
+    account: qa-reader
+    auth_kind: none
+    enabled: false
 ```
+
+M01's authentication contract intentionally covers API tokens, PATs, and OAuth—not
+database passwords, certificates, or connection strings. Do not encode those values
+as fake API-token references; the owning adapter milestone must add a typed contract.
 
 ## 9. Setup instructions
 
 Provision a least-privilege QA reader, require TLS as policy dictates, store the secret externally, register reviewed assertions in the QA Workspace, and validate against non-production data first.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +73,7 @@ Database protocol behavior is portable, but native driver wheels, CA paths, keyr
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses PostgreSQL in Milestone 00. Future verification tools may execute an assertion by registered ID; they must never accept free-form SQL.
+No MCP tool uses PostgreSQL through Milestone 01. Future verification tools may execute an assertion by registered ID; they must never accept free-form SQL.
 
 ## 12. Read/write authorization behavior
 

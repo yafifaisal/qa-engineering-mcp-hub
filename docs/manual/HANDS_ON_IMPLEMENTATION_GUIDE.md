@@ -22,8 +22,7 @@ authority when any older example or milestone note disagrees.
 
 ## Milestone 00 — framework foundation
 
-Milestone 00 is the only implemented milestone in this architecture freeze. Its
-runtime path is:
+Milestone 00 provides the implemented MCP foundation. Its runtime path is:
 
 ```text
 qa-mcp / MCP client
@@ -63,15 +62,31 @@ test. A stale file already under `dist/` proves nothing.
 
 ## Milestone 01 — profiles and credentials
 
-Owns `config/`, `auth/`, and the scaffolded CLI configuration commands. Implement
-atomic configuration writes, schema migration, multiple named profiles and
-connections, credential references, environment read-only fallback, and OS keyring
-storage. Never put secret values in YAML or MCP arguments. Client-file changes need
-a preview and explicit approval.
+M01 implements `config/`, `auth/`, and the local CLI configuration commands. It
+provides atomic versioned YAML, migration with backup/rollback, multiple named
+profiles and connections, scoped credential references, a read-only environment
+backend, OS keyring storage, redaction, lifecycle metadata, a setup wizard, and
+client-file generation/installation.
 
-Exit evidence: permission and migration tests on each supported OS, redaction tests,
-profile isolation tests, and an observed credential-store flow. A mocked keyring is
-offline evidence only.
+The supported local CLI surface is:
+
+```text
+qa-mcp setup
+qa-mcp profiles add|list|use|show|edit|remove
+qa-mcp integrations add|list|auth|test|rotate|remove
+qa-mcp config show|validate
+qa-mcp clients generate|install
+```
+
+`integrations test` validates local configuration and credential presence. Its
+provider connectivity result is `NOT_IMPLEMENTED`, because no provider adapter is
+part of M01. OAuth state/PKCE and lifecycle infrastructure is testable locally, but
+no provider OAuth exchange or refresh flow is claimed.
+
+Never put secret values in YAML, MCP arguments, generated Codex TOML/native VS Code
+JSON, logs, or exceptions. Client installation is an explicit write with overwrite
+protection. A mocked keyring is offline evidence only; live Credential Manager,
+Keychain, or Secret Service support requires native verification.
 
 ## Milestone 02 — provider contracts and registry
 

@@ -40,20 +40,27 @@ Only a credential reference may appear in configuration. Secrets must be resolve
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot execute Bruno:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [bruno-local]
 connections:
   - id: bruno-local
     provider: bruno
-    enabled: true
+    deployment: local
+    auth_kind: none
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Pin and verify an approved Bruno CLI version, register suite paths in the future QA Workspace, map non-secret environments, resolve secrets at execution time, and run harmless local fixtures before any sandbox.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -61,7 +68,7 @@ Executable names, installation paths, process termination, quoting, and child-pr
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Bruno in Milestone 00. Future execution tools may list registered suites, submit an approved run, and retrieve normalized results by generated run ID.
+No MCP tool uses Bruno through Milestone 01. Future execution tools may list registered suites, submit an approved run, and retrieve normalized results by generated run ID.
 
 ## 12. Read/write authorization behavior
 

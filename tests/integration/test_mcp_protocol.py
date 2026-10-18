@@ -8,6 +8,7 @@ import pytest
 from fastmcp import Client
 from fastmcp.client.transports import StdioTransport
 
+from qa_mcp_hub import __version__
 from qa_mcp_hub.server import mcp
 
 EXPECTED_TOOLS = {"hub_health", "hub_capabilities"}
@@ -18,6 +19,9 @@ EXPECTED_PROMPTS = {"qa_hub_orientation"}
 @pytest.mark.asyncio
 async def test_mcp_tool_discovery_and_invocation() -> None:
     async with Client(mcp) as client:
+        assert client.server_info is not None
+        assert client.server_info.name == "QA Engineering MCP Hub"
+        assert client.server_info.version == __version__
         tools = await client.list_tools()
         names = {tool.name for tool in tools}
         assert names == EXPECTED_TOOLS
@@ -67,6 +71,9 @@ async def test_stdio_subprocess_protocol() -> None:
         keep_alive=False,
     )
     async with Client(transport, timeout=10) as client:
+        assert client.server_info is not None
+        assert client.server_info.name == "QA Engineering MCP Hub"
+        assert client.server_info.version == __version__
         assert {tool.name for tool in await client.list_tools()} == EXPECTED_TOOLS
         health = await client.call_tool("hub_health", {})
         assert health.structured_content is not None

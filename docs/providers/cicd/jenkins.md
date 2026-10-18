@@ -40,22 +40,39 @@ Configuration may contain only a credential reference. Secrets must be resolved 
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Jenkins:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [jenkins-primary]
 connections:
   - id: jenkins-primary
     provider: jenkins
+    deployment: self_managed
     base_url: https://jenkins.example.invalid/
-    credential_ref: personal-dev/jenkins/jenkins.example.invalid/qa-reader
-    enabled: true
+    account: qa-reader
+    auth_kind: api_token
+    credential:
+      store: keyring
+      reference: jenkins-primary-token
+      scope:
+        profile: provider-example
+        provider: jenkins
+        connection_id: jenkins-primary
+        host: jenkins.example.invalid
+        account: qa-reader
+      kind: api_token
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Allowlist the controller origin and context path, provision a read-only service identity, identify approved folders/jobs, store credentials externally, and run a future harmless read diagnostic.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, read, write, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, read, write, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ The HTTP API is portable, while enterprise CAs/proxies, keyrings, path separator
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Jenkins in Milestone 00. Future CI/CD tools may list/read approved jobs, builds, console excerpts, and artifacts through normalized services.
+No MCP tool uses Jenkins through Milestone 01. Future CI/CD tools may list/read approved jobs, builds, console excerpts, and artifacts through normalized services.
 
 ## 12. Read/write authorization behavior
 

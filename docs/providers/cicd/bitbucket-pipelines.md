@@ -40,22 +40,39 @@ Only a credential reference may appear in configuration. Secrets must be resolve
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Bitbucket Pipelines:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [bitbucket-pipelines-primary]
 connections:
   - id: bitbucket-pipelines-primary
     provider: bitbucket_pipelines
+    deployment: cloud
     base_url: https://api.bitbucket.org/2.0
-    credential_ref: personal-dev/bitbucket_pipelines/bitbucket.org/qa-user
-    enabled: true
+    account: qa-user
+    auth_kind: api_token
+    credential:
+      store: environment
+      reference: QA_MCP_BITBUCKET_PIPELINES_TOKEN
+      scope:
+        profile: provider-example
+        provider: bitbucket_pipelines
+        connection_id: bitbucket-pipelines-primary
+        host: api.bitbucket.org
+        account: qa-user
+      kind: api_token
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Register the workspace/repositories and Cloud API origin, store credentials externally, allowlist pipeline identities, and perform a future read-only diagnostic against a harmless run.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ The REST API is portable. Keyring storage, proxy/CA configuration, artifact path
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Bitbucket Pipelines in Milestone 00. Future CI/CD tools may list/read approved runs, steps, logs, and artifacts through normalized services.
+No MCP tool uses Bitbucket Pipelines through Milestone 01. Future CI/CD tools may list/read approved runs, steps, logs, and artifacts through normalized services.
 
 ## 12. Read/write authorization behavior
 

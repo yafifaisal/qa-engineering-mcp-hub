@@ -40,22 +40,39 @@ Configuration may contain only a credential reference. Secrets must be resolved 
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Google Sheets:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [google-sheets-primary]
 connections:
   - id: google-sheets-primary
     provider: google_sheets
+    deployment: cloud
     base_url: https://sheets.googleapis.com
-    credential_ref: personal-dev/google_sheets/google-account/qa-user
-    enabled: true
+    account: qa-user@example.invalid
+    auth_kind: oauth
+    credential:
+      store: oauth_reference
+      reference: google-sheets-primary-oauth
+      scope:
+        profile: provider-example
+        provider: google_sheets
+        connection_id: google-sheets-primary
+        host: sheets.googleapis.com
+        account: qa-user@example.invalid
+      kind: oauth
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Create an approved OAuth client, configure named spreadsheet/range mappings, store tokens externally, authorize minimum read scope, and use a future preview against non-sensitive data.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, read, write, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, read, write, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ OAuth browser/device flow, callback ports, keyrings, proxies, and local export p
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Google Sheets in Milestone 00. Future test-management tools may preview range imports and, only after approval, publish mapped values to allowlisted ranges.
+No MCP tool uses Google Sheets through Milestone 01. Future test-management tools may preview range imports and, only after approval, publish mapped values to allowlisted ranges.
 
 ## 12. Read/write authorization behavior
 

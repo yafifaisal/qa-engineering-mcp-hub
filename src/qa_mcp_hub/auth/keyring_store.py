@@ -1,31 +1,119 @@
-"""Pre-existing operating-system keyring adapter retained for Milestone 01.
+"""Operating-system keyring backend with no plaintext fallback."""
 
-Purpose: Preserve narrow keyring operations pending policy integration.
-Owning Milestone: 01
-Status: SCAFFOLDED
-Ownership: auth.keyring_store
-Dependencies: The keyring package and the future credential-store policy boundary.
-Expected tests: Backend isolation, empty-secret rejection, missing entries, deletion.
+from __future__ import annotations
 
-Implementation note: This pre-existing class is not imported or registered by
-the Milestone 00 runtime and does not establish complete keyring integration.
-"""
+from importlib import import_module
+from types import ModuleType
+from typing import Protocol, cast
 
-import keyring
+from qa_mcp_hub.auth.credential_store import (
+    CredentialStorePolicyError,
+    CredentialStoreUnavailableError,
+)
+from qa_mcp_hub.auth.models import CredentialReference, CredentialStoreKind
 
 
-class KeyringStore:
-    """Pre-existing minimal keyring wrapper; runtime integration remains scaffolded."""
+class _BackendDescriptor(Protocol):
+    priority: float
 
+
+class KeyringFacade(Protocol):
+    """Injectable subset of Python keyring used by this adapter."""
+
+    def get_keyring(self) -> _BackendDescriptor: ...
+
+    def get_password(self, service_name: str, username: str) -> str | None: ...
+
+    def set_password(self, service_name: str, username: str, password: str) -> None: ...
+
+    def delete_password(self, service_name: str, username: str) -> None: ...
+
+
+_UNAVAILABLE_MESSAGE = (
+    "No usable OS keyring backend is available. Configure macOS Keychain, Windows "
+    "Credential Manager, or a Linux Secret Service backend; no plaintext fallback "
+    "was attempted."
+)
+
+
+def _load_system_keyring() -> KeyringFacade:
+    """Load the optional dependency only when credential storage is requested."""
+    try:
+        module: ModuleType = import_module("keyring")
+    except ImportError:
+        raise CredentialStoreUnavailableError(_UNAVAILABLE_MESSAGE) from None
+    return cast(KeyringFacade, module)
+
+
+class KeyringCredentialStore:
+    """Persist credentials using the active operating-system keyring backend."""
+
+    kind = CredentialStoreKind.keyring
     SERVICE = "qa-engineering-mcp-hub"
 
-    def get(self, credential_id: str) -> str | None:
-        return keyring.get_password(self.SERVICE, credential_id)
+    def __init__(
+        self,
+        *,
+        backend: KeyringFacade | None = None,
+        service: str = SERVICE,
+    ) -> None:
+        self._backend = backend
+        self._service = service
 
-    def set(self, credential_id: str, secret: str) -> None:
+    def _facade(self) -> KeyringFacade:
+        facade = self._backend or _load_system_keyring()
+        try:
+            if facade.get_keyring().priority <= 0:
+                raise CredentialStoreUnavailableError(_UNAVAILABLE_MESSAGE)
+        except CredentialStoreUnavailableError:
+            raise
+        except Exception:
+            raise CredentialStoreUnavailableError(_UNAVAILABLE_MESSAGE) from None
+        return facade
+
+    def _storage_key(self, reference: CredentialReference | str) -> str:
+        if isinstance(reference, str):
+            if not reference or any(character.isspace() for character in reference):
+                raise ValueError(
+                    "credential identifier must not be empty or contain spaces"
+                )
+            return reference
+        if reference.store is not self.kind:
+            raise CredentialStorePolicyError(
+                "Credential reference is assigned to a different backend."
+            )
+        return reference.scope.storage_key(reference.reference)
+
+    def get(self, reference: CredentialReference | str) -> str | None:
+        """Retrieve from the exact scoped key and sanitize backend failures."""
+        facade = self._facade()
+        try:
+            value = facade.get_password(self._service, self._storage_key(reference))
+        except Exception:
+            raise CredentialStoreUnavailableError(_UNAVAILABLE_MESSAGE) from None
+        return value if value else None
+
+    def set(self, reference: CredentialReference | str, secret: str) -> None:
+        """Store a non-empty value without logging or serializing it."""
         if not secret:
-            raise ValueError("Empty secret")
-        keyring.set_password(self.SERVICE, credential_id, secret)
+            raise ValueError("credential value must not be empty")
+        facade = self._facade()
+        try:
+            facade.set_password(self._service, self._storage_key(reference), secret)
+        except Exception:
+            raise CredentialStoreUnavailableError(_UNAVAILABLE_MESSAGE) from None
 
-    def delete(self, credential_id: str) -> None:
-        keyring.delete_password(self.SERVICE, credential_id)
+    def delete(self, reference: CredentialReference | str) -> None:
+        """Delete idempotently while keeping backend error details private."""
+        facade = self._facade()
+        key = self._storage_key(reference)
+        try:
+            if facade.get_password(self._service, key) is None:
+                return
+            facade.delete_password(self._service, key)
+        except Exception:
+            raise CredentialStoreUnavailableError(_UNAVAILABLE_MESSAGE) from None
+
+
+# Preserve the public name retained during the M00 architecture migration.
+KeyringStore = KeyringCredentialStore

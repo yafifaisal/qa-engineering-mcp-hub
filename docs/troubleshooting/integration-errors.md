@@ -21,8 +21,17 @@ M00 must expose exactly `hub_health` and `hub_capabilities`. Restart the client 
 clear old processes, then run `uv run python scripts/structure_audit.py`. A future
 tool appearing in discovery is a mandatory architecture violation.
 
-## Provider operation is missing
+## Local integration test cannot reach a provider
 
-All provider pages show `NOT_IMPLEMENTED` during M00. The scaffold does not contact
-external systems. Consult the [provider index](../providers/README.md) and progress
-record; do not interpret a module or configuration file as a working integration.
+This is the expected M01 boundary. `qa-mcp integrations test` validates local
+configuration and credential presence only and reports network connectivity as
+`NOT_IMPLEMENTED`. Consult the [provider index](../providers/README.md) and progress
+record; do not interpret a valid connection profile or stored credential as a
+working provider adapter.
+
+## Configuration is rejected
+
+Run `qa-mcp config validate` and inspect only the sanitized error. Malformed YAML,
+unsupported schema versions, unknown providers, duplicate connection IDs, ambiguous
+connection ownership, and missing profile references are intentionally rejected.
+Do not remove validation or copy a secret into YAML to work around the error.

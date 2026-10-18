@@ -1,8 +1,8 @@
 # Test execution troubleshooting
 
 API suite, database, Kafka, CI/CD, workflow, and end-to-end execution are not
-implemented in Milestone 00. Only the repository's local unit/protocol/CLI/package
-tests can run.
+implemented through Milestone 01. Only the repository's local unit, configuration,
+credential-contract, protocol, CLI, security, and package tests can run.
 
 Use the locked environment and preserve the first real diagnostic:
 

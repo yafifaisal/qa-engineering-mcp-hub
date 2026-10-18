@@ -1,6 +1,6 @@
 # macOS setup
 
-Milestone 00 is developed locally on macOS. A statement that it is
+Milestones 00 and 01 are developed locally on macOS. A statement that either is
 `OFFLINE_VERIFIED` still requires recorded passing commands in the
 [progress document](../implementation/PROGRESS.md); file existence is not proof.
 
@@ -15,7 +15,7 @@ uv --version
 uv python install 3.12
 ```
 
-## Install and check Milestone 00
+## Install and check
 
 From the repository root:
 
@@ -24,12 +24,16 @@ uv sync --frozen
 uv run qa-mcp --help
 uv run qa-mcp doctor
 uv run qa-mcp capabilities
+uv run qa-mcp setup
+uv run qa-mcp config validate
 uv run pytest -q
 ```
 
 The native user configuration directory is
-`~/Library/Application Support/qa-mcp-hub`. Profiles, credential persistence,
-and provider connections remain future work.
+`~/Library/Application Support/qa-mcp-hub`. M01 stores versioned non-secret YAML
+there. A `keyring` credential reference can use macOS Keychain when the installed
+keyring backend is usable; otherwise the command fails closed with an actionable
+error. Never place the secret in YAML.
 
 ## Register with Codex
 
@@ -43,7 +47,7 @@ pwd
 Substitute them in the registration command:
 
 ```sh
-codex mcp add qa-hub -- /absolute/path/to/uv run --project /absolute/path/to/qa-engineering-mcp-hub qa-mcp serve
+codex mcp add qa_hub -- /absolute/path/to/uv run --project /absolute/path/to/qa-engineering-mcp-hub qa-mcp serve
 codex mcp list
 ```
 
@@ -53,8 +57,8 @@ client verification guidance is in [Codex and VS Code registration](codex-vscode
 ## macOS-specific cautions
 
 - Keep company QA Workspace data outside the public framework checkout.
-- macOS Keychain integration is scaffolded for a future milestone; it is not part
-  of the M00 runtime.
+- Mocked credential-store tests prove resolver behavior, not a live Keychain round
+  trip. Consult the progress record for current native backend evidence.
 - Do not use an ordinary terminal interaction to test stdio. Use the MCP protocol
   tests or a configured client.
 

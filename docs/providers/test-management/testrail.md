@@ -40,22 +40,39 @@ Configuration may contain only a credential reference. Secrets must be resolved 
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact TestRail:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [testrail-primary]
 connections:
   - id: testrail-primary
     provider: testrail
+    deployment: self_managed
     base_url: https://testrail.example.invalid
-    credential_ref: personal-dev/testrail/testrail.example.invalid/qa-reader
-    enabled: true
+    account: qa-reader
+    auth_kind: api_token
+    credential:
+      store: environment
+      reference: QA_MCP_TESTRAIL_TOKEN
+      scope:
+        profile: provider-example
+        provider: testrail
+        connection_id: testrail-primary
+        host: testrail.example.invalid
+        account: qa-reader
+      kind: api_token
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Register the exact instance and approved projects, provision a least-privilege API identity, store credentials externally, define field mappings, and run a future harmless read diagnostic.
 
-Stop during Milestone 00: the scaffold cannot authenticate, connect, read, write, or execute.
+Stop after M01 local configuration: no adapter can authenticate, connect, read, write, or execute.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ The API is OS-neutral. Enterprise CAs/proxies, keyrings, browser SSO constraints
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses TestRail in Milestone 00. Future tools may search/read normalized cases and preview mappings; publication requires a separate approval-aware operation.
+No MCP tool uses TestRail through Milestone 01. Future tools may search/read normalized cases and preview mappings; publication requires a separate approval-aware operation.
 
 ## 12. Read/write authorization behavior
 

@@ -137,6 +137,16 @@ def actual_files() -> set[str]:
     return found
 
 
+def actual_directories() -> set[str]:
+    """List repository directories while excluding generated environments."""
+    found: set[str] = set()
+    for path in ROOT.rglob("*"):
+        if not path.is_dir() or any(part in IGNORED_PARTS for part in path.parts):
+            continue
+        found.add(relative(path))
+    return found
+
+
 def python_is_placeholder(path: Path) -> bool:
     """Use the AST to recognize modules containing only documentation metadata."""
     module = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
@@ -261,9 +271,14 @@ def looks_like_placeholder(value: str) -> bool:
     return (
         lowered in SAFE_SECRET_MARKERS
         or lowered.startswith(("env:", "keyring:", "${", "qa_mcp_"))
-        or "example" in lowered
-        or "placeholder" in lowered
-        or lowered.endswith(("_token", "_password", "_secret"))
+        or (lowered.startswith("<") and lowered.endswith(">"))
+    )
+
+
+def suspicious_secret_literal(value: str) -> bool:
+    """Return whether a secret-shaped literal is too plausible for source control."""
+    return not looks_like_placeholder(value) and (
+        len(value) >= 12 or shannon_entropy(value) >= 3.5
     )
 
 
@@ -285,9 +300,7 @@ def structured_secret_values(value: Any, trail: tuple[str, ...] = ()) -> list[st
         for key, child in value.items():
             name = str(key)
             if isinstance(child, str) and has_sensitive_name(name):
-                if not looks_like_placeholder(child) and (
-                    len(child) >= 12 or shannon_entropy(child) >= 3.5
-                ):
+                if suspicious_secret_literal(child):
                     suspicious.append(".".join((*trail, name)))
             suspicious.extend(structured_secret_values(child, (*trail, name)))
     elif isinstance(value, list):
@@ -315,17 +328,54 @@ def python_secret_findings(path: Path) -> list[Finding]:
             and has_sensitive_name(name)
             and isinstance(value, ast.Constant)
             and isinstance(value.value, str)
-            and not looks_like_placeholder(value.value)
-            and (len(value.value) >= 12 or shannon_entropy(value.value) >= 3.5)
+            and suspicious_secret_literal(value.value)
         ):
             findings.append(
                 Finding(
                     "secret-ast",
-                    relative(path),
+                    relative(path) if path.is_relative_to(ROOT) else path.as_posix(),
                     f"suspicious literal assigned to {name} on line {node.lineno}",
                 )
             )
+        if isinstance(node, ast.Dict):
+            for key, child in zip(node.keys, node.values, strict=True):
+                if (
+                    isinstance(key, ast.Constant)
+                    and isinstance(key.value, str)
+                    and has_sensitive_name(key.value)
+                    and isinstance(child, ast.Constant)
+                    and isinstance(child.value, str)
+                    and suspicious_secret_literal(child.value)
+                ):
+                    findings.append(
+                        Finding(
+                            "secret-ast",
+                            relative(path)
+                            if path.is_relative_to(ROOT)
+                            else path.as_posix(),
+                            "suspicious dictionary literal assigned to "
+                            f"{key.value} on line {node.lineno}",
+                        )
+                    )
     return findings
+
+
+def dotenv_secret_values(text: str) -> list[str]:
+    """Inspect dotenv assignments under secret-shaped variable names."""
+    suspicious: list[str] = []
+    for line_number, raw_line in enumerate(text.splitlines(), start=1):
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line.removeprefix("export ").lstrip()
+        name, separator, value = line.partition("=")
+        if not separator or not has_sensitive_name(name.strip()):
+            continue
+        candidate = value.strip().strip("\"'")
+        if suspicious_secret_literal(candidate):
+            suspicious.append(f"line {line_number} ({name.strip()})")
+    return suspicious
 
 
 def secret_findings(files: set[str]) -> list[Finding]:
@@ -338,12 +388,15 @@ def secret_findings(files: set[str]) -> list[Finding]:
         text = path.read_text(encoding="utf-8", errors="replace")
         if path.suffix == ".py":
             findings.extend(python_secret_findings(path))
-        if path.suffix in {".yaml", ".yml", ".json"}:
+        if path.suffix in {".yaml", ".yml", ".json", ".toml"}:
             try:
-                data = (
-                    json.loads(text) if path.suffix == ".json" else yaml.safe_load(text)
-                )
-            except (json.JSONDecodeError, yaml.YAMLError):
+                if path.suffix == ".json":
+                    data = json.loads(text)
+                elif path.suffix == ".toml":
+                    data = tomllib.loads(text)
+                else:
+                    data = yaml.safe_load(text)
+            except (json.JSONDecodeError, tomllib.TOMLDecodeError, yaml.YAMLError):
                 data = None
             for trail in structured_secret_values(data):
                 findings.append(
@@ -351,6 +404,15 @@ def secret_findings(files: set[str]) -> list[Finding]:
                         "secret-structured",
                         name,
                         f"suspicious value at {trail}",
+                    )
+                )
+        if path.name == ".env" or path.name.startswith(".env."):
+            for location in dotenv_secret_values(text):
+                findings.append(
+                    Finding(
+                        "secret-dotenv",
+                        name,
+                        f"suspicious environment value at {location}",
                     )
                 )
         for label, pattern in KNOWN_SECRET_PATTERNS.items():
@@ -399,6 +461,7 @@ def audit(manifest: dict[str, Any]) -> tuple[list[Finding], dict[str, Any]]:
     statuses, manifest_duplicates = expected_files(manifest)
     allowed_empty = set(manifest.get("allowed_empty", []))
     actual = actual_files()
+    actual_dirs = actual_directories()
     expected = set(statuses)
 
     for name in sorted(manifest_duplicates):
@@ -417,6 +480,10 @@ def audit(manifest: dict[str, Any]) -> tuple[list[Finding], dict[str, Any]]:
     for name in sorted(expected_directories):
         if not (ROOT / name).is_dir():
             findings.append(Finding("missing-directory", name, "directory is absent"))
+    for name in sorted(actual_dirs - expected_directories):
+        findings.append(
+            Finding("unlisted-directory", name, "directory is not in the manifest")
+        )
 
     ownership: defaultdict[str, list[str]] = defaultdict(list)
     for name in sorted(expected & actual):
@@ -482,6 +549,7 @@ def audit(manifest: dict[str, Any]) -> tuple[list[Finding], dict[str, Any]]:
         "missing_directories": sum(
             not (ROOT / name).is_dir() for name in expected_directories
         ),
+        "unlisted_directories": len(actual_dirs - expected_directories),
         "zero_byte_files": sum(
             (ROOT / name).stat().st_size == 0
             for name in expected & actual
@@ -572,6 +640,7 @@ def main() -> int:
                     "unlisted_files": 0,
                     "expected_directories": 0,
                     "missing_directories": 0,
+                    "unlisted_directories": 0,
                     "zero_byte_files": 0,
                     "findings": 1,
                 },

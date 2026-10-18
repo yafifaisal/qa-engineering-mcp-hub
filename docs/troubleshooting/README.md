@@ -8,12 +8,14 @@ uv sync --frozen
 uv run qa-mcp --version
 uv run qa-mcp doctor
 uv run qa-mcp capabilities
+uv run qa-mcp config validate
 uv run pytest tests/integration/test_mcp_protocol.py -v
 ```
 
-Milestone 00 cannot diagnose an external provider. A Git, Jira, document, API
-automation, database, Kafka, CI/CD, or test-management error is expected to remain
-`NOT_IMPLEMENTED` until its milestone.
+Milestone 01 can validate local configuration and whether a referenced credential
+is present, but it cannot diagnose an external provider. A Git, Jira, document, API
+automation, database, Kafka, CI/CD, or test-management connectivity result remains
+`NOT_IMPLEMENTED` until its adapter milestone.
 
 Focused guides:
 

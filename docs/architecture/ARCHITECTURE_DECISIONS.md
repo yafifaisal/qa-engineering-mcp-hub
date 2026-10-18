@@ -1,6 +1,6 @@
 # Architecture decisions
 
-This log records decisions that freeze the Milestone 00 architecture. New
+This log records decisions that freeze the architecture through Milestone 01. New
 structural changes must be added here before code is moved or ownership changes.
 
 ## ADR-001 — Separate framework, QA Workspace, and machine configuration
@@ -122,4 +122,52 @@ structural changes must be added here before code is moved or ownership changes.
 - **Reason:** MCP APIs and tool behavior are version-sensitive.
 - **Consequence:** `uv lock --check`, a source build, and an isolated wheel smoke test
   are release gates.
+
+## ADR-013 — Versioned consolidated user configuration and deterministic precedence
+
+- **Status:** Accepted
+- **Decision:** Persist one versioned, non-secret `config.yaml` containing profiles,
+  connections, repositories, workspaces, and execution preferences. Resolve values
+  in this order: explicit CLI option, environment override, active profile, user
+  configuration, application default.
+- **Reason:** One atomically replaceable document prevents cross-file partial
+  updates while still allowing multiple connections to the same provider and
+  reviewable profile membership.
+- **Consequence:** Duplicate IDs, unknown providers, missing references, and
+  unsupported versions fail closed. A connection may belong to at most one profile.
+
+## ADR-014 — Scoped credential references and no plaintext fallback
+
+- **Status:** Accepted
+- **Decision:** Bind each credential lookup to profile, connection, provider, host,
+  and account. Store values only in an available OS keyring or read them from an
+  explicitly named environment variable; YAML stores only `{store, reference}`.
+- **Reason:** A globally named token can cross workspace boundaries or leak through
+  generated configuration and diagnostics.
+- **Consequence:** Missing keyring backends and missing/expired metadata are explicit
+  errors. The application never falls back to a plaintext file. OAuth infrastructure
+  is local-only until an owning provider milestone implements and verifies a flow.
+
+## ADR-015 — Atomic migrations and immutable execution snapshots
+
+- **Status:** Accepted
+- **Decision:** Configuration writes use same-directory temporary files and atomic
+  replacement. A schema migration creates a backup and restores the original on
+  failure. Executions consume an immutable resolved snapshot.
+- **Reason:** Interrupted writes must not corrupt configuration, and switching the
+  active profile must not retarget work that is already running.
+- **Consequence:** Profile changes apply only to later resolutions. Migration errors
+  preserve the prior configuration and surface a sanitized failure.
+
+## ADR-016 — Client-specific local stdio configuration
+
+- **Status:** Accepted
+- **Decision:** Generate Codex TOML under `mcp_servers.qa_hub` and native VS Code
+  JSON under `servers.qa_hub` with `type: stdio`. Provider credentials are never
+  embedded. Installing generated content is a distinct, explicit merge that
+  preserves unrelated settings and backs up before replacement.
+- **Reason:** Codex and native VS Code use different configuration contracts, and
+  treating them as interchangeable produces invalid or unsafe files.
+- **Consequence:** Both formats are parsed in tests. Other client dialects require
+  an explicit contract before support is claimed.
 

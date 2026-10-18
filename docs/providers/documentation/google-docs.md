@@ -40,22 +40,39 @@ Configuration will store only a credential reference. Secret material must be re
 
 ## 8. Connection configuration example
 
-Illustrative future shape only; Milestone 00 does not load or validate this connection:
+M01 can validate this local shape, but the disabled connection cannot contact Google Docs:
 
 ```yaml
+schema_version: 1
+active_profile: provider-example
+profiles:
+  provider-example:
+    connection_ids: [google-docs-primary]
 connections:
   - id: google-docs-primary
     provider: google_docs
+    deployment: cloud
     base_url: https://docs.googleapis.com
-    credential_ref: personal-dev/google_docs/google-account/qa-user
-    enabled: true
+    account: qa-user@example.invalid
+    auth_kind: oauth
+    credential:
+      store: oauth_reference
+      reference: google-docs-primary-oauth
+      scope:
+        profile: provider-example
+        provider: google_docs
+        connection_id: google-docs-primary
+        host: docs.googleapis.com
+        account: qa-user@example.invalid
+      kind: oauth
+    enabled: false
 ```
 
 ## 9. Setup instructions
 
 Create an approved OAuth client, configure a named connection without client secrets in YAML, authorize the minimum scope, and test one non-sensitive shared document through a future diagnostic.
 
-Stop at documentation/configuration during Milestone 00; there is no working adapter to test.
+Stop after M01 local configuration; there is no working adapter or network test.
 
 ## 10. Windows/macOS/Linux considerations
 
@@ -63,7 +80,7 @@ Browser/device authorization, callback ports, keyring storage, and corporate pro
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Google Docs in Milestone 00. Future knowledge tools may retrieve a known authorized document and return grounded sections with revision/source metadata.
+No MCP tool uses Google Docs through Milestone 01. Future knowledge tools may retrieve a known authorized document and return grounded sections with revision/source metadata.
 
 ## 12. Read/write authorization behavior
 

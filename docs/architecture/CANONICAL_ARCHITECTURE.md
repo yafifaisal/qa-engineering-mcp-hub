@@ -1,6 +1,6 @@
 # Canonical architecture
 
-Status: **FROZEN for Milestone 00**  
+Status: **FROZEN through Milestone 01**  
 Authority: this document supersedes earlier path or ownership descriptions  
 Change control: structural changes require an entry in
 [`ARCHITECTURE_DECISIONS.md`](ARCHITECTURE_DECISIONS.md) before implementation
@@ -9,9 +9,10 @@ Change control: structural changes require an entry in
 
 QA Engineering MCP Hub is an open-source, local-first framework that lets an MCP
 client invoke governed QA capabilities. The architecture reserves boundaries for
-the supported providers and Milestones 01–11 while Milestone 00 implements only
-local introspection. A file in the scaffold is not evidence that its capability
-works.
+the supported providers and Milestones 02–11. Milestone 00 implements local MCP
+introspection; Milestone 01 adds the local configuration, profile, credential, and
+setup control plane. A file in the scaffold is not evidence that its capability
+works, and Milestone 01 does not call provider APIs.
 
 Only these provider families belong in the framework: GitHub, GitLab, Bitbucket,
 Jira, Confluence, Google Docs, Bruno, Postman, PostgreSQL, MySQL, Kafka, Bitbucket
@@ -75,7 +76,7 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 
 ## Canonical package ownership
 
-| Package | Sole responsibility | Milestone 00 state |
+| Package | Sole responsibility | State through Milestone 01 |
 |---|---|---|
 | `app.py` | Construct the FastMCP application and register M00 components | IMPLEMENTED |
 | `server.py` | Start the approved stdio transport | IMPLEMENTED |
@@ -83,9 +84,9 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `mcp/tools/system.py` | `hub_health` and `hub_capabilities` thin tools | IMPLEMENTED |
 | `mcp/resources.py` | Read-only hub status resource | IMPLEMENTED |
 | `mcp/prompts.py` | Reusable M00 orientation prompt | IMPLEMENTED |
-| `cli/` | Typer commands and Rich presentation | M00 commands implemented; others scaffolded |
-| `config/` | Non-secret settings, portable paths, validation, future persistence | minimal M00 subset implemented |
-| `auth/` | Credential interfaces and lifecycle, never MCP arguments | SCAFFOLDED |
+| `cli/` | Typer commands and Rich presentation | M00 system and M01 local setup/configuration commands implemented |
+| `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for M01 local configuration |
+| `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for M01 local credential handling; provider OAuth is not implemented |
 | `core/` | Stable types, results, capability declarations, policy boundaries | minimal M00 subset implemented |
 | `providers/` | Provider-neutral contracts, descriptors, and registry | SCAFFOLDED |
 | `adapters/` | One implementation boundary per supported provider | SCAFFOLDED |
@@ -125,21 +126,55 @@ cannot expose a tool.
 
 ## Configuration and profile model
 
-M00 settings use Pydantic Settings with the `QA_MCP_` environment prefix, reject
-invalid log levels, and contain no secret fields. Native application directories
-come from `platformdirs`; explicit platform/home inputs exist only for deterministic
-simulation tests.
+M00 process settings continue to use Pydantic Settings with the `QA_MCP_`
+environment prefix, reject invalid log levels, and contain no secret fields. Native
+application directories come from `platformdirs`; explicit platform/home inputs
+exist only for deterministic simulation tests.
 
-Future configuration separates:
+M01 user configuration is versioned YAML and separates:
 
 - connection identity and provider edition;
 - profile membership and active selection;
 - local repositories and workspace path;
 - credential references such as `keyring:profile/provider/account`;
+- execution preferences; and
 - authorization policy and explicit write approval.
 
 Multiple connection IDs may target the same provider. Cloud and self-managed
-editions are properties of a connection, not separate global singletons.
+editions are properties of a connection, not separate global singletons. A
+connection belongs to at most one profile, so resolving a credential cannot cross a
+profile boundary accidentally.
+
+Configuration precedence is deterministic, from highest to lowest: explicit CLI
+option, environment override, active profile, user configuration, application
+default. Provenance is retained during resolution. Unknown providers, duplicate
+connection IDs, missing profile references, and unsupported schema versions fail
+closed. Writes and migrations are atomic; migrations create a backup and restore
+the previous bytes if replacement fails.
+
+An execution captures an immutable resolved-configuration snapshot when it starts.
+Changing the active profile affects later resolutions only and cannot mutate the
+configuration of an already-running execution.
+
+## Milestone 01 local control plane
+
+The interactive `qa-mcp setup` wizard and the `profiles`, `integrations`, `config`,
+and `clients` CLI groups operate on local configuration. Integration diagnostics
+validate connection configuration and credential presence only. They report
+provider network connectivity as `NOT_IMPLEMENTED` until the owning adapter
+milestone supplies a real, authorized diagnostic.
+
+Credential values may be stored in an available OS keyring backend or supplied by
+an explicitly named environment variable. YAML contains only the store kind and
+opaque reference. Keyring failures are actionable errors and never trigger a
+plaintext fallback. OAuth models, state/PKCE helpers, and lifecycle metadata are
+local infrastructure only; no provider OAuth flow is claimed in M01.
+
+Client generation emits either Codex TOML (`mcp_servers.qa_hub`) or native VS Code
+JSON (`servers.qa_hub`, type `stdio`). Generated launch configuration contains no
+provider credential values. Installation preserves unrelated client settings,
+backs up before replacement, and requires `--force` for a conflicting `qa_hub`
+entry; generation itself is side-effect free.
 
 ## Provider boundary
 
@@ -171,6 +206,8 @@ registered policies determine machine outcomes.
 - Never accept raw credentials as MCP tool arguments.
 - Never log authorization headers, cookies, tokens, passwords, or credential-store
   values.
+- Never persist environment-variable values or resolved keyring values in YAML,
+  generated MCP client configuration, migration backups, or exceptions.
 - Never run caller-provided unrestricted shell commands or SQL.
 - Restrict repository paths to configured allowlists and normalize before access.
 - Restrict outbound URLs to the selected connection and a validated scheme/host.
@@ -194,10 +231,18 @@ macOS execution is `OFFLINE_VERIFIED` when run locally. Windows and Linux behavi
 tested through injected paths is `OFFLINE_VERIFIED (simulated)`, never
 `LIVE_VERIFIED`. Actual OS CI runners are required for live cross-platform status.
 
+M01 adds deterministic schema/round-trip/precedence tests, profile and credential
+isolation tests, migration rollback and atomic-write tests, redaction and unavailable
+keyring tests, parsed Codex TOML/native VS Code JSON tests, and mocked-terminal CLI
+wizard tests. Mocked keyring tests and simulated platform paths are offline evidence;
+they do not establish a live OS credential backend or provider connection.
+
 ## Milestone boundary
 
-Milestone 00 ends with the framework, contracts, documentation, templates, and
-auditing foundation. Milestones 01–11 remain scaffolded. A future milestone may
-move a file from `SCAFFOLDED` to `IMPLEMENTED` only when its requirements, tests,
-security policy, and progress records change together.
+Milestone 01 ends at secure local configuration and credential readiness. It does
+not create provider clients, make network requests, execute suites, query databases,
+consume Kafka, or mutate an external system. Milestones 02–11 remain scaffolded or
+`NOT_IMPLEMENTED`. A future milestone may move a file from `SCAFFOLDED` to
+`IMPLEMENTED` only when its requirements, tests, security policy, and progress
+records change together.
 

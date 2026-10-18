@@ -1,9 +1,91 @@
+# Complete, loadable Milestone 01 user configuration.
+# Secret values are not allowed: credential.reference is either a keyring record
+# identifier or the name of an environment variable.
 schema_version: 1
-implementation_status: SCAFFOLDED
 active_profile: local-development
-workspace_path: ./templates/qa-workspace
-registries:
-  repositories: ./repositories.example.yaml
-  connections: ./connections.example.yaml
-  profiles: ./profiles.example.yaml
-default_policies: ../default_policies.yaml
+profiles:
+  local-development:
+    description: Local development profile with two disabled provider connections.
+    workspace_id: example-workspace
+    repository_ids: [sample-service]
+    connection_ids: [github-cloud-readonly, jira-cloud-primary]
+    execution:
+      timeout_seconds: 120
+      max_concurrency: 1
+      dry_run: true
+      allow_mutations: false
+    log_level: INFO
+  isolated-lab:
+    description: Isolated profile demonstrating a second Jira connection.
+    workspace_id: example-workspace
+    repository_ids: []
+    connection_ids: [jira-self-managed-lab]
+    execution: {}
+connections:
+  - id: github-cloud-readonly
+    provider: github
+    deployment: cloud
+    base_url: https://api.github.com
+    account: qa-user
+    auth_kind: pat
+    credential:
+      store: environment
+      reference: QA_MCP_GITHUB_TOKEN
+      scope:
+        profile: local-development
+        provider: github
+        connection_id: github-cloud-readonly
+        host: api.github.com
+        account: qa-user
+      kind: pat
+    enabled: false
+  - id: jira-cloud-primary
+    provider: jira
+    deployment: cloud
+    base_url: https://example.atlassian.net
+    account: qa-user@example.invalid
+    auth_kind: api_token
+    credential:
+      store: keyring
+      reference: jira-cloud-primary-token
+      scope:
+        profile: local-development
+        provider: jira
+        connection_id: jira-cloud-primary
+        host: example.atlassian.net
+        account: qa-user@example.invalid
+      kind: api_token
+    enabled: false
+  - id: jira-self-managed-lab
+    provider: jira
+    deployment: self_managed
+    base_url: https://jira.example.invalid
+    account: qa-lab-reader
+    auth_kind: pat
+    credential:
+      store: environment
+      reference: QA_MCP_JIRA_LAB_TOKEN
+      scope:
+        profile: isolated-lab
+        provider: jira
+        connection_id: jira-self-managed-lab
+        host: jira.example.invalid
+        account: qa-lab-reader
+      kind: pat
+    enabled: false
+repositories:
+  - id: sample-service
+    display_name: Sample service
+    path_env: QA_MCP_SAMPLE_REPOSITORY_PATH
+    connection_id: github-cloud-readonly
+    default_branch: main
+    enabled: false
+workspaces:
+  - id: example-workspace
+    path: ./templates/qa-workspace
+execution:
+  timeout_seconds: 300
+  max_concurrency: 1
+  dry_run: true
+  allow_mutations: false
+log_level: INFO

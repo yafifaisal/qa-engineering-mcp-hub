@@ -10,12 +10,15 @@ Expected tests: exact component discovery on both in-memory and stdio transports
 
 from fastmcp import FastMCP
 
+from qa_mcp_hub import __version__
+from qa_mcp_hub.config import HubSettings, load_settings
 from qa_mcp_hub.mcp.registry import register_milestone_00
 
 
-def create_app() -> FastMCP:
-    """Create a FastMCP server containing only implemented M00 components."""
-    server = FastMCP("QA Engineering MCP Hub")
+def create_app(settings: HubSettings | None = None) -> FastMCP:
+    """Create a versioned FastMCP server from validated process settings."""
+    effective_settings = settings if settings is not None else load_settings()
+    server = FastMCP(effective_settings.server_name, version=__version__)
     register_milestone_00(server)
     return server
 

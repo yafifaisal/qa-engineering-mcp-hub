@@ -1,5 +1,6 @@
+# Repository-registry fragment for review and schema validation.
+# Copy `repositories` into one consolidated config.yaml.
 schema_version: 1
-implementation_status: SCAFFOLDED
 repositories:
   - id: sample-service
     display_name: Sample service
