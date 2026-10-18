@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS step_results (
     result_json TEXT NOT NULL,
     PRIMARY KEY (execution_id, step_id)
 );
+CREATE TABLE IF NOT EXISTS ci_observations (
+    observation_id TEXT PRIMARY KEY,
+    profile_id TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    job_id TEXT NOT NULL,
+    run_id TEXT NOT NULL,
+    pipeline_status TEXT NOT NULL,
+    record_json TEXT NOT NULL
+);
 """
 
 
@@ -128,6 +137,54 @@ class ExecutionStore:
                 (execution_id, profile_id),
             ).fetchall()
         return tuple(StepEvidence.model_validate_json(str(row[0])) for row in rows)
+
+    def save_ci_observation(
+        self,
+        *,
+        profile_id: str,
+        provider: str,
+        job_id: str,
+        run_id: str,
+        pipeline_status: str,
+        record_json: str,
+    ) -> None:
+        """Store one CI observation. The status column is not a QA assertion."""
+        observation_id = f"{profile_id}:{job_id}:{run_id}"
+        with self._lock, self._connect() as connection:
+            connection.execute(
+                """
+                INSERT INTO ci_observations (
+                    observation_id, profile_id, provider, job_id, run_id,
+                    pipeline_status, record_json
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(observation_id) DO UPDATE SET
+                    pipeline_status = excluded.pipeline_status,
+                    record_json = excluded.record_json
+                """,
+                (
+                    observation_id,
+                    profile_id,
+                    provider,
+                    job_id,
+                    run_id,
+                    pipeline_status,
+                    record_json,
+                ),
+            )
+            connection.commit()
+
+    def ci_observations(self, profile_id: str, job_id: str) -> tuple[str, ...]:
+        """Return CI JSON for one profile and job."""
+        with self._lock, self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT record_json FROM ci_observations
+                WHERE profile_id = ? AND job_id = ?
+                ORDER BY run_id
+                """,
+                (profile_id, job_id),
+            ).fetchall()
+        return tuple(str(row[0]) for row in rows)
 
     def status_of(self, profile_id: str, execution_id: str) -> ExecutionStatus:
         """Read the current status without leaving the profile scope."""

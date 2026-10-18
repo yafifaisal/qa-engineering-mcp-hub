@@ -225,3 +225,18 @@ structural changes must be added here before code is moved or ownership changes.
   `QA_MCP_LIVE_DATABASES` or `QA_MCP_LIVE_KAFKA` does not invent a successful
   connection.
 
+## ADR-020 — Registered CI inspection, trigger denied by default
+
+- **Status:** Accepted
+- **Decision:** Milestone 08 reads Bitbucket Pipelines, GitHub Actions, and
+  Jenkins only for jobs in the workspace registry. Pipeline status is stored
+  separately from QA assertion status. Logs are redacted and truncated.
+  Expired artifacts are not downloaded. `prepare_pipeline_trigger` never calls
+  a provider. A remote trigger is not an MCP tool. The guarded dispatch path
+  requires an enabled job, mutation permission, confirmation, and a single-use
+  approval bound to the parameter digest. That POST is not retried.
+- **Reason:** A green pipeline is not evidence that a QA assertion passed, and
+  Jenkins parameters or workflow inputs can change a remote system.
+- **Consequence:** Mocked HTTP tests are OFFLINE_VERIFIED. No live CI system
+  was contacted. The generic `read_pipeline` port stays unavailable.
+

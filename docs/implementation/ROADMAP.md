@@ -74,8 +74,9 @@ not bundled, so this exit is not LIVE_VERIFIED.
 ## 08 — CI/CD
 
 Owns Bitbucket Pipelines, GitHub Actions, Jenkins, run/artifact normalization, and
-CI/CD tools. Exit: deterministic state/pagination/artifact/permission tests and
-preview-plus-approval for any trigger or cancellation.
+CI/CD tools. Exit status: OFFLINE_VERIFIED with mocked HTTP for Bitbucket
+Pipelines, GitHub Actions, and Jenkins. Remote triggering is not an MCP tool.
+Live CI systems were not contacted, so this exit is not LIVE_VERIFIED.
 
 ## 09 — test management
 

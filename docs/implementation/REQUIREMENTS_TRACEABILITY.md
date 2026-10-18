@@ -49,9 +49,9 @@ Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
 | R07-02 | MySQL read-only assertions | 07 | `adapters/database/mysql.py`, `verification/` | `tests/unit/test_verification_m07.py` | IMPLEMENTED | OFFLINE_VERIFIED | MySQL read-only session statements and bound parameters | No live MySQL driver or server |
 | R07-03 | Kafka bounded correlation assertions | 07 | `adapters/streaming/kafka.py`, `verification/` | `tests/unit/test_verification_m07.py` | IMPLEMENTED | OFFLINE_VERIFIED | schema mismatch, retention gap, missing event, DLQ, no offset commit | No live Kafka client or cluster. Publication is not consumer completion |
 | R07-04 | Registered deterministic assertions/invariants | 07 | `verification/` | `tests/unit/test_verification_m07.py` | IMPLEMENTED | OFFLINE_VERIFIED | E2E PASS, FAIL, INCONCLUSIVE, and BLOCKED; mandatory checks cannot be skipped into PASS | Only executed checks are marked verified |
-| R08-01 | Bitbucket Pipelines adapter | 08 | `adapters/cicd/bitbucket_pipelines.py` | `tests/contracts/test_bitbucket_pipelines.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No reads, artifacts, or trigger |
-| R08-02 | GitHub Actions adapter | 08 | `adapters/cicd/github_actions.py` | `tests/contracts/test_github_actions.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No reads, artifacts, or dispatch |
-| R08-03 | Jenkins adapter | 08 | `adapters/cicd/jenkins.py` | `tests/contracts/test_jenkins.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | Instance behavior requires verification |
+| R08-01 | Bitbucket Pipelines adapter | 08 | `adapters/cicd/bitbucket_pipelines.py` | `tests/contracts/test_bitbucket_pipelines.py` | IMPLEMENTED | OFFLINE_VERIFIED | mocked pipeline reads, pagination, expiry, and denied trigger | No live Bitbucket call |
+| R08-02 | GitHub Actions adapter | 08 | `adapters/cicd/github_actions.py` | `tests/contracts/test_github_actions.py` | IMPLEMENTED | OFFLINE_VERIFIED | mocked run states, redaction, and single-use dispatch guard | No live GitHub Actions call |
+| R08-03 | Jenkins adapter | 08 | `adapters/cicd/jenkins.py` | `tests/contracts/test_jenkins.py` | IMPLEMENTED | OFFLINE_VERIFIED | mocked builds, parameters, crumb, and one POST | No live Jenkins controller |
 | R09-01 | Xray adapter | 09 | `adapters/test_management/xray.py` | `tests/contracts/test_xray.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and mapping dirs | No Cloud/Data Center verification |
 | R09-02 | TestRail adapter | 09 | `adapters/test_management/testrail.py` | `tests/contracts/test_testrail.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and mapping dirs | No API read/write |
 | R09-03 | CSV/XLSX spreadsheet mapping | 09 | `adapters/test_management/spreadsheet.py` | `tests/contracts/test_spreadsheet.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | mapping template/provider page | No parser/export/formula safety behavior |
@@ -61,6 +61,6 @@ Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
 | R10-03 | Coverage, risk, and release reporting | 10 | `release/` | `tests/unit/test_release.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | complete module ownership | No automatic sign-off or report generation |
 | R11-01 | Community release and live compatibility evidence | 11 | `.github/workflows/release.yml`, release documentation | hosted release tests (planned) | SCAFFOLDED | BLOCKED | local artifact build only | No hosted CI, signing, or public release performed |
 
-No requirement row is `LIVE_VERIFIED`. Milestones 08–11 remain `SCAFFOLDED`.
+No requirement row is `LIVE_VERIFIED`. Milestones 09–11 remain `SCAFFOLDED`.
 Provider pages document intended contracts and official references; they do not
 replace an executed live check.

@@ -13,6 +13,12 @@ Kafka is reachable. `QA_MCP_LIVE_DATABASES` and `QA_MCP_LIVE_KAFKA` do not
 bundle a driver. Set `QA_MCP_BRUNO_BIN` and `QA_MCP_NEWMAN_BIN` only to the
 approved executables. Do not pass a shell string.
 
+Registered CI jobs can be inspected when the job is enabled and the profile
+owns the connection. A pipeline success is not a QA pass. An expired artifact
+is reported and not downloaded. `prepare_pipeline_trigger` does not start a
+pipeline. The tests mock HTTP. They do not prove that Bitbucket, GitHub
+Actions, or Jenkins is reachable.
+
 Use the locked environment and preserve the first real diagnostic:
 
 ```sh

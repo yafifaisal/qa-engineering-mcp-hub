@@ -8,11 +8,13 @@ and Jira access. Milestone 04 adds read-only Confluence and Google Docs
 retrieval. Milestone 05 adds a local knowledge index over approved Git
 checkouts. Milestone 06 runs registered Bruno and Newman suites from approved
 API workflows. Milestone 07 adds registered read-only database assertions,
-bounded Kafka observation, and E2E workflow verification. CI/CD and release
-features remain `NOT_IMPLEMENTED` or `SCAFFOLDED`. Live database and Kafka
-systems were not contacted.
+bounded Kafka observation, and E2E workflow verification. Milestone 08 reads
+registered Bitbucket Pipelines, GitHub Actions, and Jenkins metadata. A
+pipeline status is not a QA assertion result. Remote triggering is not an MCP
+tool. Test management and release features remain `NOT_IMPLEMENTED` or
+`SCAFFOLDED`. Live CI, database, and Kafka systems were not contacted.
 
-## What works through Milestone 07
+## What works through Milestone 08
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -57,9 +59,15 @@ systems were not contacted.
   or commit Kafka offsets. Fixture tests are `OFFLINE_VERIFIED`. A PASS does
   not claim a check that did not run. Live PostgreSQL, MySQL, and Kafka are
   not `LIVE_VERIFIED`.
+- `list_pipeline_runs`, `get_pipeline_status`, `get_pipeline_artifacts`, and
+  `prepare_pipeline_trigger` inspect a registered CI job. A green pipeline is
+  not a QA pass. `prepare_pipeline_trigger` does not call the provider.
+  Mocked HTTP tests are `OFFLINE_VERIFIED`. Live Bitbucket, GitHub Actions,
+  and Jenkins were not contacted.
 
-Interactive browser OAuth, Git and Jira writes, CI/CD action, test-management
-action, evidence publication, and release approval are not implemented. Google
+Interactive browser OAuth, Git and Jira writes, remote CI triggering,
+test-management action, evidence publication, and release approval are not
+implemented. Google
 Docs can refresh an access token from a stored refresh token. Suite execution
 stays inside an approved workflow and a dry-run profile does not start a runner.
 

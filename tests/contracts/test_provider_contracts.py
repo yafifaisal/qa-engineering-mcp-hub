@@ -92,6 +92,9 @@ def test_catalog_matches_architecture_document() -> None:
         "postgresql",
         "mysql",
         "kafka",
+        "bitbucket_pipelines",
+        "github_actions",
+        "jenkins",
     }
     assert {
         item.id.value

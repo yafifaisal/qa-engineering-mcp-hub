@@ -1,4 +1,8 @@
 schema_version: 1
-implementation_status: SCAFFOLDED
+implementation_status: IMPLEMENTED
 triggering: deny
-mappings: []
+mappings:
+  - job_id: example-pipeline
+    suite_ids:
+      - example-bruno
+    issue_pattern: QA-\d+

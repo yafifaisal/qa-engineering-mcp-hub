@@ -12,6 +12,12 @@ from fastmcp import FastMCP
 
 from qa_mcp_hub.mcp.prompts import qa_hub_orientation
 from qa_mcp_hub.mcp.resources import STATUS_RESOURCE_URI, hub_status_resource
+from qa_mcp_hub.mcp.tools.cicd import (
+    get_pipeline_artifacts_tool,
+    get_pipeline_status_tool,
+    list_pipeline_runs_tool,
+    prepare_pipeline_trigger_tool,
+)
 from qa_mcp_hub.mcp.tools.execution import (
     explain_workflow_tool,
     get_test_run_tool,
@@ -98,3 +104,11 @@ def register_milestone_07(server: FastMCP) -> None:
     server.tool(run_database_assertion_tool, name="run_database_assertion")
     server.tool(find_kafka_event_tool, name="find_kafka_event")
     server.tool(verify_e2e_workflow_tool, name="verify_e2e_workflow")
+
+
+def register_milestone_08(server: FastMCP) -> None:
+    """Register CI inspection tools. Remote triggering is not registered."""
+    server.tool(list_pipeline_runs_tool, name="list_pipeline_runs")
+    server.tool(get_pipeline_status_tool, name="get_pipeline_status")
+    server.tool(get_pipeline_artifacts_tool, name="get_pipeline_artifacts")
+    server.tool(prepare_pipeline_trigger_tool, name="prepare_pipeline_trigger")

@@ -4,10 +4,6 @@ files:
     - "src/qa_mcp_hub/adapters/__init__.py"
     - "src/qa_mcp_hub/adapters/api_automation/__init__.py"
     - "src/qa_mcp_hub/adapters/cicd/__init__.py"
-    - "src/qa_mcp_hub/adapters/cicd/base.py"
-    - "src/qa_mcp_hub/adapters/cicd/bitbucket_pipelines.py"
-    - "src/qa_mcp_hub/adapters/cicd/github_actions.py"
-    - "src/qa_mcp_hub/adapters/cicd/jenkins.py"
     - "src/qa_mcp_hub/adapters/database/__init__.py"
     - "src/qa_mcp_hub/adapters/documentation/__init__.py"
     - "src/qa_mcp_hub/adapters/git/__init__.py"
@@ -22,7 +18,6 @@ files:
     - "src/qa_mcp_hub/cli/evidence.py"
     - "src/qa_mcp_hub/cli/workflows.py"
     - "src/qa_mcp_hub/core/__init__.py"
-    - "src/qa_mcp_hub/core/approvals.py"
     - "src/qa_mcp_hub/core/audit.py"
     - "src/qa_mcp_hub/evidence/__init__.py"
     - "src/qa_mcp_hub/evidence/collector.py"
@@ -37,7 +32,6 @@ files:
     - "src/qa_mcp_hub/evidence/service.py"
     - "src/qa_mcp_hub/knowledge/__init__.py"
     - "src/qa_mcp_hub/mcp/tools/__init__.py"
-    - "src/qa_mcp_hub/mcp/tools/cicd.py"
     - "src/qa_mcp_hub/mcp/tools/evidence.py"
     - "src/qa_mcp_hub/mcp/tools/release.py"
     - "src/qa_mcp_hub/mcp/tools/test_management.py"
@@ -99,6 +93,8 @@ files:
     - "config/examples/repositories.example.yaml"
     - "config/scaffold_manifest.yaml"
     - "config/schemas/assertion.schema.json"
+    - "config/schemas/ci-job.schema.json"
+    - "config/schemas/ci-mapping.schema.json"
     - "config/schemas/config.schema.json"
     - "config/schemas/connection.schema.json"
     - "config/schemas/evidence-policy.schema.json"
@@ -171,6 +167,10 @@ files:
     - "src/qa_mcp_hub/adapters/api_automation/base.py"
     - "src/qa_mcp_hub/adapters/api_automation/bruno.py"
     - "src/qa_mcp_hub/adapters/api_automation/postman.py"
+    - "src/qa_mcp_hub/adapters/cicd/base.py"
+    - "src/qa_mcp_hub/adapters/cicd/bitbucket_pipelines.py"
+    - "src/qa_mcp_hub/adapters/cicd/github_actions.py"
+    - "src/qa_mcp_hub/adapters/cicd/jenkins.py"
     - "src/qa_mcp_hub/adapters/database/base.py"
     - "src/qa_mcp_hub/adapters/database/mysql.py"
     - "src/qa_mcp_hub/adapters/database/postgresql.py"
@@ -209,6 +209,7 @@ files:
     - "src/qa_mcp_hub/config/resolver.py"
     - "src/qa_mcp_hub/config/validator.py"
     - "src/qa_mcp_hub/config/writer.py"
+    - "src/qa_mcp_hub/core/approvals.py"
     - "src/qa_mcp_hub/core/capabilities.py"
     - "src/qa_mcp_hub/core/context.py"
     - "src/qa_mcp_hub/core/contracts.py"
@@ -232,6 +233,7 @@ files:
     - "src/qa_mcp_hub/mcp/prompts.py"
     - "src/qa_mcp_hub/mcp/registry.py"
     - "src/qa_mcp_hub/mcp/resources.py"
+    - "src/qa_mcp_hub/mcp/tools/cicd.py"
     - "src/qa_mcp_hub/mcp/tools/execution.py"
     - "src/qa_mcp_hub/mcp/tools/knowledge.py"
     - "src/qa_mcp_hub/mcp/tools/planning.py"
@@ -333,8 +335,11 @@ files:
     - "templates/workflows/e2e.yaml"
     - "tests/conftest.py"
     - "tests/contracts/README.md"
+    - "tests/contracts/test_bitbucket_pipelines.py"
     - "tests/contracts/test_documentation_adapters.py"
     - "tests/contracts/test_git_jira_adapters.py"
+    - "tests/contracts/test_github_actions.py"
+    - "tests/contracts/test_jenkins.py"
     - "tests/contracts/test_provider_contracts.py"
     - "tests/e2e/README.md"
     - "tests/fixtures/README.md"
@@ -356,7 +361,6 @@ files:
     - "tests/unit/test_repositories_m02.py"
     - "tests/unit/test_verification_m07.py"
     - "uv.lock"
-
 allowed_empty:
   - "src/qa_mcp_hub/py.typed"
 expected_mcp:
@@ -368,13 +372,17 @@ expected_mcp:
     - find_kafka_event
     - find_related_implementation
     - generate_test_scenario_draft
+    - get_pipeline_artifacts
+    - get_pipeline_status
     - get_repository_changes
     - get_test_run
     - hub_capabilities
     - hub_health
+    - list_pipeline_runs
     - list_registered_assertions
     - list_registered_suites
     - list_workflows
+    - prepare_pipeline_trigger
     - read_document
     - run_database_assertion
     - search_documents
@@ -387,6 +395,8 @@ expected_mcp:
   prompts: ["qa_hub_orientation"]
 json_schemas:
   - "config/schemas/assertion.schema.json"
+  - "config/schemas/ci-job.schema.json"
+  - "config/schemas/ci-mapping.schema.json"
   - "config/schemas/config.schema.json"
   - "config/schemas/connection.schema.json"
   - "config/schemas/evidence-policy.schema.json"
@@ -413,6 +423,10 @@ schema_validations:
     schema: "config/schemas/workflow.schema.json"
   - document: "templates/qa-workspace/suites/suites.yaml"
     schema: "config/schemas/suite.schema.json"
+  - document: "templates/qa-workspace/ci/registered-jobs.yaml"
+    schema: "config/schemas/ci-job.schema.json"
+  - document: "templates/qa-workspace/ci/pipeline-mappings.yaml"
+    schema: "config/schemas/ci-mapping.schema.json"
   - document: "templates/qa-workspace/evidence-policies/api-only.yaml"
     schema: "config/schemas/evidence-policy.schema.json"
   - document: "templates/qa-workspace/evidence-policies/api-database.yaml"

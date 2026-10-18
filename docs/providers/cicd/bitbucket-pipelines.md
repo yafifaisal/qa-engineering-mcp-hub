@@ -1,12 +1,12 @@
 # Bitbucket Pipelines provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **08**  
-> Verification: documentation scaffold only; no provider request or runner execution has occurred.
+> Verification: mocked Bitbucket Cloud HTTP tests. No live Bitbucket host was contacted, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-Bitbucket Pipelines is the supported Bitbucket Cloud CI/CD service. The future adapter will normalize authorized pipeline runs, steps, logs, and artifacts.
+Bitbucket Pipelines reads are implemented for one Cloud repository. The adapter lists pipeline runs, reads one run, bounds the first step log, and returns artifact metadata declared on the step. A successful pipeline is not a QA assertion pass.
 
 ## 2. Supported editions
 
@@ -18,9 +18,7 @@ Cloud is the defined target. Self-hosted runners can execute Cloud pipeline step
 
 ## 4. Supported API capabilities
 
-Planned reads include pipeline definitions/identities, recent runs, step state, bounded logs, commit linkage, and artifact metadata/download when authorized.
-
-These are planned capabilities, not current support.
+Reads use `GET /2.0/repositories/{workspace}/{repo}/pipelines`, one pipeline, its steps, and the first step log on `api.bitbucket.org`. At most two pages are followed. Artifact bytes are not downloaded. A pipeline trigger is not an MCP tool.
 
 ## 5. Authentication methods
 
@@ -80,11 +78,11 @@ The REST API is portable. Keyring storage, proxy/CA configuration, artifact path
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Bitbucket Pipelines through Milestone 01. Future CI/CD tools may list/read approved runs, steps, logs, and artifacts through normalized services.
+`list_pipeline_runs`, `get_pipeline_status`, `get_pipeline_artifacts`, and `prepare_pipeline_trigger` accept a registered job id. The prepare tool does not call Bitbucket.
 
 ## 12. Read/write authorization behavior
 
-Read-only first. Triggering, stopping, rerunning, deployment promotion, variable changes, or artifact mutation require explicit allowlists, user confirmation, and idempotency controls.
+The workspace example denies triggering. A remote trigger is not registered as an MCP tool. Arbitrary pipeline selectors are not accepted.
 
 ## 13. Pagination and rate limiting
 
@@ -106,23 +104,21 @@ Allowlist workspace/repository/run identities, redact auth and variable values, 
 
 Check Cloud workspace/repository identity, token permissions, pipeline availability, artifact expiry, rate limits, self-hosted runner relevance, proxy, and CA settings.
 
-Because the provider is not implemented, current inability to connect or execute is expected.
+A 403 is a permission error. An expired artifact is reported and not downloaded. Logs are redacted and truncated.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/cicd/bitbucket_pipelines.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/cicd/bitbucket_pipelines.py` — IMPLEMENTED read adapter.
+- `src/qa_mcp_hub/mcp/tools/cicd.py` — IMPLEMENTED inspection tools.
+- `templates/qa-workspace/ci/registered-jobs.yaml` — approved job registry.
 
 ## 19. Related tests
 
-Planned run-state, pagination, permission, log truncation, artifact expiry/redirect, trigger-denial, sanitized-error, and opt-in live-read tests.
-
-No test currently validates a real provider integration.
+`tests/contracts/test_bitbucket_pipelines.py` covers success, failure, cancellation, pagination, permission, rate limit, exact revision, expired artifacts, redacted logs, and a denied trigger.
 
 ## 20. Current implementation status
 
-**NOT_IMPLEMENTED.** The adapter file is **SCAFFOLDED** and contains no client, connection, process, query, parsing, or registration logic. It is not exposed through FastMCP.
+**OFFLINE_VERIFIED** with mocked HTTP. Live Bitbucket Pipelines is not claimed.
 
 ## 21. Official documentation references
 

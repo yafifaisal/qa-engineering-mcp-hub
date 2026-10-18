@@ -128,6 +128,16 @@ module.
 | E2E | PASS, FAIL, INCONCLUSIVE, and BLOCKED; missing mandatory checks are not PASS |
 | MCP tools | assertion list omits SQL text; database and Kafka tools have no SQL argument |
 
+## Milestone 08 matrix
+
+| Area | Required evidence |
+|---|---|
+| Bitbucket Pipelines | success, failure, cancellation, pagination, permission, expiry |
+| GitHub Actions | exact revision, redacted log, rate limit, single-use dispatch guard |
+| Jenkins | unstable versus assertion status, invalid parameters, crumb, one POST |
+| Trigger | prepare does not call a provider; remote trigger is not an MCP tool |
+| Correlation | suite ids and issue keys come from the run revision and mapping |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

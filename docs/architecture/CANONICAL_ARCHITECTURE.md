@@ -88,9 +88,9 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `cli/` | Typer commands and Rich presentation | M00 system, M01 setup, and M02 repository commands implemented |
 | `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for M01 local configuration, with M02 repository fields |
 | `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for M01 local credential handling; provider OAuth is not implemented |
-| `core/` | Stable types, results, capability declarations, policy boundaries | M02 contracts, results, errors, context, policies, and retry implemented; other core modules remain scaffolded |
+| `core/` | Stable types, results, capability declarations, policy boundaries | M02 contracts, results, errors, context, policies, and retry implemented; CI trigger approvals are implemented and deny by default |
 | `providers/` | Provider-neutral contracts, descriptors, and registry | IMPLEMENTED as contracts and stubs; no vendor I/O |
-| `adapters/` | One implementation boundary per supported provider | Git, Jira, Confluence, Google Docs, Bruno/Newman, PostgreSQL, MySQL, and Kafka observation are IMPLEMENTED; CI/CD and test-management adapters remain SCAFFOLDED |
+| `adapters/` | One implementation boundary per supported provider | Git, Jira, Confluence, Google Docs, Bruno/Newman, PostgreSQL, MySQL, Kafka observation, and CI/CD reads are IMPLEMENTED; test-management adapters remain SCAFFOLDED |
 | `repositories/` | Local/remote repository registration and discovery | IMPLEMENTED for registration, discovery, validation, and local Git metadata; `plan_index` does not read files; `execute_index` does |
 | `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | IMPLEMENTED for local checkouts and supplied documents; OFFLINE_VERIFIED |
 | `planning/` | Ticket analysis, impact, scenarios, and coverage plans | IMPLEMENTED for read-only ticket analysis and non-executable drafts |
@@ -123,9 +123,9 @@ providers.
 
 Milestone 00 registers only `hub_health`, `hub_capabilities`, `qa-hub://status`,
 and `qa_hub_orientation`. Later milestones add read-only providers, knowledge
-tools, registered API execution, and registered database, Kafka, and E2E
-verification. CI/CD, test-management, evidence publication, and release modules
-are not imported during server construction. The registry owns the allowlist, so
+tools, registered API execution, registered database, Kafka, and E2E
+verification, and registered CI inspection. Test-management, evidence
+publication, and release modules are not imported during server construction. The registry owns the allowlist, so
 creating a future file does not expose a tool.
 
 ## Configuration and profile model
@@ -251,8 +251,8 @@ Milestone 01 ends at secure local configuration and credential readiness. It doe
 not create provider clients, make network requests, execute suites, query databases,
 consume Kafka, or mutate an external system. Later milestones add read-only
 providers, local knowledge, registered API execution, and registered database
-and Kafka observation. CI/CD, test management, evidence publication, and release
-approval remain `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
+and Kafka observation, and registered CI inspection. Test management, evidence
+publication, and release approval remain `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
 `IMPLEMENTED` only when its requirements, tests, security policy, and progress
 records change together.
 

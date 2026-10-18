@@ -7,6 +7,12 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 08 registered CI inspection for Bitbucket Pipelines, GitHub
+  Actions, and Jenkins. Success, failure, cancellation, permission errors,
+  expired artifacts, redacted logs, and exact Git revisions are
+  OFFLINE_VERIFIED with mocked HTTP. `prepare_pipeline_trigger` does not call
+  a provider. Remote triggering is not an MCP tool. No live CI system was
+  contacted, so these providers are not LIVE_VERIFIED.
 - Milestone 07 registered read-only database assertions, bounded Kafka
   observation, and E2E workflow verification. Fixture sessions and an in-memory
   observer are OFFLINE_VERIFIED. Live database and Kafka drivers are not

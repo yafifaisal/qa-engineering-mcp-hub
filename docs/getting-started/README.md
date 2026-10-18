@@ -9,8 +9,10 @@ adds read-only GitHub, GitLab, Bitbucket, and Jira tools. Milestone 04 adds
 read-only Confluence and Google Docs tools. Other provider APIs remain
 `NOT_IMPLEMENTED`. Milestone 05 indexes permitted local Git checkouts.
 Milestone 06 runs registered Bruno and Newman API suites. Milestone 07 runs
-registered database, Kafka, and business checks. Live provider calls, live
-runner CLIs, and live database or Kafka systems are not claimed.
+registered database, Kafka, and business checks. Milestone 08 reads registered
+Bitbucket Pipelines, GitHub Actions, and Jenkins metadata. A pipeline status
+is not a QA assertion result. Live provider calls, live runner CLIs, live
+database or Kafka systems, and live CI systems are not claimed.
 
 ## Choose your platform
 

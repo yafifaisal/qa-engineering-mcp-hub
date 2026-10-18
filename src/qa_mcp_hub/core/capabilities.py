@@ -56,9 +56,12 @@ def list_capabilities() -> CapabilityCatalog:
             "run_database_assertion",
             "find_kafka_event",
             "verify_e2e_workflow",
+            "list_pipeline_runs",
+            "get_pipeline_status",
+            "get_pipeline_artifacts",
+            "prepare_pipeline_trigger",
         ),
         planned=(
-            "bitbucket_pipelines_github_actions_jenkins",
             "xray_testrail_spreadsheet",
             "qa_evidence_and_release",
         ),

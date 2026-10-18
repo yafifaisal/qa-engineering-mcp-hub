@@ -283,9 +283,45 @@ was not set. Database and Kafka tests used fixture sessions and an in-memory
 observer. No PostgreSQL, MySQL, Kafka, Bruno CLI, Newman CLI, Confluence,
 Google, or Git host was called. Windows and Linux execution remains `BLOCKED`.
 
-## Milestones 08–11
+## Milestone 08 — implemented and offline verified
 
-CI/CD, test management, evidence publication, and release intelligence remain
+- [x] Registered Bitbucket Pipelines, GitHub Actions, and Jenkins reads return
+  normalized run metadata, bounded logs, and artifact metadata.
+- [x] Pipeline status stays separate from QA assertion status. A green pipeline
+  does not become an assertion PASS.
+- [x] Expired artifacts are reported and not downloaded. Logs are redacted and
+  truncated. Missing permission, timeout, and rate limit stay distinct from a
+  failed pipeline.
+- [x] Correlation uses the exact 40-character Git revision, the registered
+  suite mapping, and issue keys present in provider text.
+- [x] `prepare_pipeline_trigger` does not call a provider. Remote triggering
+  is not an MCP tool. A guarded dispatch spends a single-use approval and does
+  not retry the POST.
+- [ ] Live Bitbucket, GitHub Actions, and Jenkins were not contacted, so this
+  is not `LIVE_VERIFIED`.
+
+## Executed verification — Milestone 08
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | audited 83 packages |
+| `uv lock --check` | 0 | resolved 89 packages |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 298 files already formatted |
+| `uv run mypy src` | 0 | no issues in 183 source files |
+| `uv run pytest -q` | 0 | 149 passed, 1 skipped |
+| `uv build` | 0 | sdist and wheel built |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 359 files, 101 directories, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py` because live
+provider calls are not enabled. `QA_MCP_LIVE_PROVIDERS` was not set. CI tests
+used mocked HTTP. No Bitbucket, GitHub Actions, Jenkins, PostgreSQL, MySQL,
+Kafka, Bruno CLI, Newman CLI, Confluence, Google, or Git host was called.
+Windows and Linux execution remains `BLOCKED`.
+
+## Milestones 09–11
+
+Test management, evidence publication, and release intelligence remain
 `SCAFFOLDED` or `NOT_IMPLEMENTED`. Native Windows/Linux execution and Python
-3.13 execution remain `BLOCKED`. Writes, Google Sheets, and interactive browser
-OAuth are not implemented.
+3.13 hosted-runner evidence remain `BLOCKED`. Writes, Google Sheets, and
+interactive browser OAuth are not implemented.

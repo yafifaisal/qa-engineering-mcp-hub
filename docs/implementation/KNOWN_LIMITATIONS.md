@@ -31,8 +31,10 @@
   observation does not commit offsets. A topic read is not consumer completion.
   Live database and Kafka drivers are not bundled. `QA_MCP_LIVE_DATABASES` and
   `QA_MCP_LIVE_KAFKA` do not create a successful stand-in connection.
-- CI/CD, test management, evidence publication, and release intelligence remain
-  Milestones 08–10.
+- Test management, evidence publication, and release intelligence remain
+  Milestones 09–10.
+- CI reads are OFFLINE_VERIFIED with mocked HTTP. Remote triggering is not an
+  MCP tool. No live CI system was contacted.
 - Ticket analysis does not call a language model.
 - Python keyring is a direct development dependency and an optional `credentials`
   extra. A missing or unusable backend fails closed. The application does not fall
@@ -70,9 +72,9 @@
 - Provider editions, scopes, endpoints, and rate limits marked “Requires
   verification” must be checked against current official documentation during the
   owning milestone.
-- The QA Workspace root and CI registry YAML files are syntax-checked and
-  manifest-audited. Milestone 01 stores a workspace path reference only; dedicated
-  workspace and CI semantic schemas remain future work.
+- The QA Workspace root and CI registry YAML files are schema-checked.
+  The example CI job is disabled and `allow_trigger` is false. Live CI was
+  not contacted.
 - No live provider, database, Kafka, Bruno CLI, Newman CLI, or CI system was
   contacted. API execution tests used a local stand-in process.
 

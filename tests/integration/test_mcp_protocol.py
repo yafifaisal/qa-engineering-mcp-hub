@@ -34,6 +34,10 @@ EXPECTED_TOOLS = {
     "run_database_assertion",
     "find_kafka_event",
     "verify_e2e_workflow",
+    "list_pipeline_runs",
+    "get_pipeline_status",
+    "get_pipeline_artifacts",
+    "prepare_pipeline_trigger",
 }
 EXPECTED_RESOURCES = {"qa-hub://status"}
 EXPECTED_PROMPTS = {"qa_hub_orientation"}
@@ -83,7 +87,7 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         payload = json.loads(content[0].text)
         assert payload["health"]["status"] == "healthy"
         assert payload["external_integrations"] == (
-            "git_jira_docs_read_only_local_knowledge_registered_e2e"
+            "git_jira_docs_read_only_local_knowledge_registered_e2e_ci_read"
         )
 
         prompts = await client.list_prompts()
@@ -99,7 +103,8 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         assert "Milestone 05 local knowledge" in prompt_text
         assert "Milestone 06 runs only registered Bruno and Newman" in prompt_text
         assert "Milestone 07 runs registered read-only database" in prompt_text
-        assert "Milestones 08–11" in prompt_text
+        assert "Milestone 08 reads registered" in prompt_text
+        assert "Milestones 09–11" in prompt_text
 
 
 @pytest.mark.asyncio

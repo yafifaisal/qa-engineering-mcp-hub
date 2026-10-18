@@ -122,12 +122,18 @@ CATALOG: tuple[ProviderDescriptor, ...] = (
     ProviderDescriptor(
         id=ProviderKind.bitbucket_pipelines,
         category=ProviderCategory.cicd,
+        implementation_status=_OFFLINE,
     ),
-    ProviderDescriptor(id=ProviderKind.github_actions, category=ProviderCategory.cicd),
+    ProviderDescriptor(
+        id=ProviderKind.github_actions,
+        category=ProviderCategory.cicd,
+        implementation_status=_OFFLINE,
+    ),
     ProviderDescriptor(
         id=ProviderKind.jenkins,
         category=ProviderCategory.cicd,
         variants=("self_managed",),
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(
         id=ProviderKind.xray,
@@ -164,6 +170,9 @@ _OFFLINE_PROVIDERS = _READ_PROVIDERS | {
     ProviderKind.postgresql,
     ProviderKind.mysql,
     ProviderKind.kafka,
+    ProviderKind.bitbucket_pipelines,
+    ProviderKind.github_actions,
+    ProviderKind.jenkins,
 }
 _EXPOSED_CAPABILITIES = {
     "search_code",
@@ -251,6 +260,18 @@ class CicdContractStub(_Unavailable):
 
     def read_pipeline(self, context: ExecutionContext) -> ToolResult:
         return self._unavailable("read_pipeline")
+
+    def list_pipeline_runs(
+        self, context: ExecutionContext, page: Pagination
+    ) -> ToolResult:
+        del context, page
+        return self._unavailable("list_pipeline_runs")
+
+    def read_pipeline_status(self, context: ExecutionContext) -> ToolResult:
+        return self._unavailable("read_pipeline_status")
+
+    def read_pipeline_artifacts(self, context: ExecutionContext) -> ToolResult:
+        return self._unavailable("read_pipeline_artifacts")
 
 
 class TestManagementContractStub(_Unavailable):

@@ -1,12 +1,12 @@
 # GitHub Actions provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **08**  
-> Verification: documentation scaffold only; no provider request or file operation has occurred.
+> Verification: mocked GitHub Actions HTTP tests. No live GitHub host was contacted, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-GitHub Actions is the supported GitHub CI/CD service. The future adapter will normalize authorized workflow runs, jobs, bounded logs, artifacts, and source revisions.
+GitHub Actions reads are implemented for a registered repository workflow. The adapter lists workflow runs, reads one run, bounds the first job log, and returns artifact metadata. A successful workflow is not a QA assertion pass.
 
 ## 2. Supported editions
 
@@ -18,9 +18,7 @@ GitHub.com and GHES can differ in API base URL, Actions availability, enabled fe
 
 ## 4. Supported API capabilities
 
-Planned reads include workflow identity, runs, attempts, jobs, conclusions, commit/branch links, bounded logs, and artifact metadata/download.
-
-These are planned capabilities, not current support.
+Reads use `GET /repos/{owner}/{repo}/actions/workflows/{workflow}/runs`, the run, jobs, job logs, and artifact metadata endpoints on `api.github.com`. The client sends `X-GitHub-Api-Version: 2022-11-28`. At most two pages are read. Artifact bytes are not downloaded. Workflow dispatch exists only behind a single-use approval and is not an MCP tool.
 
 ## 5. Authentication methods
 
@@ -80,11 +78,11 @@ The API is portable, but keyrings, GHES CAs/proxies, log/artifact paths, and sel
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses GitHub Actions through Milestone 01. Future CI/CD tools may list/read approved workflow runs, jobs, logs, and artifacts through normalized services.
+`list_pipeline_runs`, `get_pipeline_status`, `get_pipeline_artifacts`, and `prepare_pipeline_trigger` accept a registered job id. `prepare_pipeline_trigger` does not call GitHub. Dispatch is not a registered MCP tool.
 
 ## 12. Read/write authorization behavior
 
-Read-only first. Dispatch, rerun, cancellation, approval, environment deployment, secret, or variable changes require separate policy, explicit confirmation, and idempotency.
+Reads are allowed for an enabled registered job. Remote dispatch stays disabled unless the job sets `allow_trigger`, the profile allows mutations, the caller confirms, and a single-use approval matches the parameter digest. A failed dispatch is not retried. Inputs outside the job registry are rejected.
 
 ## 13. Pagination and rate limiting
 
@@ -106,23 +104,21 @@ Allowlist organizations/repositories/workflows, redact authorization and logs, v
 
 Check GitHub.com versus GHES base URL/version, App installation or token access, Actions enablement, repository/workflow identity, retention, rate limits, proxy, and CA.
 
-Because the provider is not implemented, current inability to connect or operate is expected.
+A 403 is a permission error. An expired artifact is reported and not downloaded. A log that contains a token is redacted and truncated.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/cicd/github_actions.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/cicd/github_actions.py` — IMPLEMENTED read adapter.
+- `src/qa_mcp_hub/mcp/tools/cicd.py` — IMPLEMENTED inspection tools.
+- `templates/qa-workspace/ci/registered-jobs.yaml` — approved job registry.
 
 ## 19. Related tests
 
-Planned state/attempt normalization, pagination, permission, rate-limit, log cap, artifact expiry/redirect, dispatch-denial, sanitized-error, and gated live-read tests.
-
-No test currently validates a real provider integration.
+`tests/contracts/test_github_actions.py` covers success, failure, cancellation, exact revision, permission, timeout, rate limit, expired artifacts, redacted logs, and disabled or single-use dispatch.
 
 ## 20. Current implementation status
 
-**NOT_IMPLEMENTED.** The adapter file is **SCAFFOLDED** and contains no client, connection, file, query, parsing, publication, or registration logic. It is not exposed through FastMCP.
+**OFFLINE_VERIFIED** with mocked HTTP. The generic `read_pipeline` port stays unavailable. Live GitHub Actions is not claimed.
 
 ## 21. Official documentation references
 

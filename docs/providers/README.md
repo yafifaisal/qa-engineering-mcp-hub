@@ -6,10 +6,10 @@ GitHub, GitLab, Bitbucket, Jira, Confluence, and Google Docs have read-only
 adapters marked **OFFLINE_VERIFIED**. Bruno and Postman registered-suite execution
 is **OFFLINE_VERIFIED** with local fixtures. PostgreSQL, MySQL, and Kafka
 registered checks are **OFFLINE_VERIFIED** with fixture sessions and an in-memory
-observer. Their generic provider ports still return contract stubs. No live
-database or Kafka system was contacted. The other families remain
-**NOT_IMPLEMENTED**. Google Docs can refresh an access token. CI/CD and
-publication flows are not opened.
+observer. Bitbucket Pipelines, GitHub Actions, and Jenkins reads are
+**OFFLINE_VERIFIED** with mocked HTTP. Their generic provider ports still
+return contract stubs. No live database, Kafka, or CI system was contacted.
+Test management and publication flows are not opened.
 
 Documentation examples use the versioned M01 configuration shape, contain only
 credential references, and remain disabled. A schema-valid local connection is not
@@ -24,8 +24,8 @@ evidence of provider connectivity.
 - **LIVE_VERIFIED**: a separately authorized sandbox check has passed.
 - **BLOCKED**: validation could not proceed and the reason is recorded.
 
-No provider on this page is currently OFFLINE_VERIFIED or LIVE_VERIFIED. A local
-credential-presence check does not advance provider verification status.
+The table above is the status source. No provider on this page is
+`LIVE_VERIFIED`.
 
 ## Supported provider scope
 
@@ -42,9 +42,9 @@ credential-presence check does not advance provider verification status.
 | Database | PostgreSQL | 07 | OFFLINE_VERIFIED | [PostgreSQL](database/postgresql.md) |
 | Database | MySQL | 07 | OFFLINE_VERIFIED | [MySQL](database/mysql.md) |
 | Streaming | Kafka | 07 | OFFLINE_VERIFIED | [Kafka](streaming/kafka.md) |
-| CI/CD | Bitbucket Pipelines | 08 | NOT_IMPLEMENTED | [Bitbucket Pipelines](cicd/bitbucket-pipelines.md) |
-| CI/CD | GitHub Actions | 08 | NOT_IMPLEMENTED | [GitHub Actions](cicd/github-actions.md) |
-| CI/CD | Jenkins | 08 | NOT_IMPLEMENTED | [Jenkins](cicd/jenkins.md) |
+| CI/CD | Bitbucket Pipelines | 08 | OFFLINE_VERIFIED | [Bitbucket Pipelines](cicd/bitbucket-pipelines.md) |
+| CI/CD | GitHub Actions | 08 | OFFLINE_VERIFIED | [GitHub Actions](cicd/github-actions.md) |
+| CI/CD | Jenkins | 08 | OFFLINE_VERIFIED | [Jenkins](cicd/jenkins.md) |
 | Test management | Xray | 09 | NOT_IMPLEMENTED | [Xray](test-management/xray.md) |
 | Test management | TestRail | 09 | NOT_IMPLEMENTED | [TestRail](test-management/testrail.md) |
 | Test management | CSV/XLSX spreadsheet | 09 | NOT_IMPLEMENTED | [Spreadsheet](test-management/spreadsheet.md) |

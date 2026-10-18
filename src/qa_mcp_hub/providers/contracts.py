@@ -68,10 +68,21 @@ class StreamingProvider(Protocol):
 
 @runtime_checkable
 class CicdProvider(Protocol):
-    """Read-oriented CI/CD port."""
+    """Read-oriented CI/CD port. Triggering is not part of this port."""
 
     def read_pipeline(self, context: ExecutionContext) -> ToolResult:
         """Read one pipeline description for the bound connection."""
+
+    def list_pipeline_runs(
+        self, context: ExecutionContext, page: Pagination
+    ) -> ToolResult:
+        """List one page of pipeline runs for the bound connection."""
+
+    def read_pipeline_status(self, context: ExecutionContext) -> ToolResult:
+        """Read one pipeline run status for the bound connection."""
+
+    def read_pipeline_artifacts(self, context: ExecutionContext) -> ToolResult:
+        """Read artifact metadata for one pipeline run."""
 
 
 @runtime_checkable

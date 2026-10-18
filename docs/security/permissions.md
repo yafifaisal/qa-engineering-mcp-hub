@@ -73,6 +73,11 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
 - Require preview and explicit user approval for provider writes, CI triggers,
   imports, overwrites, and evidence publication.
 - Keep approval narrow, time-bound, profile-bound, and operation-specific.
+- CI inspection accepts a registered job id. It does not accept a Jenkins job
+  path, a workflow file, or arbitrary parameters from the tool caller.
+- `prepare_pipeline_trigger` returns a preview and does not call the provider.
+  Remote triggering is not an MCP tool. A guarded dispatch function spends a
+  single-use approval before one POST and does not retry that POST.
 
 An API token with broad permissions does not broaden the Hub's authorized scope.
 The Hub must still deny any operation not enabled by its policy.
