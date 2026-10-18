@@ -39,6 +39,9 @@
 - Provider editions, scopes, endpoints, and rate limits marked “Requires
   verification” must be checked against current official documentation during the
   owning milestone.
+- The QA Workspace root and CI registry YAML files are syntax-checked and
+  manifest-audited, but do not yet have dedicated semantic schemas; those belong
+  with the Milestone 01 workspace/configuration loader.
 - No live provider, database, Kafka, CLI runner, or CI system was contacted.
 
 ## Audit limitations

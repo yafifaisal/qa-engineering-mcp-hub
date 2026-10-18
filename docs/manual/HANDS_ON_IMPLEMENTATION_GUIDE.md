@@ -44,7 +44,7 @@ must agree with this exact allowlist.
 To validate M00:
 
 ```sh
-uv sync --locked
+uv sync --frozen
 uv lock --check
 uv run ruff check .
 uv run ruff format --check .

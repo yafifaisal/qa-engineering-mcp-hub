@@ -34,7 +34,7 @@ then from the repository root run:
 
 ```sh
 uv python install 3.12
-uv sync --locked
+uv sync --frozen
 uv run qa-mcp --help
 uv run qa-mcp doctor
 uv run qa-mcp capabilities

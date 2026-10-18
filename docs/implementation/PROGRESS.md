@@ -28,8 +28,7 @@ Local environment: macOS, Python 3.12.15, uv 0.13.1
 
 | Command | Exit | Result |
 |---|---:|---|
-| `uv sync` | 0 | 89 packages resolved; environment checked |
-| `uv sync --locked` | 0 | locked environment checked without metadata changes |
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
 | `uv lock --check` | 0 | lock matches project metadata |
 | `uv run ruff check .` | 0 | all checks passed |
 | `uv run ruff format --check .` | 0 | 278 files formatted |

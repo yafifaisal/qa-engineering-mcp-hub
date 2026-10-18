@@ -4,7 +4,7 @@ Start with the local foundation before investigating a client:
 
 ```sh
 uv lock --check
-uv sync --locked
+uv sync --frozen
 uv run qa-mcp --version
 uv run qa-mcp doctor
 uv run qa-mcp capabilities

@@ -6,5 +6,5 @@ if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
     exit 127
 }
 
-uv sync --locked
+uv sync --frozen
 uv run qa-mcp doctor

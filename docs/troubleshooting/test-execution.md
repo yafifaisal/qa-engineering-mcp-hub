@@ -7,7 +7,7 @@ tests can run.
 Use the locked environment and preserve the first real diagnostic:
 
 ```sh
-uv sync --locked
+uv sync --frozen
 uv run pytest -v
 ```
 

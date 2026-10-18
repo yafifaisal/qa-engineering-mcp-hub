@@ -26,7 +26,7 @@ publication, or release approval is implemented.
 Install Python 3.12 or newer and [uv](https://docs.astral.sh/uv/), then run:
 
 ```sh
-uv sync --locked
+uv sync --frozen
 uv run qa-mcp --help
 uv run qa-mcp doctor
 uv run qa-mcp capabilities

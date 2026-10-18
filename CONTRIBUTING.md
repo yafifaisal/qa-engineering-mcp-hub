@@ -10,7 +10,7 @@ Thank you for helping build QA Engineering MCP Hub. Start by reading
 Install Python 3.12+ and uv, then run:
 
 ```sh
-uv sync --locked
+uv sync --frozen
 uv run qa-mcp --help
 ```
 

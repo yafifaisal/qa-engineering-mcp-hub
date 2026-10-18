@@ -25,7 +25,7 @@ copying tokens or company QA assets into the public framework checkout.
 From the repository root:
 
 ```powershell
-uv sync --locked
+uv sync --frozen
 uv run qa-mcp --help
 uv run qa-mcp doctor
 uv run qa-mcp capabilities
