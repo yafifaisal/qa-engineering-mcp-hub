@@ -106,12 +106,23 @@ _GIT_TICKET_PROVIDERS = frozenset(
         ProviderKind.gitlab,
         ProviderKind.bitbucket,
         ProviderKind.jira,
+        ProviderKind.confluence,
     }
 )
 
 
 def _validate_provider_deployment(connection: "ConnectionConfig") -> None:
     """Require an explicit API host for self-managed Git and Jira connections."""
+    if connection.provider is ProviderKind.google_docs:
+        if connection.base_url is None:
+            return
+        host = urlsplit(connection.base_url).hostname
+        normalized = (host or "").lower().rstrip(".")
+        if normalized != "docs.googleapis.com":
+            raise ValueError("google docs base_url must use docs.googleapis.com")
+        return
+    if connection.provider is ProviderKind.confluence and connection.base_url is None:
+        raise ValueError("confluence connection requires base_url")
     if connection.provider not in _GIT_TICKET_PROVIDERS:
         return
     if (

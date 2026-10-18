@@ -1,8 +1,8 @@
 # Confluence provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED** read-only Cloud and Data Center adapter  
 > Owning milestone: **04**  
-> Verification: documentation scaffold only; no provider request has been executed.
+> Verification: mocked HTTP tests. No live Confluence request has been executed.
 
 ## 1. Provider overview
 
@@ -20,7 +20,9 @@ Cloud and Data Center differ in REST APIs, content representations, search behav
 
 Planned reads include constrained page search, page retrieval, title, body, version, space identity, and canonical URL. Attachments and writes are not initial capabilities.
 
-These are planned capabilities, not current support.
+Search requires one or more space keys and builds CQL inside the adapter.
+Page body storage markup becomes plain text. Macros are omitted. Mocked tests
+are OFFLINE_VERIFIED. Live calls are not claimed.
 
 ## 5. Authentication methods
 

@@ -18,6 +18,8 @@ EXPECTED_TOOLS = {
     "get_repository_changes",
     "analyze_jira_ticket",
     "find_related_implementation",
+    "search_documents",
+    "read_document",
 }
 EXPECTED_RESOURCES = {"qa-hub://status"}
 EXPECTED_PROMPTS = {"qa_hub_orientation"}
@@ -48,8 +50,9 @@ async def test_mcp_tool_discovery_and_invocation() -> None:
         assert "profiles_and_credentials" in implemented
         assert "interactive_setup" in implemented
         assert "search_repository_code" in implemented
-        assert "confluence_google_docs" in planned
-        assert "confluence_google_docs" not in implemented
+        assert "search_documents" in implemented
+        assert "bruno_postman" in planned
+        assert "bruno_postman" not in implemented
 
 
 @pytest.mark.asyncio
@@ -60,7 +63,7 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         content = await client.read_resource("qa-hub://status")
         payload = json.loads(content[0].text)
         assert payload["health"]["status"] == "healthy"
-        assert payload["external_integrations"] == "git_jira_read_only"
+        assert payload["external_integrations"] == "git_jira_docs_read_only"
 
         prompts = await client.list_prompts()
         assert {prompt.name for prompt in prompts} == EXPECTED_PROMPTS
@@ -71,7 +74,8 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         assert "Milestone 03 read-only GitHub, GitLab, Bitbucket, and Jira" in (
             prompt_text
         )
-        assert "Milestones 04–11" in prompt_text
+        assert "Milestone 04 read-only Confluence and Google Docs" in prompt_text
+        assert "Milestones 05–11" in prompt_text
 
 
 @pytest.mark.asyncio

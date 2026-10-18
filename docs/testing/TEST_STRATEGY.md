@@ -82,6 +82,16 @@ module.
 | MCP tools | in-memory invocation of the four read tools against mocked HTTP |
 | Live providers | skipped unless `QA_MCP_LIVE_PROVIDERS=1` |
 
+## Milestone 04 matrix
+
+| Area | Required evidence |
+|---|---|
+| Confluence | Cloud and Data Center paths, space-limited search, denied and removed pages |
+| Google Docs | headings, paragraphs, tables, unsupported nodes, refresh, and scope failure |
+| Citations | provider, document id, URL, revision, and retrieval time |
+| Secrets | refresh tokens and client secrets stay out of tool results |
+| MCP tools | in-memory `search_documents` and `read_document` against mocked HTTP |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

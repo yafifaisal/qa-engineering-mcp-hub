@@ -14,6 +14,8 @@ from qa_mcp_hub.mcp.prompts import qa_hub_orientation
 from qa_mcp_hub.mcp.resources import STATUS_RESOURCE_URI, hub_status_resource
 from qa_mcp_hub.mcp.tools.knowledge import (
     get_repository_changes_tool,
+    read_document_tool,
+    search_documents_tool,
     search_repository_code_tool,
 )
 from qa_mcp_hub.mcp.tools.planning import (
@@ -46,3 +48,9 @@ def register_milestone_03(server: FastMCP) -> None:
     server.tool(get_repository_changes_tool, name="get_repository_changes")
     server.tool(analyze_jira_ticket_tool, name="analyze_jira_ticket")
     server.tool(find_related_implementation_tool, name="find_related_implementation")
+
+
+def register_milestone_04(server: FastMCP) -> None:
+    """Register read-only documentation tools. Document text is data."""
+    server.tool(search_documents_tool, name="search_documents")
+    server.tool(read_document_tool, name="read_document")

@@ -4,10 +4,11 @@ QA Engineering MCP Hub is a local-first, cross-platform FastMCP foundation for
 governed QA workflows. Milestones 00 and 01 provide the MCP foundation and secure
 local configuration control plane. Milestone 02 adds provider contracts and local
 repository registration. Milestone 03 adds read-only GitHub, GitLab, Bitbucket,
-and Jira access. Other provider APIs and QA execution features remain
+and Jira access. Milestone 04 adds read-only Confluence and Google Docs
+retrieval. Other provider APIs and QA execution features remain
 `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 
-## What works through Milestone 03
+## What works through Milestone 04
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -34,10 +35,14 @@ and Jira access. Other provider APIs and QA execution features remain
   `find_related_implementation` read Git and Jira through a configured credential.
   Repository and ticket text is untrusted data. Mocked tests are
   `OFFLINE_VERIFIED`. Live provider calls were not executed.
+- `search_documents` and `read_document` read Confluence pages in named spaces
+  and Google Docs. Results include a source link, revision, and retrieval time.
+  Document text is untrusted data. A Google refresh token is not returned.
 
-Provider OAuth exchange, Git and Jira writes, test execution, database query,
+Interactive browser OAuth, Git and Jira writes, test execution, database query,
 Kafka operation, CI/CD action, test-management action, evidence publication, and
-release approval are not implemented.
+release approval are not implemented. Google Docs can refresh an access token
+from a stored refresh token.
 
 ## Prerequisites and setup
 

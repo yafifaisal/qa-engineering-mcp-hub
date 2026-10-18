@@ -7,6 +7,9 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 04 read-only Confluence and Google Docs retrieval, including space-
+  limited search, document citations, and Google access-token refresh. Mocked
+  tests are OFFLINE_VERIFIED. Live provider calls were not executed.
 - Milestone 03 read-only GitHub, GitLab, Bitbucket Cloud/Data Center, and Jira
   Cloud/Data Center adapters, plus four MCP tools for code search, change reads,
   ticket analysis, and related-implementation lookup. Mocked tests are

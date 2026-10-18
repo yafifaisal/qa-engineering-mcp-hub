@@ -2,10 +2,11 @@
 
 The QA Engineering MCP Hub recognizes only the provider families listed here.
 Milestone 02 publishes typed contracts and a registry for every family below.
-GitHub, GitLab, Bitbucket, and Jira have read-only adapters marked
-**OFFLINE_VERIFIED**. The other families remain **NOT_IMPLEMENTED** and still
-return a contract stub. No adapter performs provider OAuth, database sessions,
-Kafka reads, or publication.
+GitHub, GitLab, Bitbucket, Jira, Confluence, and Google Docs have read-only
+adapters marked **OFFLINE_VERIFIED**. The other families remain
+**NOT_IMPLEMENTED** and still return a contract stub. Google Docs can refresh
+an access token. No adapter opens database sessions, Kafka consumers, or
+publication flows.
 
 Documentation examples use the versioned M01 configuration shape, contain only
 credential references, and remain disabled. A schema-valid local connection is not
@@ -31,8 +32,8 @@ credential-presence check does not advance provider verification status.
 | Git | GitLab | 03 | OFFLINE_VERIFIED | [GitLab](git/gitlab.md) |
 | Git | Bitbucket | 03 | OFFLINE_VERIFIED | [Bitbucket](git/bitbucket.md) |
 | Tickets | Jira | 03 | OFFLINE_VERIFIED | [Jira](tickets/jira.md) |
-| Documentation | Confluence | 04 | NOT_IMPLEMENTED | [Confluence](documentation/confluence.md) |
-| Documentation | Google Docs | 04 | NOT_IMPLEMENTED | [Google Docs](documentation/google-docs.md) |
+| Documentation | Confluence | 04 | OFFLINE_VERIFIED | [Confluence](documentation/confluence.md) |
+| Documentation | Google Docs | 04 | OFFLINE_VERIFIED | [Google Docs](documentation/google-docs.md) |
 | API automation | Bruno | 06 | NOT_IMPLEMENTED | [Bruno](api-automation/bruno.md) |
 | API automation | Postman | 06 | NOT_IMPLEMENTED | [Postman](api-automation/postman.md) |
 | Database | PostgreSQL | 07 | NOT_IMPLEMENTED | [PostgreSQL](database/postgresql.md) |

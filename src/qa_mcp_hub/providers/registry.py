@@ -50,7 +50,7 @@ CATEGORY_CAPABILITIES: dict[ProviderCategory, tuple[str, ...]] = {
         "compare_changes",
     ),
     ProviderCategory.tickets: ("read_issue",),
-    ProviderCategory.documentation: ("read_document",),
+    ProviderCategory.documentation: ("read_document", "search_documents"),
     ProviderCategory.api_automation: ("list_requests",),
     ProviderCategory.database: ("read_schema",),
     ProviderCategory.streaming: ("read_consumer_lag",),
@@ -87,10 +87,12 @@ CATALOG: tuple[ProviderDescriptor, ...] = (
         id=ProviderKind.confluence,
         category=ProviderCategory.documentation,
         variants=("cloud", "self_managed"),
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(
         id=ProviderKind.google_docs,
         category=ProviderCategory.documentation,
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(id=ProviderKind.bruno, category=ProviderCategory.api_automation),
     ProviderDescriptor(
@@ -136,8 +138,16 @@ _READ_PROVIDERS = {
     ProviderKind.gitlab,
     ProviderKind.bitbucket,
     ProviderKind.jira,
+    ProviderKind.confluence,
+    ProviderKind.google_docs,
 }
-_EXPOSED_CAPABILITIES = {"search_code", "compare_changes", "read_issue"}
+_EXPOSED_CAPABILITIES = {
+    "search_code",
+    "compare_changes",
+    "read_issue",
+    "read_document",
+    "search_documents",
+}
 
 
 class BoundProvider(BaseModel):
@@ -294,13 +304,18 @@ def open_read_adapter(
     connection: ConnectionConfig, secret: object, http_client: object
 ) -> object:
     """Open a read-only GitHub, GitLab, Bitbucket, or Jira adapter."""
+    import os
+
     import httpx
     from pydantic import SecretStr
 
+    from qa_mcp_hub.adapters.documentation.confluence import open_confluence
+    from qa_mcp_hub.adapters.documentation.google_docs import open_google_docs
     from qa_mcp_hub.adapters.git.bitbucket import open_bitbucket
     from qa_mcp_hub.adapters.git.github import open_github
     from qa_mcp_hub.adapters.git.gitlab import open_gitlab
     from qa_mcp_hub.adapters.tickets.jira import open_jira
+    from qa_mcp_hub.auth.models import AuthKind
 
     if not isinstance(secret, SecretStr) or not isinstance(http_client, httpx.Client):
         raise ProviderResolutionError("read adapter requires a secret and HTTP client")
@@ -335,6 +350,29 @@ def open_read_adapter(
             account=connection.account,
             auth_kind=connection.auth_kind,
             secret=secret,
+            http_client=http_client,
+        )
+    if kind is ProviderKind.confluence:
+        return open_confluence(
+            base_url=connection.base_url,
+            deployment=connection.deployment,
+            account=connection.account,
+            auth_kind=connection.auth_kind,
+            secret=secret,
+            http_client=http_client,
+        )
+    if kind is ProviderKind.google_docs:
+        client_secret = None
+        if connection.auth_kind is AuthKind.oauth:
+            raw = os.environ.get("QA_MCP_GOOGLE_OAUTH_CLIENT_SECRET")
+            if not raw:
+                raise ProviderResolutionError("google oauth client secret is missing")
+            client_secret = SecretStr(raw)
+        return open_google_docs(
+            auth_kind=connection.auth_kind,
+            account=connection.account,
+            secret=secret,
+            client_secret=client_secret,
             http_client=http_client,
         )
     raise UnsupportedCapabilityError(kind.value, "read", implemented=False)

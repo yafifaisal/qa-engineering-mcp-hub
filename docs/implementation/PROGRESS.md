@@ -163,10 +163,40 @@ was not set, so no GitHub, GitLab, Bitbucket, or Jira host was called. Those
 reads are `OFFLINE_VERIFIED` from respx mocks and are not `LIVE_VERIFIED`.
 Windows and Linux execution remains `BLOCKED`.
 
-## Milestones 04–11
+## Milestone 04 — implemented and offline verified
 
-Confluence, Google Docs, indexing execution, scenario planning, workflows, suite
-execution, assertions, evidence, and release intelligence remain `SCAFFOLDED` or
-`NOT_IMPLEMENTED`. Native Windows/Linux execution and Python 3.13 execution
-remain `BLOCKED` on hosted-runner access. Writes to Git and Jira are not
-implemented. OAuth provider exchange remains `NOT_IMPLEMENTED`.
+- [x] Confluence Cloud and Data Center search is limited to named spaces. Page
+  reads include version, link, and plain text. Storage macros are omitted.
+- [x] Google Docs reads headings, paragraphs, and tables. Drive is used only to
+  find documents by name.
+- [x] A stored Google refresh token can be exchanged for a short-lived access
+  token. Tool results do not include the refresh token.
+- [x] MCP tools `search_documents` and `read_document` return normalized
+  citations. Document text is untrusted data.
+- [ ] Live Confluence and Google calls were not executed.
+
+## Executed verification — Milestone 04
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
+| `uv lock --check` | 0 | lock matches project metadata |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 290 files already formatted |
+| `uv run mypy src` | 0 | no issues in 182 source files |
+| `uv run pytest -q` | 0 | 104 passed, 1 skipped |
+| `uv build` | 0 | sdist and wheel built |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py`. `QA_MCP_LIVE_PROVIDERS`
+was not set, so no Confluence or Google host was called. Those reads are
+`OFFLINE_VERIFIED` from respx mocks and are not `LIVE_VERIFIED`. Windows and
+Linux execution remains `BLOCKED`.
+
+## Milestones 05–11
+
+Indexing execution, scenario planning, workflows, suite execution, assertions,
+evidence, and release intelligence remain `SCAFFOLDED` or `NOT_IMPLEMENTED`.
+Native Windows/Linux execution and Python 3.13 execution remain `BLOCKED`.
+Writes, Google Sheets, and the interactive browser OAuth flow are not
+implemented.

@@ -20,6 +20,6 @@ def hub_status_resource() -> str:
     payload = {
         "health": hub_health().model_dump(mode="json"),
         "capabilities": hub_capabilities().model_dump(mode="json"),
-        "external_integrations": "git_jira_read_only",
+        "external_integrations": "git_jira_docs_read_only",
     }
     return json.dumps(payload, sort_keys=True)

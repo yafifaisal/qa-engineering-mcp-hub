@@ -5,8 +5,9 @@ provides two tools, one resource, and one prompt. Milestone 01 adds secure local
 setup, configuration, profiles, connection identities, credential references, and
 MCP-client configuration generation. Milestone 02 adds provider contracts and
 `qa-mcp repositories` for local registration and remote definitions. Milestone 03
-adds read-only GitHub, GitLab, Bitbucket, and Jira tools. Other provider APIs
-remain `NOT_IMPLEMENTED`. Live Git and Jira calls are not claimed.
+adds read-only GitHub, GitLab, Bitbucket, and Jira tools. Milestone 04 adds
+read-only Confluence and Google Docs tools. Other provider APIs remain
+`NOT_IMPLEMENTED`. Live provider calls are not claimed.
 
 ## Choose your platform
 

@@ -18,10 +18,10 @@ providers:
   - id: confluence
     category: documentation
     variants: [cloud, self_managed]
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: google_docs
     category: documentation
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: bruno
     category: api_automation
     implementation_status: NOT_IMPLEMENTED

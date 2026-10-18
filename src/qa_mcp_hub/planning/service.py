@@ -13,6 +13,8 @@ from collections.abc import Callable
 import httpx
 from pydantic import SecretStr
 
+from qa_mcp_hub.adapters.documentation.confluence import ConfluenceAdapter
+from qa_mcp_hub.adapters.documentation.google_docs import GoogleDocsAdapter
 from qa_mcp_hub.adapters.git.base import ChangeSet
 from qa_mcp_hub.adapters.git.bitbucket import BitbucketAdapter
 from qa_mcp_hub.adapters.git.github import GitHubAdapter
@@ -29,6 +31,7 @@ from qa_mcp_hub.config.paths import default_config_path
 from qa_mcp_hub.core.errors import HubError, ProviderRequestError
 from qa_mcp_hub.core.models import ProviderKind
 from qa_mcp_hub.core.results import Pagination
+from qa_mcp_hub.knowledge.models import DocumentRecord, DocumentSearchResult
 from qa_mcp_hub.planning.change_impact import with_local_checkout
 from qa_mcp_hub.planning.models import (
     CodeSearchResult,
@@ -39,7 +42,9 @@ from qa_mcp_hub.planning.ticket_analyzer import analyze_issue
 from qa_mcp_hub.providers.registry import open_read_adapter
 
 GitAdapter = GitHubAdapter | GitLabAdapter | BitbucketAdapter
+DocsAdapter = ConfluenceAdapter | GoogleDocsAdapter
 _GIT = {ProviderKind.github, ProviderKind.gitlab, ProviderKind.bitbucket}
+_DOCS = {ProviderKind.confluence, ProviderKind.google_docs}
 
 
 def search_repository_code(
@@ -161,6 +166,55 @@ def find_related_implementation(
     )
 
 
+def search_documents(
+    query: str,
+    *,
+    spaces: tuple[str, ...] = (),
+    connection_id: str | None = None,
+    profile: str | None = None,
+    config_loader: Callable[[], HubConfig] | None = None,
+) -> DocumentSearchResult:
+    """Search Confluence spaces or Google Docs by name. Text is untrusted data."""
+    config = _config(config_loader)
+    _profile_id, connection = _connection(
+        config, profile, connection_id, git=False, documentation=True
+    )
+    adapter, client = _open_docs(connection)
+    try:
+        if isinstance(adapter, ConfluenceAdapter):
+            return adapter.search(query, spaces, Pagination(limit=20))
+        if spaces:
+            raise ProviderRequestError(
+                "space_not_applicable",
+                "google docs search does not take a Confluence space",
+                status_code=0,
+            )
+        return adapter.search(query, Pagination(limit=20))
+    finally:
+        client.close()
+
+
+def read_document(
+    document_id: str,
+    *,
+    connection_id: str | None = None,
+    profile: str | None = None,
+    config_loader: Callable[[], HubConfig] | None = None,
+) -> DocumentRecord:
+    """Read one Confluence page or Google Doc. The body is untrusted data."""
+    config = _config(config_loader)
+    _profile_id, connection = _connection(
+        config, profile, connection_id, git=False, documentation=True
+    )
+    adapter, client = _open_docs(connection)
+    try:
+        if isinstance(adapter, ConfluenceAdapter):
+            return adapter.fetch_page(document_id)
+        return adapter.fetch_document(document_id)
+    finally:
+        client.close()
+
+
 def adapter_revision(adapter: GitAdapter, repository: str, ref: str | None) -> str:
     """Resolve a revision when a search page contains no hits."""
     client_ref = ref or adapter.fetch_repository(repository).default_branch or "HEAD"
@@ -186,6 +240,7 @@ def _connection(
     connection_id: str | None,
     *,
     git: bool,
+    documentation: bool = False,
 ) -> tuple[str, ConnectionConfig]:
     profile_id = profile or config.active_profile
     if profile_id is None or profile_id not in config.profiles:
@@ -201,12 +256,13 @@ def _connection(
                 status_code=0,
             )
         match = _by_id(config, connection_id)
-        _check_kind(match, git=git)
+        _check_kind(match, git=git, documentation=documentation)
         return profile_id, match
     matches = [
         item
         for item in config.connections
-        if item.id in selected.connection_ids and _kind_matches(item, git=git)
+        if item.id in selected.connection_ids
+        and _kind_matches(item, git=git, documentation=documentation)
     ]
     if len(matches) != 1:
         raise ProviderRequestError(
@@ -217,14 +273,20 @@ def _connection(
     return profile_id, matches[0]
 
 
-def _kind_matches(connection: ConnectionConfig, *, git: bool) -> bool:
+def _kind_matches(
+    connection: ConnectionConfig, *, git: bool, documentation: bool = False
+) -> bool:
+    if documentation:
+        return connection.provider in _DOCS
     if git:
         return connection.provider in _GIT
     return connection.provider is ProviderKind.jira
 
 
-def _check_kind(connection: ConnectionConfig, *, git: bool) -> None:
-    if not _kind_matches(connection, git=git):
+def _check_kind(
+    connection: ConnectionConfig, *, git: bool, documentation: bool = False
+) -> None:
+    if not _kind_matches(connection, git=git, documentation=documentation):
         raise ProviderRequestError(
             "wrong_provider",
             "connection provider does not match this tool",
@@ -275,8 +337,31 @@ def _open_jira(connection: ConnectionConfig) -> tuple[JiraAdapter, httpx.Client]
     return adapter, client
 
 
+def _open_docs(connection: ConnectionConfig) -> tuple[DocsAdapter, httpx.Client]:
+    secret = _secret(connection)
+    client = httpx.Client(timeout=10.0)
+    try:
+        adapter = open_read_adapter(connection, secret, client)
+    except Exception:
+        client.close()
+        raise
+    if not isinstance(adapter, (ConfluenceAdapter, GoogleDocsAdapter)):
+        client.close()
+        raise ProviderRequestError(
+            "wrong_provider",
+            "connection is not a documentation provider",
+            status_code=0,
+        )
+    return adapter, client
+
+
 def _secret(connection: ConnectionConfig) -> SecretStr:
-    if connection.credential is None or connection.auth_kind.value == "oauth":
+    documentation_oauth = (
+        connection.auth_kind.value == "oauth" and connection.provider in _DOCS
+    )
+    if connection.credential is None or (
+        connection.auth_kind.value == "oauth" and not documentation_oauth
+    ):
         raise ProviderRequestError(
             "oauth_not_implemented"
             if connection.auth_kind.value == "oauth"

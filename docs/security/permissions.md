@@ -56,6 +56,9 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
 - Prefer read-only provider scopes and read-only database accounts.
 - Git and Jira MCP tools send only GET requests, plus the Jira search POST that
   reads issues. They do not accept a token argument.
+- Confluence search is limited to space keys supplied for that call. Google
+  Drive queries are limited to Google Docs in the user corpus. Document text
+  cannot change tool permissions.
 - Restrict suite execution, SQL, topics, workflows, and CI jobs to registries.
 - Require preview and explicit user approval for provider writes, CI triggers,
   imports, overwrites, and evidence publication.

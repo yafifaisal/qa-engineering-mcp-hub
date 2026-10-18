@@ -1,10 +1,10 @@
-"""Truthful local capability catalog through Milestone 03.
+"""Truthful local capability catalog through Milestone 04.
 
-The catalog distinguishes read-only Git and Jira tools from providers that
-remain future work.
+The catalog distinguishes read-only Git, Jira, and documentation tools from
+providers that remain future work.
 
 Purpose: separate callable local capabilities from planned provider work.
-Milestone: 03
+Milestone: 04
 Status: IMPLEMENTED
 Ownership: core.capabilities
 Dependencies: Pydantic.
@@ -40,9 +40,10 @@ def list_capabilities() -> CapabilityCatalog:
             "get_repository_changes",
             "analyze_jira_ticket",
             "find_related_implementation",
+            "search_documents",
+            "read_document",
         ),
         planned=(
-            "confluence_google_docs",
             "bruno_postman",
             "postgresql_mysql_kafka",
             "bitbucket_pipelines_github_actions_jenkins",

@@ -16,8 +16,6 @@ files:
     - "src/qa_mcp_hub/adapters/database/mysql.py"
     - "src/qa_mcp_hub/adapters/database/postgresql.py"
     - "src/qa_mcp_hub/adapters/documentation/__init__.py"
-    - "src/qa_mcp_hub/adapters/documentation/confluence.py"
-    - "src/qa_mcp_hub/adapters/documentation/google_docs.py"
     - "src/qa_mcp_hub/adapters/git/__init__.py"
     - "src/qa_mcp_hub/adapters/streaming/__init__.py"
     - "src/qa_mcp_hub/adapters/streaming/kafka.py"
@@ -50,7 +48,6 @@ files:
     - "src/qa_mcp_hub/knowledge/dependency_graph.py"
     - "src/qa_mcp_hub/knowledge/freshness.py"
     - "src/qa_mcp_hub/knowledge/indexer.py"
-    - "src/qa_mcp_hub/knowledge/models.py"
     - "src/qa_mcp_hub/knowledge/retriever.py"
     - "src/qa_mcp_hub/knowledge/service.py"
     - "src/qa_mcp_hub/knowledge/source_verifier.py"
@@ -223,6 +220,8 @@ files:
     - "scripts/validate.py"
     - "src/qa_mcp_hub/__init__.py"
     - "src/qa_mcp_hub/__main__.py"
+    - "src/qa_mcp_hub/adapters/documentation/confluence.py"
+    - "src/qa_mcp_hub/adapters/documentation/google_docs.py"
     - "src/qa_mcp_hub/adapters/git/base.py"
     - "src/qa_mcp_hub/adapters/git/bitbucket.py"
     - "src/qa_mcp_hub/adapters/git/github.py"
@@ -264,6 +263,7 @@ files:
     - "src/qa_mcp_hub/core/policies.py"
     - "src/qa_mcp_hub/core/results.py"
     - "src/qa_mcp_hub/core/retry.py"
+    - "src/qa_mcp_hub/knowledge/models.py"
     - "src/qa_mcp_hub/mcp/__init__.py"
     - "src/qa_mcp_hub/mcp/prompts.py"
     - "src/qa_mcp_hub/mcp/registry.py"
@@ -323,12 +323,14 @@ files:
     - "templates/workflows/e2e.yaml"
     - "tests/conftest.py"
     - "tests/contracts/README.md"
+    - "tests/contracts/test_documentation_adapters.py"
     - "tests/contracts/test_git_jira_adapters.py"
     - "tests/contracts/test_provider_contracts.py"
     - "tests/e2e/README.md"
     - "tests/fixtures/README.md"
     - "tests/integration/test_cli.py"
     - "tests/integration/test_cli_m01.py"
+    - "tests/integration/test_mcp_documentation.py"
     - "tests/integration/test_mcp_git_jira.py"
     - "tests/integration/test_mcp_protocol.py"
     - "tests/integration/test_provider_live.py"
@@ -349,6 +351,8 @@ expected_mcp:
     - get_repository_changes
     - hub_capabilities
     - hub_health
+    - read_document
+    - search_documents
     - search_repository_code
   resources: ["qa-hub://status"]
   prompts: ["qa_hub_orientation"]

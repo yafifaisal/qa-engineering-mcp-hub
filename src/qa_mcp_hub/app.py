@@ -12,7 +12,11 @@ from fastmcp import FastMCP
 
 from qa_mcp_hub import __version__
 from qa_mcp_hub.config import HubSettings, load_settings
-from qa_mcp_hub.mcp.registry import register_milestone_00, register_milestone_03
+from qa_mcp_hub.mcp.registry import (
+    register_milestone_00,
+    register_milestone_03,
+    register_milestone_04,
+)
 
 
 def create_app(settings: HubSettings | None = None) -> FastMCP:
@@ -21,6 +25,7 @@ def create_app(settings: HubSettings | None = None) -> FastMCP:
     server = FastMCP(effective_settings.server_name, version=__version__)
     register_milestone_00(server)
     register_milestone_03(server)
+    register_milestone_04(server)
     return server
 
 

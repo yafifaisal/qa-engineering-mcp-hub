@@ -6,8 +6,8 @@ Result: **PASS**
 
 | Measure | Count |
 |---|---:|
-| Expected Files | 338 |
-| Existing Expected Files | 338 |
+| Expected Files | 340 |
+| Existing Expected Files | 340 |
 | Missing Files | 0 |
 | Unlisted Files | 0 |
 | Expected Directories | 100 |
@@ -18,7 +18,7 @@ Result: **PASS**
 
 ## MCP discovery
 
-- Tools: `analyze_jira_ticket, find_related_implementation, get_repository_changes, hub_capabilities, hub_health, search_repository_code`
+- Tools: `analyze_jira_ticket, find_related_implementation, get_repository_changes, hub_capabilities, hub_health, read_document, search_documents, search_repository_code`
 - Resources: `qa-hub://status`
 - Prompts: `qa_hub_orientation`
 

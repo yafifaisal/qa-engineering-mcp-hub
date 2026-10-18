@@ -80,7 +80,7 @@ def test_catalog_matches_architecture_document() -> None:
     document = yaml.safe_load((ROOT / "config/supported_providers.yaml").read_text())
     catalog_matches_document(document)
     assert {item.id for item in CATALOG} == set(ProviderKind)
-    offline = {"github", "gitlab", "bitbucket", "jira"}
+    offline = {"github", "gitlab", "bitbucket", "jira", "confluence", "google_docs"}
     assert {
         item.id.value
         for item in CATALOG
@@ -107,8 +107,14 @@ def test_capability_discovery_does_not_advertise_tools() -> None:
     assert exposed == {"search_code", "compare_changes"}
     assert "hub_health" not in {item.name for item in capabilities}
     confluence = discover_capabilities("confluence")
-    assert all(item.status is OperationStatus.not_implemented for item in confluence)
-    assert all(item.exposed_as_mcp_tool is False for item in confluence)
+    assert all(item.status is OperationStatus.available for item in confluence)
+    assert {item.name for item in confluence if item.exposed_as_mcp_tool} == {
+        "read_document",
+        "search_documents",
+    }
+    postman = discover_capabilities("postman")
+    assert all(item.status is OperationStatus.not_implemented for item in postman)
+    assert all(item.exposed_as_mcp_tool is False for item in postman)
 
 
 def test_unknown_provider_and_capability_are_typed_errors() -> None:

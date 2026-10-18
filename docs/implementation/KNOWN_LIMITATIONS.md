@@ -2,9 +2,12 @@
 
 ## Milestone boundary
 
-- GitHub, GitLab, Bitbucket, and Jira have read-only adapters. Mocked HTTP tests
-  are `OFFLINE_VERIFIED`. No live provider call was executed in this session, so
-  those integrations are not `LIVE_VERIFIED`.
+- GitHub, GitLab, Bitbucket, Jira, Confluence, and Google Docs have read-only
+  adapters. Mocked HTTP tests are `OFFLINE_VERIFIED`. No live provider call was
+  executed in this session, so those integrations are not `LIVE_VERIFIED`.
+- Google Docs can refresh an access token from a stored refresh token. The
+  refresh token is not returned by MCP tools. Interactive browser login is not
+  implemented.
 - Other provider integrations remain `NOT_IMPLEMENTED`. Their registry entries
   still return contract stubs.
 - Milestone 01 implements local configuration, profiles, credential references,
@@ -16,7 +19,8 @@
   does not index file contents.
 - Knowledge indexing, scenario planning, workflows, suite execution, assertions,
   CI/CD, test management, evidence, and release intelligence remain Milestones
-  04–10. Ticket analysis in Milestone 03 does not call a language model.
+  05–10. Document records from Milestone 04 are untrusted data for that later
+  index. Ticket analysis does not call a language model.
 - Python keyring is a direct development dependency and an optional `credentials`
   extra. A missing or unusable backend fails closed. The application does not fall
   back to a plaintext file.

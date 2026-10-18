@@ -41,8 +41,9 @@ they are actually executed.
 ## 04 — documentation providers
 
 Owns Confluence and Google Docs adapters and document extraction/version provenance.
-Exit: deterministic content/version/pagination/permission tests plus gated live
-reads. General unrestricted Drive browsing is outside scope.
+Exit: mocked content, version, pagination, and permission tests are
+OFFLINE_VERIFIED. Live reads stay gated and are not LIVE_VERIFIED until they
+are executed. General unrestricted Drive browsing is outside scope.
 
 ## 05 — knowledge and planning
 

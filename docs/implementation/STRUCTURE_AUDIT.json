@@ -1,8 +1,8 @@
 {
   "counts": {
-    "existing_expected_files": 338,
+    "existing_expected_files": 340,
     "expected_directories": 100,
-    "expected_files": 338,
+    "expected_files": 340,
     "findings": 0,
     "missing_directories": 0,
     "missing_files": 0,
@@ -26,6 +26,8 @@
       "get_repository_changes",
       "hub_capabilities",
       "hub_health",
+      "read_document",
+      "search_documents",
       "search_repository_code"
     ]
   },
