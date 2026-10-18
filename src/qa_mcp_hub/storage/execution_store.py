@@ -16,7 +16,7 @@ from pathlib import Path
 from urllib.parse import quote
 
 from qa_mcp_hub.core.errors import HubError
-from qa_mcp_hub.workflows.models import ExecutionRecord, ExecutionStatus
+from qa_mcp_hub.workflows.models import ExecutionRecord, ExecutionStatus, StepEvidence
 
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS schema_meta (
@@ -27,6 +27,14 @@ CREATE TABLE IF NOT EXISTS runs (
     profile_id TEXT NOT NULL,
     status TEXT NOT NULL,
     record_json TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS step_results (
+    execution_id TEXT NOT NULL,
+    profile_id TEXT NOT NULL,
+    step_id TEXT NOT NULL,
+    status TEXT NOT NULL,
+    result_json TEXT NOT NULL,
+    PRIMARY KEY (execution_id, step_id)
 );
 """
 
@@ -65,6 +73,28 @@ class ExecutionStore:
                 """,
                 (record.execution_id, record.profile_id, record.status.value, payload),
             )
+            connection.execute(
+                """
+                DELETE FROM step_results
+                WHERE execution_id = ? AND profile_id = ?
+                """,
+                (record.execution_id, record.profile_id),
+            )
+            for step in record.step_results:
+                connection.execute(
+                    """
+                    INSERT INTO step_results (
+                        execution_id, profile_id, step_id, status, result_json
+                    ) VALUES (?, ?, ?, ?, ?)
+                    """,
+                    (
+                        record.execution_id,
+                        record.profile_id,
+                        step.step_id,
+                        step.status.value,
+                        step.model_dump_json(),
+                    ),
+                )
             connection.commit()
 
     def get(self, profile_id: str, execution_id: str) -> ExecutionRecord:
@@ -85,6 +115,19 @@ class ExecutionStore:
         if not isinstance(text, str):
             raise HubError("execution_corrupt", "execution row had an unexpected type")
         return ExecutionRecord.model_validate_json(text)
+
+    def steps(self, profile_id: str, execution_id: str) -> tuple[StepEvidence, ...]:
+        """Return persisted step rows for one profile-owned execution."""
+        with self._lock, self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT result_json FROM step_results
+                WHERE execution_id = ? AND profile_id = ?
+                ORDER BY step_id
+                """,
+                (execution_id, profile_id),
+            ).fetchall()
+        return tuple(StepEvidence.model_validate_json(str(row[0])) for row in rows)
 
     def status_of(self, profile_id: str, execution_id: str) -> ExecutionStatus:
         """Read the current status without leaving the profile scope."""

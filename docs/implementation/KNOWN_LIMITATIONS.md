@@ -26,9 +26,14 @@
   injected through a mode-0600 environment file and redacted from stored
   output. They are not accepted as MCP arguments and are not passed with
   `--env-var`. A dry-run profile does not start a runner.
-- Database queries, Kafka reads, CI/CD, test management, evidence publication,
-  and release intelligence remain Milestones 07–10. Ticket analysis does not
-  call a language model.
+- Milestone 07 runs registered database, Kafka, and business assertions after
+  an approved workflow's API steps. SQL text is not an MCP argument. Kafka
+  observation does not commit offsets. A topic read is not consumer completion.
+  Live database and Kafka drivers are not bundled. `QA_MCP_LIVE_DATABASES` and
+  `QA_MCP_LIVE_KAFKA` do not create a successful stand-in connection.
+- CI/CD, test management, evidence publication, and release intelligence remain
+  Milestones 08–10.
+- Ticket analysis does not call a language model.
 - Python keyring is a direct development dependency and an optional `credentials`
   extra. A missing or unusable backend fails closed. The application does not fall
   back to a plaintext file.

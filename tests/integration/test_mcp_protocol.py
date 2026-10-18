@@ -30,6 +30,10 @@ EXPECTED_TOOLS = {
     "explain_workflow",
     "submit_test_run",
     "get_test_run",
+    "list_registered_assertions",
+    "run_database_assertion",
+    "find_kafka_event",
+    "verify_e2e_workflow",
 }
 EXPECTED_RESOURCES = {"qa-hub://status"}
 EXPECTED_PROMPTS = {"qa_hub_orientation"}
@@ -65,7 +69,8 @@ async def test_mcp_tool_discovery_and_invocation() -> None:
         assert "generate_test_scenario_draft" in implemented
         assert "list_registered_suites" in implemented
         assert "submit_test_run" in implemented
-        assert "postgresql_mysql_kafka" in planned
+        assert "verify_e2e_workflow" in implemented
+        assert "postgresql_mysql_kafka" not in planned
         assert "bruno_postman" not in planned
 
 
@@ -78,7 +83,7 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         payload = json.loads(content[0].text)
         assert payload["health"]["status"] == "healthy"
         assert payload["external_integrations"] == (
-            "git_jira_docs_read_only_local_knowledge_registered_api_suites"
+            "git_jira_docs_read_only_local_knowledge_registered_e2e"
         )
 
         prompts = await client.list_prompts()
@@ -93,7 +98,8 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         assert "Milestone 04 read-only Confluence and Google Docs" in prompt_text
         assert "Milestone 05 local knowledge" in prompt_text
         assert "Milestone 06 runs only registered Bruno and Newman" in prompt_text
-        assert "Milestones 07–11" in prompt_text
+        assert "Milestone 07 runs registered read-only database" in prompt_text
+        assert "Milestones 08–11" in prompt_text
 
 
 @pytest.mark.asyncio

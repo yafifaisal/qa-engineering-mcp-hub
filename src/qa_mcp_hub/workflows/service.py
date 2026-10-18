@@ -16,6 +16,8 @@ from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
 
+from qa_mcp_hub.adapters.database.base import DatabaseReader
+from qa_mcp_hub.adapters.streaming.kafka import TopicReader
 from qa_mcp_hub.config.loader import load_config
 from qa_mcp_hub.config.models import HubConfig
 from qa_mcp_hub.config.paths import default_config_dir
@@ -26,7 +28,16 @@ from qa_mcp_hub.runners.polling import poll_until
 from qa_mcp_hub.storage.execution_store import ExecutionStore
 from qa_mcp_hub.suites.models import SuiteCatalog, SuiteDefinition
 from qa_mcp_hub.suites.registry import catalog_for, load_suite_registry, suite_by_id
-from qa_mcp_hub.workflows.executor import queued_record, run_api_workflow
+from qa_mcp_hub.verification.assertion_registry import load_assertions
+from qa_mcp_hub.verification.correlation import clean_correlation, declared_keys
+from qa_mcp_hub.verification.models import AssertionDefinition
+from qa_mcp_hub.verification.runtime import current_database, current_kafka
+from qa_mcp_hub.verification.service import approved_connections
+from qa_mcp_hub.workflows.executor import (
+    queued_record,
+    run_api_workflow,
+    run_e2e_workflow,
+)
 from qa_mcp_hub.workflows.matcher import match_workflows, suggest_candidates
 from qa_mcp_hub.workflows.models import (
     ExecutionRecord,
@@ -55,12 +66,16 @@ class ExecutionService:
         config_loader: Callable[[], HubConfig] | None = None,
         id_factory: Callable[[], str] | None = None,
         secrets: Callable[[str], str] | None = None,
+        database_reader: DatabaseReader | None = None,
+        kafka_reader: TopicReader | None = None,
     ) -> None:
         self._store = store
         self._clock = clock or (lambda: datetime.now(UTC))
         self._config_loader = config_loader or load_config
         self._ids = id_factory or (lambda: uuid.uuid4().hex)
         self._secrets = secrets
+        self._database = database_reader
+        self._kafka = kafka_reader
         self._jobs = JobManager(1)
         self._concurrency: dict[str, JobManager] = {}
 
@@ -112,6 +127,7 @@ class ExecutionService:
             suites,
             report_path=self._store.path.parent / "preview-report.json",
             environment=environment,
+            assertions=load_assertions(workspace),
         )
 
     def match(
@@ -138,8 +154,9 @@ class ExecutionService:
         execute: bool = False,
         environment: str | None = None,
         wait: bool = True,
+        correlation: dict[str, str] | None = None,
     ) -> RunReceipt:
-        """Preview or execute. Execution requires an approved API-only workflow."""
+        """Preview or execute. Execution requires an approved registered workflow."""
         if (workflow_id is None) == (suite_id is None):
             raise HubError("run_target", "submit one workflow id or one suite id")
         config = self._config_loader()
@@ -150,11 +167,13 @@ class ExecutionService:
         workflow = _target_workflow(
             workspace, workflow_id=workflow_id, suite_id=suite_id
         )
+        assertions = load_assertions(workspace)
         plan = explain_definition(
             workflow,
             suites,
             report_path=self._store.path.parent / "preview-report.json",
             environment=environment,
+            assertions=assertions,
         )
         limits = _limits(config, profile_id)
         if not execute or limits[2] or plan.blocked_reason is not None:
@@ -164,10 +183,21 @@ class ExecutionService:
             if limits[2] and execute:
                 reason = "dry_run"
             return RunReceipt(executed=False, plan=plan, blocked_reason=reason)
-        selected = _selected_suites(workflow, suites, document.implementation_status)
+        selected = _selected_suites(
+            workflow, suites, document.implementation_status, assertions
+        )
         _check_operation(selected, allow_mutations=limits[3])
         _check_environment(selected, environment)
         secrets = _resolve_secrets(selected, self._secrets)
+        verification = tuple(
+            assertions[step.target]
+            for step in workflow.steps
+            if step.kind is not StepKind.api_suite
+        )
+        correlation_values = clean_correlation(
+            correlation or {},
+            declared=declared_keys(verification),
+        )
         context = _context(
             self._ids(),
             profile_id,
@@ -180,18 +210,41 @@ class ExecutionService:
         manager.register(context.execution_id)
         clock = self._clock()
         self._store.save(queued_record(context, clock))
+        database_reader = (
+            self._database if self._database is not None else current_database()
+        )
+        kafka_reader = self._kafka if self._kafka is not None else current_kafka()
+        connections = approved_connections(config, profile_id)
 
         def action(ctx: ExecutionContext, event: threading.Event) -> None:
-            record = run_api_workflow(
-                ctx,
-                tuple(selected),
-                workspace=workspace,
-                binaries=_binaries(),
-                run_root=self._store.path.parent / "runs",
-                secret_values=secrets,
-                clock=clock,
-                cancel=event,
-            )
+            if verification:
+                record = run_e2e_workflow(
+                    ctx,
+                    workflow,
+                    tuple(selected),
+                    assertions,
+                    workspace=workspace,
+                    binaries=_binaries(),
+                    run_root=self._store.path.parent / "runs",
+                    secret_values=secrets,
+                    clock=clock,
+                    cancel=event,
+                    correlation=correlation_values,
+                    approved_connections=connections,
+                    database_reader=database_reader,
+                    kafka_reader=kafka_reader,
+                )
+            else:
+                record = run_api_workflow(
+                    ctx,
+                    tuple(selected),
+                    workspace=workspace,
+                    binaries=_binaries(),
+                    run_root=self._store.path.parent / "runs",
+                    secret_values=secrets,
+                    clock=clock,
+                    cancel=event,
+                )
             self._store.save(record)
 
         manager.run(context, action, wait=wait)
@@ -325,6 +378,7 @@ def submit_test_run(
     execute: bool = False,
     environment: str | None = None,
     profile: str | None = None,
+    correlation: dict[str, str] | None = None,
     config_loader: Callable[[], HubConfig] | None = None,
     secrets: Callable[[str], str] | None = None,
 ) -> RunReceipt:
@@ -337,6 +391,7 @@ def submit_test_run(
             suite_id=suite_id,
             execute=execute,
             environment=environment,
+            correlation=correlation,
             wait=True,
         )
     finally:
@@ -422,6 +477,7 @@ def _selected_suites(
     workflow: WorkflowDefinition,
     suites: dict[str, SuiteDefinition],
     registry_status: str,
+    assertions: dict[str, AssertionDefinition],
 ) -> list[SuiteDefinition]:
     if registry_status != "IMPLEMENTED":
         raise HubError("registry_not_approved", "suite registry is not approved")
@@ -432,10 +488,12 @@ def _selected_suites(
     selected: list[SuiteDefinition] = []
     for step in workflow.steps:
         if step.kind is not StepKind.api_suite:
-            raise HubError(
-                "non_api_step_unavailable",
-                "database and Kafka steps are unavailable until Milestone 07",
-            )
+            if step.target not in assertions:
+                raise HubError(
+                    "assertion_not_registered",
+                    "verification assertion is not registered",
+                )
+            continue
         suite = suites[step.target]
         if not suite.enabled:
             raise HubError("suite_disabled", f"suite {suite.id} is disabled")
@@ -494,15 +552,18 @@ def _context(
     limits: tuple[int, int, bool, bool],
 ) -> ExecutionContext:
     versions = tuple(dict.fromkeys(suite.version for suite in suites))
+    selected_environment = environment
+    if selected_environment is None:
+        selected_environment = suites[0].environment if suites else "local"
     return ExecutionContext(
         execution_id=execution_id,
         profile_id=profile_id,
         workflow_id=workflow.id,
         suite_ids=tuple(suite.id for suite in suites),
-        suite_version=",".join(versions),
+        suite_version=",".join(versions) if versions else "0",
         source_revision=None,
         timeout_seconds=limits[0],
-        environment=environment if environment is not None else suites[0].environment,
+        environment=selected_environment,
         allow_mutations=limits[3],
     )
 

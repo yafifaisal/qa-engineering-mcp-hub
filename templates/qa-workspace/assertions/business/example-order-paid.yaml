@@ -1,0 +1,9 @@
+schema_version: 1
+id: example-order-paid
+kind: business
+implementation_status: IMPLEMENTED
+enabled: true
+definition:
+  left: database.example-order-state.status
+  right: kafka.example-order-created.status
+  mandatory: true

@@ -203,6 +203,25 @@ structural changes must be added here before code is moved or ownership changes.
   Newman is the local runner that does not require Postman cloud login.
   Collection v3 and the Postman CLI are outside this milestone.
 - **Consequence:** Preview is the default. Dry-run profiles do not start a
-  process. API evidence does not claim database or Kafka verification.
+  process. API-only evidence does not claim database or Kafka verification.
   Installed CLIs stay unverified until a gated run executes them.
+
+## ADR-019 — Registered read-only verification
+
+- **Status:** Accepted
+- **Decision:** Milestone 07 executes database and Kafka checks only from
+  registered assertion files. SQL is a single bound SELECT or CTE. Session
+  settings request a read-only transaction and a statement timeout. The
+  configured database login must already be read-only; the hub does not grant
+  that privilege. Kafka observation disables auto-commit, uses an observer
+  group prefix, and refuses offset commits. A message on a topic is publication,
+  not confirmed consumer completion. An overall PASS requires every mandatory
+  step to have run and passed. Flags such as `database_verified` are true only
+  for checks that ran and passed.
+- **Reason:** Model-authored SQL and production consumer-group commits can
+  change systems the hub is only allowed to observe.
+- **Consequence:** Live PostgreSQL, MySQL, and Kafka drivers are not bundled.
+  Fixture sessions and an in-memory observer are OFFLINE_VERIFIED. Setting
+  `QA_MCP_LIVE_DATABASES` or `QA_MCP_LIVE_KAFKA` does not invent a successful
+  connection.
 

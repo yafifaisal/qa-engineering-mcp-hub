@@ -13,6 +13,7 @@ from pathlib import Path
 from qa_mcp_hub.adapters.api_automation.bruno import bruno_arguments
 from qa_mcp_hub.adapters.api_automation.postman import newman_arguments
 from qa_mcp_hub.suites.models import SuiteDefinition
+from qa_mcp_hub.verification.models import AssertionDefinition
 from qa_mcp_hub.workflows.dependency_validator import validate_workflow
 from qa_mcp_hub.workflows.models import (
     PlannedStep,
@@ -28,22 +29,29 @@ def explain_definition(
     *,
     report_path: Path,
     environment: str | None,
+    assertions: dict[str, AssertionDefinition] | None = None,
 ) -> WorkflowExplanation:
     """Return a preview. This function does not start a process."""
-    reasons = validate_workflow(workflow, suites)
+    registry = assertions or {}
+    reasons = validate_workflow(workflow, suites, registry)
     unavailable = {item.split(":", 1)[0] for item in reasons}
     order = _order(workflow)
     steps: list[PlannedStep] = []
     for step_id in order:
         step = next(item for item in workflow.steps if item.id == step_id)
-        if step.id in unavailable or step.kind is not StepKind.api_suite:
+        if step.kind is not StepKind.api_suite:
+            registered = step.id not in unavailable
             steps.append(
                 PlannedStep(
                     id=step.id,
                     kind=step.kind,
                     target=step.target,
-                    available=False,
-                    reason="unavailable_until_milestone_07",
+                    available=registered,
+                    reason=(
+                        f"registered_{step.kind.value}"
+                        if registered
+                        else "assertion_not_registered"
+                    ),
                 )
             )
             continue
@@ -59,10 +67,12 @@ def explain_definition(
                 argv=_preview_argv(suite, report_path, selected),
             )
         )
-    api_only = bool(steps) and all(step.available for step in steps)
+    api_only = bool(steps) and all(
+        step.available and step.kind is StepKind.api_suite for step in steps
+    )
     blocked = None
-    if not api_only:
-        blocked = "non_api_step_unavailable"
+    if any(not step.available for step in steps):
+        blocked = "verification_not_registered"
     if not workflow.approved:
         blocked = "workflow_not_approved"
     if not workflow.enabled:
@@ -95,6 +105,11 @@ def _preview_argv(
         env_file=None,
     )
     return ("newman", *tail)
+
+
+def execution_order(workflow: WorkflowDefinition) -> tuple[str, ...]:
+    """Return a dependency-safe step order."""
+    return _order(workflow)
 
 
 def _order(workflow: WorkflowDefinition) -> tuple[str, ...]:

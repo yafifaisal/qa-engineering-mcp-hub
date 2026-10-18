@@ -36,7 +36,8 @@ def test_catalog_distinguishes_future_work() -> None:
     assert "generate_test_scenario_draft" in catalog.implemented
     assert "list_registered_suites" in catalog.implemented
     assert "submit_test_run" in catalog.implemented
-    assert "postgresql_mysql_kafka" in catalog.planned
+    assert "verify_e2e_workflow" in catalog.implemented
+    assert "postgresql_mysql_kafka" not in catalog.planned
     assert "bruno_postman" not in catalog.planned
 
 

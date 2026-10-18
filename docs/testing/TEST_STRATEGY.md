@@ -113,9 +113,20 @@ module.
 | Process | timeout, cancellation, nonzero exit, and no shell execution |
 | Registry | duplicate suite and workflow ids, unsupported environment |
 | Workflow | dependency cycle, missing assertion, unapproved candidate |
-| Evidence | PASS requires assertions; database and Kafka stay unverified |
+| Evidence | API-only PASS does not claim database or Kafka verification |
 | Secrets | credential values stay out of argv and the execution database |
 | MCP tools | list, explain, preview, submit, and get against a local fixture |
+
+## Milestone 07 matrix
+
+| Area | Required evidence |
+|---|---|
+| PostgreSQL | bound parameters, injection rejection, read-only session, timeout |
+| MySQL | read-only session statements and bound parameters |
+| Kafka | schema mismatch, retention gap, missing event, DLQ, no offset commit |
+| Correlation | mismatched keys fail; undeclared keys are rejected |
+| E2E | PASS, FAIL, INCONCLUSIVE, and BLOCKED; missing mandatory checks are not PASS |
+| MCP tools | assertion list omits SQL text; database and Kafka tools have no SQL argument |
 
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round

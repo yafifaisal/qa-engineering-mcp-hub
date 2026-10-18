@@ -10,17 +10,20 @@ Expected tests: cycles, duplicate ids, and missing assertions.
 
 from qa_mcp_hub.core.errors import HubError
 from qa_mcp_hub.suites.models import SuiteDefinition
+from qa_mcp_hub.verification.models import AssertionDefinition
 from qa_mcp_hub.workflows.models import StepKind, WorkflowDefinition
 
-_UNAVAILABLE = {
-    StepKind.database_assertion,
-    StepKind.kafka_assertion,
-    StepKind.business_assertion,
+_KIND_MATCH = {
+    StepKind.database_assertion: frozenset({"database", "sql"}),
+    StepKind.kafka_assertion: frozenset({"kafka"}),
+    StepKind.business_assertion: frozenset({"business"}),
 }
 
 
 def validate_workflow(
-    workflow: WorkflowDefinition, suites: dict[str, SuiteDefinition]
+    workflow: WorkflowDefinition,
+    suites: dict[str, SuiteDefinition],
+    assertions: dict[str, AssertionDefinition] | None = None,
 ) -> tuple[str, ...]:
     """Return unavailable-step reasons. Structural errors are raised."""
     seen: set[str] = set()
@@ -51,10 +54,15 @@ def validate_workflow(
                         f"assertion {assertion_id} is not declared by suite {suite.id}",
                     )
     _reject_cycles(graph)
+    known_assertions = assertions or {}
     reasons: list[str] = []
     for step in workflow.steps:
-        if step.kind in _UNAVAILABLE:
-            reasons.append(f"{step.id}:unavailable_until_milestone_07")
+        expected = _KIND_MATCH.get(step.kind)
+        if expected is None:
+            continue
+        assertion = known_assertions.get(step.target)
+        if assertion is None or not assertion.enabled or assertion.kind not in expected:
+            reasons.append(f"{step.id}:assertion_not_registered")
     return tuple(reasons)
 
 

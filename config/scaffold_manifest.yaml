@@ -9,13 +9,9 @@ files:
     - "src/qa_mcp_hub/adapters/cicd/github_actions.py"
     - "src/qa_mcp_hub/adapters/cicd/jenkins.py"
     - "src/qa_mcp_hub/adapters/database/__init__.py"
-    - "src/qa_mcp_hub/adapters/database/base.py"
-    - "src/qa_mcp_hub/adapters/database/mysql.py"
-    - "src/qa_mcp_hub/adapters/database/postgresql.py"
     - "src/qa_mcp_hub/adapters/documentation/__init__.py"
     - "src/qa_mcp_hub/adapters/git/__init__.py"
     - "src/qa_mcp_hub/adapters/streaming/__init__.py"
-    - "src/qa_mcp_hub/adapters/streaming/kafka.py"
     - "src/qa_mcp_hub/adapters/test_management/__init__.py"
     - "src/qa_mcp_hub/adapters/test_management/base.py"
     - "src/qa_mcp_hub/adapters/test_management/google_sheets.py"
@@ -45,7 +41,6 @@ files:
     - "src/qa_mcp_hub/mcp/tools/evidence.py"
     - "src/qa_mcp_hub/mcp/tools/release.py"
     - "src/qa_mcp_hub/mcp/tools/test_management.py"
-    - "src/qa_mcp_hub/mcp/tools/verification.py"
     - "src/qa_mcp_hub/planning/__init__.py"
     - "src/qa_mcp_hub/release/__init__.py"
     - "src/qa_mcp_hub/release/coverage_engine.py"
@@ -57,7 +52,6 @@ files:
     - "src/qa_mcp_hub/security/__init__.py"
     - "src/qa_mcp_hub/security/audit_policy.py"
     - "src/qa_mcp_hub/security/secret_scanner.py"
-    - "src/qa_mcp_hub/security/sql_policy.py"
     - "src/qa_mcp_hub/security/url_allowlist.py"
     - "src/qa_mcp_hub/storage/__init__.py"
     - "src/qa_mcp_hub/storage/artifact_store.py"
@@ -65,13 +59,6 @@ files:
     - "src/qa_mcp_hub/storage/paths.py"
     - "src/qa_mcp_hub/suites/__init__.py"
     - "src/qa_mcp_hub/verification/__init__.py"
-    - "src/qa_mcp_hub/verification/assertion_registry.py"
-    - "src/qa_mcp_hub/verification/correlation.py"
-    - "src/qa_mcp_hub/verification/database_assertions.py"
-    - "src/qa_mcp_hub/verification/invariant_engine.py"
-    - "src/qa_mcp_hub/verification/kafka_assertions.py"
-    - "src/qa_mcp_hub/verification/models.py"
-    - "src/qa_mcp_hub/verification/service.py"
     - "src/qa_mcp_hub/workflows/__init__.py"
   IMPLEMENTED:
     - ".cursor/mcp.json"
@@ -184,12 +171,16 @@ files:
     - "src/qa_mcp_hub/adapters/api_automation/base.py"
     - "src/qa_mcp_hub/adapters/api_automation/bruno.py"
     - "src/qa_mcp_hub/adapters/api_automation/postman.py"
+    - "src/qa_mcp_hub/adapters/database/base.py"
+    - "src/qa_mcp_hub/adapters/database/mysql.py"
+    - "src/qa_mcp_hub/adapters/database/postgresql.py"
     - "src/qa_mcp_hub/adapters/documentation/confluence.py"
     - "src/qa_mcp_hub/adapters/documentation/google_docs.py"
     - "src/qa_mcp_hub/adapters/git/base.py"
     - "src/qa_mcp_hub/adapters/git/bitbucket.py"
     - "src/qa_mcp_hub/adapters/git/github.py"
     - "src/qa_mcp_hub/adapters/git/gitlab.py"
+    - "src/qa_mcp_hub/adapters/streaming/kafka.py"
     - "src/qa_mcp_hub/adapters/tickets/jira.py"
     - "src/qa_mcp_hub/app.py"
     - "src/qa_mcp_hub/auth/__init__.py"
@@ -245,6 +236,7 @@ files:
     - "src/qa_mcp_hub/mcp/tools/knowledge.py"
     - "src/qa_mcp_hub/mcp/tools/planning.py"
     - "src/qa_mcp_hub/mcp/tools/system.py"
+    - "src/qa_mcp_hub/mcp/tools/verification.py"
     - "src/qa_mcp_hub/planning/change_impact.py"
     - "src/qa_mcp_hub/planning/coverage_mapper.py"
     - "src/qa_mcp_hub/planning/models.py"
@@ -272,6 +264,7 @@ files:
     - "src/qa_mcp_hub/runners/suite_runner.py"
     - "src/qa_mcp_hub/security/path_allowlist.py"
     - "src/qa_mcp_hub/security/process_policy.py"
+    - "src/qa_mcp_hub/security/sql_policy.py"
     - "src/qa_mcp_hub/server.py"
     - "src/qa_mcp_hub/storage/execution_store.py"
     - "src/qa_mcp_hub/storage/index_store.py"
@@ -280,6 +273,14 @@ files:
     - "src/qa_mcp_hub/suites/registry.py"
     - "src/qa_mcp_hub/suites/resolver.py"
     - "src/qa_mcp_hub/suites/validator.py"
+    - "src/qa_mcp_hub/verification/assertion_registry.py"
+    - "src/qa_mcp_hub/verification/correlation.py"
+    - "src/qa_mcp_hub/verification/database_assertions.py"
+    - "src/qa_mcp_hub/verification/invariant_engine.py"
+    - "src/qa_mcp_hub/verification/kafka_assertions.py"
+    - "src/qa_mcp_hub/verification/models.py"
+    - "src/qa_mcp_hub/verification/runtime.py"
+    - "src/qa_mcp_hub/verification/service.py"
     - "src/qa_mcp_hub/version.py"
     - "src/qa_mcp_hub/workflows/dependency_validator.py"
     - "src/qa_mcp_hub/workflows/discovery.py"
@@ -297,9 +298,13 @@ files:
     - "templates/qa-workspace/README.md"
     - "templates/qa-workspace/assertions/api/README.md"
     - "templates/qa-workspace/assertions/business/README.md"
+    - "templates/qa-workspace/assertions/business/example-order-paid.yaml"
     - "templates/qa-workspace/assertions/database/README.md"
+    - "templates/qa-workspace/assertions/database/example-order-state.yaml"
     - "templates/qa-workspace/assertions/kafka/README.md"
+    - "templates/qa-workspace/assertions/kafka/example-order-created.yaml"
     - "templates/qa-workspace/assertions/sql/README.md"
+    - "templates/qa-workspace/assertions/sql/example-order-sql.yaml"
     - "templates/qa-workspace/ci/pipeline-mappings.yaml"
     - "templates/qa-workspace/ci/registered-jobs.yaml"
     - "templates/qa-workspace/evidence-policies/api-database.yaml"
@@ -349,7 +354,9 @@ files:
     - "tests/unit/test_execution_m06.py"
     - "tests/unit/test_knowledge_m05.py"
     - "tests/unit/test_repositories_m02.py"
+    - "tests/unit/test_verification_m07.py"
     - "uv.lock"
+
 allowed_empty:
   - "src/qa_mcp_hub/py.typed"
 expected_mcp:
@@ -358,20 +365,24 @@ expected_mcp:
     - analyze_jira_ticket
     - explain_workflow
     - find_implementation
+    - find_kafka_event
     - find_related_implementation
     - generate_test_scenario_draft
     - get_repository_changes
     - get_test_run
     - hub_capabilities
     - hub_health
+    - list_registered_assertions
     - list_registered_suites
     - list_workflows
     - read_document
+    - run_database_assertion
     - search_documents
     - search_knowledge
     - search_repository_code
     - submit_test_run
     - trace_cross_repo_flow
+    - verify_e2e_workflow
   resources: ["qa-hub://status"]
   prompts: ["qa_hub_orientation"]
 json_schemas:

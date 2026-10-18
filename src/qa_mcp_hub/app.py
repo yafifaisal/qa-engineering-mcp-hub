@@ -18,6 +18,7 @@ from qa_mcp_hub.mcp.registry import (
     register_milestone_04,
     register_milestone_05,
     register_milestone_06,
+    register_milestone_07,
 )
 
 
@@ -30,6 +31,7 @@ def create_app(settings: HubSettings | None = None) -> FastMCP:
     register_milestone_04(server)
     register_milestone_05(server)
     register_milestone_06(server)
+    register_milestone_07(server)
     return server
 
 

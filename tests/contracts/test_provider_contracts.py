@@ -89,6 +89,9 @@ def test_catalog_matches_architecture_document() -> None:
         "google_docs",
         "bruno",
         "postman",
+        "postgresql",
+        "mysql",
+        "kafka",
     }
     assert {
         item.id.value

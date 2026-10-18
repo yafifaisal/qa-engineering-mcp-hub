@@ -31,7 +31,7 @@ class ExecutionStatus(StrEnum):
 
 
 class StepKind(StrEnum):
-    """Workflow step families. Only API suites run in this milestone."""
+    """Workflow step families. Verification steps run only from the registry."""
 
     api_suite = "api_suite"
     database_assertion = "database_assertion"
@@ -111,20 +111,20 @@ class WorkflowExplanation(BaseModel):
 
 
 class ApiOnlyEvidence(BaseModel):
-    """Minimal API evidence for a later release report. It is not a DB check."""
+    """Evidence for checks that actually ran. Unrun checks stay unverified."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    kind: Literal["api-only"] = "api-only"
+    kind: Literal["api-only", "e2e"] = "api-only"
     execution_id: str
     profile_id: str
     workflow_id: str
     suite_ids: tuple[str, ...]
     suite_version: str
     source_revision: str | None
-    checks: tuple[Literal["api"], ...] = ("api",)
-    database_verified: Literal[False] = False
-    kafka_verified: Literal[False] = False
+    checks: tuple[Literal["api", "database", "kafka", "business"], ...] = ("api",)
+    database_verified: bool = False
+    kafka_verified: bool = False
     assertion_total: int = Field(ge=0)
     assertion_failed: int = Field(ge=0)
     status: ExecutionStatus
@@ -134,14 +134,37 @@ class ApiOnlyEvidence(BaseModel):
     @model_validator(mode="after")
     def pass_requires_assertions(self) -> "ApiOnlyEvidence":
         """A PASS record must contain real assertion results and a clean runner."""
+        if self.database_verified and "database" not in self.checks:
+            raise ValueError("database verification was not executed")
+        if self.kafka_verified and "kafka" not in self.checks:
+            raise ValueError("kafka verification was not executed")
         if self.status is ExecutionStatus.passed and (
             self.assertion_total < 1
             or self.assertion_failed > 0
-            or not self.runner_completed
-            or self.runner_exit_code != 0
+            or (
+                "api" in self.checks
+                and (not self.runner_completed or self.runner_exit_code != 0)
+            )
+            or ("database" in self.checks and not self.database_verified)
+            or ("kafka" in self.checks and not self.kafka_verified)
         ):
             raise ValueError("PASS requires runner success and actual assertions")
         return self
+
+
+class StepEvidence(BaseModel):
+    """One persisted workflow step. ``verified`` requires an executed pass."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    step_id: str
+    kind: str
+    target: str
+    status: ExecutionStatus
+    executed: bool
+    verified: bool
+    reason: str
+    evidence_ref: str
 
 
 class ExecutionRecord(BaseModel):
@@ -166,6 +189,7 @@ class ExecutionRecord(BaseModel):
     evidence: ApiOnlyEvidence
     excerpt: str = ""
     warnings: tuple[str, ...] = ()
+    step_results: tuple[StepEvidence, ...] = ()
 
 
 class RunReceipt(BaseModel):

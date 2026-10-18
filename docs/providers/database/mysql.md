@@ -1,12 +1,12 @@
 # MySQL provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **07**  
-> Verification: documentation scaffold only; no provider request or runner execution has occurred.
+> Verification: registered read-only assertions are tested with fixture sessions. No live MySQL server was contacted, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-MySQL is a supported database verification target. The future adapter will execute only registered, parameterized, read-only assertions under a server-enforced least-privilege account.
+MySQL checks run only from a registered assertion. The adapter applies a read-only session transaction and `MAX_EXECUTION_TIME`. A live driver is not bundled.
 
 ## 2. Supported editions
 
@@ -18,9 +18,7 @@ Self-managed and managed offerings can differ in TLS, authentication plugins, id
 
 ## 4. Supported API capabilities
 
-Planned capability is bounded execution of reviewed SELECT-style assertions with bound parameters, row limits, session safeguards, and normalized results. Arbitrary SQL is prohibited.
-
-These are planned capabilities, not current support.
+Registered SELECT statements use bound parameters, an allowlisted table, a row cap, and `MAX_EXECUTION_TIME`. The configured login must already be read-only.
 
 ## 5. Authentication methods
 
@@ -99,19 +97,19 @@ Use bound parameters, reviewed assertions, server read-only grants, TLS, network
 
 Check host/port, TLS mode, CA/hostname, authentication plugin, account host restrictions, schema grants, replica lag, SQL mode, timeout, and connector version.
 
-Because the provider is not implemented, current inability to connect or execute is expected.
+A live server was not contacted. Connection failures in fixture tests are reported separately from assertion mismatches.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/database/mysql.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/database/mysql.py` — IMPLEMENTED session protections. No live driver is bundled.
+- `src/qa_mcp_hub/security/sql_policy.py` — IMPLEMENTED SELECT-only policy.
+- `src/qa_mcp_hub/providers/registry.py` — catalog status OFFLINE_VERIFIED. The generic `read_schema` port stays unavailable.
 
 ## 19. Related tests
 
-Planned injection resistance, permission, read-only session, timeout, row cap, type normalization, redaction, plugin failure, and opt-in read-only UAT tests.
+`tests/unit/test_verification_m07.py` covers MySQL session protections and bound parameters with a fixture session.
 
-No test currently validates a real provider integration.
+No test opens a live MySQL connection.
 
 ## 20. Current implementation status
 

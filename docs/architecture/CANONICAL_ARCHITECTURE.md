@@ -90,18 +90,18 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for M01 local credential handling; provider OAuth is not implemented |
 | `core/` | Stable types, results, capability declarations, policy boundaries | M02 contracts, results, errors, context, policies, and retry implemented; other core modules remain scaffolded |
 | `providers/` | Provider-neutral contracts, descriptors, and registry | IMPLEMENTED as contracts and stubs; no vendor I/O |
-| `adapters/` | One implementation boundary per supported provider | Git, Jira, Confluence, Google Docs, and registered Bruno/Newman execution are IMPLEMENTED; other adapters remain SCAFFOLDED |
+| `adapters/` | One implementation boundary per supported provider | Git, Jira, Confluence, Google Docs, Bruno/Newman, PostgreSQL, MySQL, and Kafka observation are IMPLEMENTED; CI/CD and test-management adapters remain SCAFFOLDED |
 | `repositories/` | Local/remote repository registration and discovery | IMPLEMENTED for registration, discovery, validation, and local Git metadata; `plan_index` does not read files; `execute_index` does |
 | `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | IMPLEMENTED for local checkouts and supplied documents; OFFLINE_VERIFIED |
 | `planning/` | Ticket analysis, impact, scenarios, and coverage plans | IMPLEMENTED for read-only ticket analysis and non-executable drafts |
 | `suites/` | Approved executable-suite registry | IMPLEMENTED for registered Bruno and Postman suites; OFFLINE_VERIFIED |
-| `workflows/` | Approved workflow discovery, validation, planning, and state | IMPLEMENTED for API workflows; database and Kafka steps are unavailable |
+| `workflows/` | Approved workflow discovery, validation, planning, and state | IMPLEMENTED for registered API and E2E workflows; OFFLINE_VERIFIED |
 | `runners/` | Bounded approved-process execution and normalized results | IMPLEMENTED for registered argument lists; OFFLINE_VERIFIED with fixtures |
-| `verification/` | Registered deterministic assertions and correlation | SCAFFOLDED |
-| `evidence/` | Redacted evidence collection, manifests, rendering, publishing | SCAFFOLDED; API runs persist a minimal evidence record for Milestone 10 |
+| `verification/` | Registered deterministic assertions and correlation | IMPLEMENTED; OFFLINE_VERIFIED with fixture sessions and an in-memory Kafka observer |
+| `evidence/` | Redacted evidence collection, manifests, rendering, publishing | SCAFFOLDED; API and E2E runs persist a minimal evidence record for Milestone 10 |
 | `release/` | Deterministic coverage and risk facts; never automatic sign-off | SCAFFOLDED |
-| `storage/` | Local persistence abstractions and migrations | index and execution SQLite IMPLEMENTED; other stores remain scaffolded |
-| `security/` | Path/URL/process/SQL policy and secret detection | path allowlist and process policy IMPLEMENTED; other security policies remain scaffolded |
+| `storage/` | Local persistence abstractions and migrations | index and execution SQLite IMPLEMENTED, including per-step rows; other stores remain scaffolded |
+| `security/` | Path/URL/process/SQL policy and secret detection | path allowlist, process policy, and SQL policy IMPLEMENTED; other security policies remain scaffolded |
 
 The exact file inventory and ownership metadata are recorded in
 [`../implementation/SCAFFOLD_MANIFEST.md`](../implementation/SCAFFOLD_MANIFEST.md).
@@ -121,9 +121,12 @@ message templates requested by a client. Tools are explicitly invoked operations
 with typed inputs and outputs. None of these M00 primitives diagnose external
 providers.
 
-No database, streaming, CI/CD, test-management, evidence, or release module is
-imported during server construction. The registry owns the allowlist so merely
-creating a future file cannot expose a tool.
+Milestone 00 registers only `hub_health`, `hub_capabilities`, `qa-hub://status`,
+and `qa_hub_orientation`. Later milestones add read-only providers, knowledge
+tools, registered API execution, and registered database, Kafka, and E2E
+verification. CI/CD, test-management, evidence publication, and release modules
+are not imported during server construction. The registry owns the allowlist, so
+creating a future file does not expose a tool.
 
 ## Configuration and profile model
 
@@ -247,9 +250,9 @@ they do not establish a live OS credential backend or provider connection.
 Milestone 01 ends at secure local configuration and credential readiness. It does
 not create provider clients, make network requests, execute suites, query databases,
 consume Kafka, or mutate an external system. Later milestones add read-only
-providers, local knowledge, and registered API execution. Database, Kafka,
-CI/CD, test management, evidence publication, and release approval remain
-`NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
+providers, local knowledge, registered API execution, and registered database
+and Kafka observation. CI/CD, test management, evidence publication, and release
+approval remain `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
 `IMPLEMENTED` only when its requirements, tests, security policy, and progress
 records change together.
 

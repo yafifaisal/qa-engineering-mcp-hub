@@ -65,6 +65,11 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
 - Suite execution accepts a registered suite or workflow id. It does not accept
   a shell command, working directory, or secret. Bruno and Newman argument
   lists are fixed. Credential values stay off the command line.
+- Database checks accept a registered assertion id and declared parameters.
+  They do not accept SQL text, a connection URI, or a secret. The configured
+  database account must already be read-only.
+- Kafka checks accept a registered assertion id and a declared correlation key.
+  They do not commit consumer offsets or scan an undeclared topic.
 - Require preview and explicit user approval for provider writes, CI triggers,
   imports, overwrites, and evidence publication.
 - Keep approval narrow, time-bound, profile-bound, and operation-specific.

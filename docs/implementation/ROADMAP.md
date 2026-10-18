@@ -59,15 +59,17 @@ Owns suite registry, Bruno/Postman adapters, approved process runner, jobs,
 normalization, and execution MCP tools. Exit: registered-only execution with timeout,
 cancellation, output limits, sanitized environment, parser fixtures, and gated local
 runner smoke tests are OFFLINE_VERIFIED. No arbitrary shell. Installed Bruno and
-Newman binaries were not executed, so this exit is not LIVE_VERIFIED. Database and
-Kafka steps remain Milestone 07.
+Newman binaries were not executed, so this exit is not LIVE_VERIFIED. Registered
+database and Kafka checks are Milestone 07.
 
 ## 07 — deterministic end-to-end verification
 
 Owns PostgreSQL/MySQL/Kafka adapters, assertion registry, correlation, invariants,
 polling, and verification tools. Exit: registered parameterized SELECT-only policy,
 row/time limits, authorized bounded Kafka reads without production offset commits,
-and gated non-production live checks.
+and gated non-production live checks. Exit status: OFFLINE_VERIFIED with fixture
+sessions and an in-memory observer. Live PostgreSQL, MySQL, and Kafka clients are
+not bundled, so this exit is not LIVE_VERIFIED.
 
 ## 08 — CI/CD
 

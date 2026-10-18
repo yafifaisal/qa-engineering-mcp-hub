@@ -44,11 +44,11 @@ Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
 | R05-02 | Ticket/change analysis, scenarios, and coverage planning | 05 | `planning/` | `tests/unit/test_knowledge_m05.py` | IMPLEMENTED | OFFLINE_VERIFIED | issue-key mentions, impact findings, non-executable drafts | Drafts are not executed tests |
 | R06-01 | Bruno adapter and registered suite execution | 06 | `adapters/api_automation/bruno.py`, `suites/`, `runners/` | `tests/unit/test_execution_m06.py` | IMPLEMENTED | OFFLINE_VERIFIED | pinned Bruno CLI 3 flags from docs.usebruno.com on 2026-10-18; fixture runner | Installed `bru` was not executed |
 | R06-02 | Postman adapter and registered collection execution | 06 | `adapters/api_automation/postman.py`, `suites/`, `runners/` | `tests/unit/test_execution_m06.py` | IMPLEMENTED | OFFLINE_VERIFIED | Newman 6.2.2 flags from the Newman README and Postman command reference; collection v2 JSON | Installed `newman` was not executed. Postman CLI and collection v3 are not implemented |
-| R06-03 | Approved workflows and dependency/state engine | 06 | `workflows/` | `tests/unit/test_execution_m06.py` | IMPLEMENTED | OFFLINE_VERIFIED | API-only workflows, preview, cycles, and cancellation | Database and Kafka steps return unavailable until Milestone 07 |
-| R07-01 | PostgreSQL read-only assertions | 07 | `adapters/database/postgresql.py`, `verification/` | `tests/contracts/test_postgresql.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider/security docs | No driver, connection, or SQL execution |
-| R07-02 | MySQL read-only assertions | 07 | `adapters/database/mysql.py`, `verification/` | `tests/contracts/test_mysql.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider/security docs | No driver, connection, or SQL execution |
-| R07-03 | Kafka bounded correlation assertions | 07 | `adapters/streaming/kafka.py`, `verification/` | `tests/contracts/test_kafka.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider/security docs | No client, topic read, or offset operation |
-| R07-04 | Registered deterministic assertions/invariants | 07 | `verification/` | `tests/unit/test_verification.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | assertion schema/workspace directories | No assertion evaluator or PASS/FAIL engine |
+| R06-03 | Approved workflows and dependency/state engine | 06 | `workflows/` | `tests/unit/test_execution_m06.py` | IMPLEMENTED | OFFLINE_VERIFIED | API-only workflows, preview, cycles, and cancellation | Unregistered database and Kafka steps stay unverified |
+| R07-01 | PostgreSQL read-only assertions | 07 | `adapters/database/postgresql.py`, `verification/` | `tests/unit/test_verification_m07.py` | IMPLEMENTED | OFFLINE_VERIFIED | bound parameters, injection rejection, read-only session, timeout, connection failure | No live PostgreSQL driver or server |
+| R07-02 | MySQL read-only assertions | 07 | `adapters/database/mysql.py`, `verification/` | `tests/unit/test_verification_m07.py` | IMPLEMENTED | OFFLINE_VERIFIED | MySQL read-only session statements and bound parameters | No live MySQL driver or server |
+| R07-03 | Kafka bounded correlation assertions | 07 | `adapters/streaming/kafka.py`, `verification/` | `tests/unit/test_verification_m07.py` | IMPLEMENTED | OFFLINE_VERIFIED | schema mismatch, retention gap, missing event, DLQ, no offset commit | No live Kafka client or cluster. Publication is not consumer completion |
+| R07-04 | Registered deterministic assertions/invariants | 07 | `verification/` | `tests/unit/test_verification_m07.py` | IMPLEMENTED | OFFLINE_VERIFIED | E2E PASS, FAIL, INCONCLUSIVE, and BLOCKED; mandatory checks cannot be skipped into PASS | Only executed checks are marked verified |
 | R08-01 | Bitbucket Pipelines adapter | 08 | `adapters/cicd/bitbucket_pipelines.py` | `tests/contracts/test_bitbucket_pipelines.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No reads, artifacts, or trigger |
 | R08-02 | GitHub Actions adapter | 08 | `adapters/cicd/github_actions.py` | `tests/contracts/test_github_actions.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | No reads, artifacts, or dispatch |
 | R08-03 | Jenkins adapter | 08 | `adapters/cicd/jenkins.py` | `tests/contracts/test_jenkins.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | provider page and module scaffold | Instance behavior requires verification |
@@ -61,6 +61,6 @@ Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
 | R10-03 | Coverage, risk, and release reporting | 10 | `release/` | `tests/unit/test_release.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | complete module ownership | No automatic sign-off or report generation |
 | R11-01 | Community release and live compatibility evidence | 11 | `.github/workflows/release.yml`, release documentation | hosted release tests (planned) | SCAFFOLDED | BLOCKED | local artifact build only | No hosted CI, signing, or public release performed |
 
-No future-provider row is `IMPLEMENTED` or `LIVE_VERIFIED`. Provider pages document
-intended contracts and official references; they do not constitute execution
-evidence.
+No requirement row is `LIVE_VERIFIED`. Milestones 08–11 remain `SCAFFOLDED`.
+Provider pages document intended contracts and official references; they do not
+replace an executed live check.

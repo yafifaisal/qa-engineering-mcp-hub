@@ -1,7 +1,8 @@
 # Workflow engine architecture
 
-Status: **IMPLEMENTED for API-only workflows. OFFLINE_VERIFIED with local fixtures.**
-Database and Kafka steps are extension points and stay unavailable until Milestone 07.
+Status: **IMPLEMENTED for registered API and E2E workflows. OFFLINE_VERIFIED with local fixtures.**
+Unregistered database, Kafka, and business steps stay unavailable and are not
+reported as verified.
 
 ## Responsibility
 
@@ -11,12 +12,12 @@ assertion ids. The engine:
 1. loads schema version 1 YAML from `workflows/api` and `workflows/e2e`;
 2. rejects duplicate ids, missing dependencies, missing assertion ids, and cycles;
 3. previews an immutable plan before any process starts;
-4. runs only `api_suite` steps through the registered Bruno or Newman argument list;
-5. marks `database_assertion`, `kafka_assertion`, and `business_assertion` steps
-   unavailable and does not execute them;
+4. runs `api_suite` steps through the registered Bruno or Newman argument list;
+5. runs registered `database_assertion`, `kafka_assertion`, and
+   `business_assertion` steps after their dependencies pass;
 6. normalizes runner exit and assertion results separately;
-7. stores an API-only evidence record. `database_verified` and `kafka_verified`
-   stay false.
+7. stores evidence. `database_verified` and `kafka_verified` are true only when
+   those checks ran and passed.
 
 Suggestions built from a Jira key or changed paths are not approved and cannot
 be submitted.

@@ -35,6 +35,12 @@ from qa_mcp_hub.mcp.tools.planning import (
     generate_test_scenario_draft_tool,
 )
 from qa_mcp_hub.mcp.tools.system import hub_capabilities, hub_health
+from qa_mcp_hub.mcp.tools.verification import (
+    find_kafka_event_tool,
+    list_registered_assertions_tool,
+    run_database_assertion_tool,
+    verify_e2e_workflow_tool,
+)
 
 
 def register_milestone_00(server: FastMCP) -> None:
@@ -84,3 +90,11 @@ def register_milestone_06(server: FastMCP) -> None:
     server.tool(explain_workflow_tool, name="explain_workflow")
     server.tool(submit_test_run_tool, name="submit_test_run")
     server.tool(get_test_run_tool, name="get_test_run")
+
+
+def register_milestone_07(server: FastMCP) -> None:
+    """Register assertion tools. They do not accept SQL text or offset commits."""
+    server.tool(list_registered_assertions_tool, name="list_registered_assertions")
+    server.tool(run_database_assertion_tool, name="run_database_assertion")
+    server.tool(find_kafka_event_tool, name="find_kafka_event")
+    server.tool(verify_e2e_workflow_tool, name="verify_e2e_workflow")

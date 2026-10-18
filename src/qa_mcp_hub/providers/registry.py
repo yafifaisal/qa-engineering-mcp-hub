@@ -104,9 +104,21 @@ CATALOG: tuple[ProviderDescriptor, ...] = (
         category=ProviderCategory.api_automation,
         implementation_status=_OFFLINE,
     ),
-    ProviderDescriptor(id=ProviderKind.postgresql, category=ProviderCategory.database),
-    ProviderDescriptor(id=ProviderKind.mysql, category=ProviderCategory.database),
-    ProviderDescriptor(id=ProviderKind.kafka, category=ProviderCategory.streaming),
+    ProviderDescriptor(
+        id=ProviderKind.postgresql,
+        category=ProviderCategory.database,
+        implementation_status=_OFFLINE,
+    ),
+    ProviderDescriptor(
+        id=ProviderKind.mysql,
+        category=ProviderCategory.database,
+        implementation_status=_OFFLINE,
+    ),
+    ProviderDescriptor(
+        id=ProviderKind.kafka,
+        category=ProviderCategory.streaming,
+        implementation_status=_OFFLINE,
+    ),
     ProviderDescriptor(
         id=ProviderKind.bitbucket_pipelines,
         category=ProviderCategory.cicd,
@@ -146,7 +158,13 @@ _READ_PROVIDERS = {
     ProviderKind.confluence,
     ProviderKind.google_docs,
 }
-_OFFLINE_PROVIDERS = _READ_PROVIDERS | {ProviderKind.bruno, ProviderKind.postman}
+_OFFLINE_PROVIDERS = _READ_PROVIDERS | {
+    ProviderKind.bruno,
+    ProviderKind.postman,
+    ProviderKind.postgresql,
+    ProviderKind.mysql,
+    ProviderKind.kafka,
+}
 _EXPOSED_CAPABILITIES = {
     "search_code",
     "compare_changes",

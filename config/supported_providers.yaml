@@ -30,13 +30,13 @@ providers:
     implementation_status: OFFLINE_VERIFIED
   - id: postgresql
     category: database
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: mysql
     category: database
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: kafka
     category: streaming
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: bitbucket_pipelines
     category: cicd
     implementation_status: NOT_IMPLEMENTED

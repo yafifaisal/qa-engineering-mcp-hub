@@ -8,8 +8,9 @@ MCP-client configuration generation. Milestone 02 adds provider contracts and
 adds read-only GitHub, GitLab, Bitbucket, and Jira tools. Milestone 04 adds
 read-only Confluence and Google Docs tools. Other provider APIs remain
 `NOT_IMPLEMENTED`. Milestone 05 indexes permitted local Git checkouts.
-Milestone 06 runs registered Bruno and Newman API suites. Live provider calls
-and live runner CLIs are not claimed.
+Milestone 06 runs registered Bruno and Newman API suites. Milestone 07 runs
+registered database, Kafka, and business checks. Live provider calls, live
+runner CLIs, and live database or Kafka systems are not claimed.
 
 ## Choose your platform
 

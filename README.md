@@ -7,10 +7,12 @@ repository registration. Milestone 03 adds read-only GitHub, GitLab, Bitbucket,
 and Jira access. Milestone 04 adds read-only Confluence and Google Docs
 retrieval. Milestone 05 adds a local knowledge index over approved Git
 checkouts. Milestone 06 runs registered Bruno and Newman suites from approved
-API workflows. Database, Kafka, CI/CD, and release features remain
-`NOT_IMPLEMENTED` or `SCAFFOLDED`.
+API workflows. Milestone 07 adds registered read-only database assertions,
+bounded Kafka observation, and E2E workflow verification. CI/CD and release
+features remain `NOT_IMPLEMENTED` or `SCAFFOLDED`. Live database and Kafka
+systems were not contacted.
 
-## What works through Milestone 06
+## What works through Milestone 07
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -50,12 +52,16 @@ API workflows. Database, Kafka, CI/CD, and release features remain
   argument list, never a caller shell command. API evidence does not claim
   database or Kafka verification. Local runner fixtures are `OFFLINE_VERIFIED`.
   The installed Bruno and Newman CLIs were not executed in this session.
+- `list_registered_assertions`, `run_database_assertion`, `find_kafka_event`,
+  and `verify_e2e_workflow` run registered checks. They do not accept SQL text
+  or commit Kafka offsets. Fixture tests are `OFFLINE_VERIFIED`. A PASS does
+  not claim a check that did not run. Live PostgreSQL, MySQL, and Kafka are
+  not `LIVE_VERIFIED`.
 
-Interactive browser OAuth, Git and Jira writes, database query, Kafka operation,
-CI/CD action, test-management action, evidence publication, and release approval
-are not implemented. Google Docs can refresh an access token from a stored
-refresh token. Suite execution stays inside an approved workflow and a dry-run
-profile does not start a runner.
+Interactive browser OAuth, Git and Jira writes, CI/CD action, test-management
+action, evidence publication, and release approval are not implemented. Google
+Docs can refresh an access token from a stored refresh token. Suite execution
+stays inside an approved workflow and a dry-run profile does not start a runner.
 
 ## Prerequisites and setup
 

@@ -1,7 +1,7 @@
 schema_version: 1
 id: example-e2e-workflow
 name: Example end-to-end workflow
-description: Disabled example. Database and Kafka steps stay unavailable.
+description: Disabled example that cites registered database, Kafka, and business checks.
 implementation_status: SCAFFOLDED
 enabled: false
 approved: false
@@ -21,3 +21,7 @@ steps:
     kind: kafka_assertion
     target: example-order-created
     depends_on: [execute-api-suite]
+  - id: verify-order-invariant
+    kind: business_assertion
+    target: example-order-paid
+    depends_on: [verify-database-state, verify-domain-event]

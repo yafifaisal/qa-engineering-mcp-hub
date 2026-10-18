@@ -54,3 +54,31 @@ def poll_until(
             return PollOutcome(completed=False, attempts=attempts, reason="deadline")
         time.sleep(min(interval_seconds, max(0.0, deadline - time.monotonic())))
     return PollOutcome(completed=False, attempts=attempts, reason="max_attempts")
+
+
+def poll_for_rows(
+    probe: Callable[[], tuple[dict[str, str], ...] | None],
+    *,
+    timeout_seconds: float,
+    interval_seconds: float,
+    max_attempts: int,
+    cancel: threading.Event | None = None,
+) -> tuple[PollOutcome, tuple[dict[str, str], ...]]:
+    """Poll until a probe returns rows or the existing attempt cap is reached."""
+    found: list[tuple[dict[str, str], ...]] = []
+
+    def ready() -> bool:
+        rows = probe()
+        if not rows:
+            return False
+        found.append(rows)
+        return True
+
+    outcome = poll_until(
+        ready,
+        timeout_seconds=timeout_seconds,
+        interval_seconds=interval_seconds,
+        max_attempts=max_attempts,
+        cancel=cancel,
+    )
+    return outcome, found[-1] if found else ()

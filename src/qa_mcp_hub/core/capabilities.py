@@ -52,9 +52,12 @@ def list_capabilities() -> CapabilityCatalog:
             "explain_workflow",
             "submit_test_run",
             "get_test_run",
+            "list_registered_assertions",
+            "run_database_assertion",
+            "find_kafka_event",
+            "verify_e2e_workflow",
         ),
         planned=(
-            "postgresql_mysql_kafka",
             "bitbucket_pipelines_github_actions_jenkins",
             "xray_testrail_spreadsheet",
             "qa_evidence_and_release",

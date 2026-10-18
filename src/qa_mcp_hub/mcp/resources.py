@@ -21,7 +21,7 @@ def hub_status_resource() -> str:
         "health": hub_health().model_dump(mode="json"),
         "capabilities": hub_capabilities().model_dump(mode="json"),
         "external_integrations": (
-            "git_jira_docs_read_only_local_knowledge_registered_api_suites"
+            "git_jira_docs_read_only_local_knowledge_registered_e2e"
         ),
     }
     return json.dumps(payload, sort_keys=True)

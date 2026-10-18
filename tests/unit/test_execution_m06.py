@@ -505,9 +505,7 @@ def test_e2e_preview_does_not_claim_database_verification(
     assert receipt.plan.database_verified is False
     assert receipt.plan.kafka_verified is False
     blocked = [
-        step
-        for step in receipt.plan.steps
-        if step.reason == "unavailable_until_milestone_07"
+        step for step in receipt.plan.steps if step.reason == "assertion_not_registered"
     ]
     assert blocked
     assert not (tmp_path / "bin" / "argv.json").exists()

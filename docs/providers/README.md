@@ -4,10 +4,12 @@ The QA Engineering MCP Hub recognizes only the provider families listed here.
 Milestone 02 publishes typed contracts and a registry for every family below.
 GitHub, GitLab, Bitbucket, Jira, Confluence, and Google Docs have read-only
 adapters marked **OFFLINE_VERIFIED**. Bruno and Postman registered-suite execution
-is **OFFLINE_VERIFIED** with local fixtures. Their generic provider port still
-returns a contract stub. The other families remain **NOT_IMPLEMENTED**. Google
-Docs can refresh an access token. No adapter opens database sessions, Kafka
-consumers, or publication flows.
+is **OFFLINE_VERIFIED** with local fixtures. PostgreSQL, MySQL, and Kafka
+registered checks are **OFFLINE_VERIFIED** with fixture sessions and an in-memory
+observer. Their generic provider ports still return contract stubs. No live
+database or Kafka system was contacted. The other families remain
+**NOT_IMPLEMENTED**. Google Docs can refresh an access token. CI/CD and
+publication flows are not opened.
 
 Documentation examples use the versioned M01 configuration shape, contain only
 credential references, and remain disabled. A schema-valid local connection is not
@@ -37,9 +39,9 @@ credential-presence check does not advance provider verification status.
 | Documentation | Google Docs | 04 | OFFLINE_VERIFIED | [Google Docs](documentation/google-docs.md) |
 | API automation | Bruno | 06 | OFFLINE_VERIFIED | [Bruno](api-automation/bruno.md) |
 | API automation | Postman | 06 | OFFLINE_VERIFIED | [Postman](api-automation/postman.md) |
-| Database | PostgreSQL | 07 | NOT_IMPLEMENTED | [PostgreSQL](database/postgresql.md) |
-| Database | MySQL | 07 | NOT_IMPLEMENTED | [MySQL](database/mysql.md) |
-| Streaming | Kafka | 07 | NOT_IMPLEMENTED | [Kafka](streaming/kafka.md) |
+| Database | PostgreSQL | 07 | OFFLINE_VERIFIED | [PostgreSQL](database/postgresql.md) |
+| Database | MySQL | 07 | OFFLINE_VERIFIED | [MySQL](database/mysql.md) |
+| Streaming | Kafka | 07 | OFFLINE_VERIFIED | [Kafka](streaming/kafka.md) |
 | CI/CD | Bitbucket Pipelines | 08 | NOT_IMPLEMENTED | [Bitbucket Pipelines](cicd/bitbucket-pipelines.md) |
 | CI/CD | GitHub Actions | 08 | NOT_IMPLEMENTED | [GitHub Actions](cicd/github-actions.md) |
 | CI/CD | Jenkins | 08 | NOT_IMPLEMENTED | [Jenkins](cicd/jenkins.md) |

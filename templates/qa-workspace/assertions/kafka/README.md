@@ -1,5 +1,5 @@
 # Kafka assertions
 
-Future Milestone 07 ownership. Assertions must identify an allowlisted topic,
-bounded time window, and deterministic correlation key. Diagnostic consumers
-must not commit production offsets. Kafka support is NOT_IMPLEMENTED in M00.
+Register an allowlisted topic, a bounded message cap, and a correlation key.
+The consumer group must start with `qa-mcp-observer-`. Observation does not
+commit offsets. A published event is not confirmed consumer completion.

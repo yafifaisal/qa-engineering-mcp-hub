@@ -252,9 +252,40 @@ was not set. API execution tests used a local stand-in process. No Bruno CLI,
 Newman CLI, Confluence, Google, or Git host was called. Windows and Linux
 execution remains `BLOCKED`.
 
-## Milestones 07–11
+## Milestone 07 — implemented and offline verified
 
-Database and Kafka verification, CI/CD, test management, evidence publication,
-and release intelligence remain `SCAFFOLDED` or `NOT_IMPLEMENTED`. Native
-Windows/Linux execution and Python 3.13 execution remain `BLOCKED`. Writes,
-Google Sheets, and the interactive browser OAuth flow are not implemented.
+- [x] Registered PostgreSQL and MySQL assertions bind parameters and reject
+  injected SQL.
+- [x] Read-only session statements, timeouts, and connection failures stay
+  distinct from assertion mismatches.
+- [x] Kafka observation validates registered schemas, reports retention gaps,
+  missing events, and DLQ hits, and does not commit offsets.
+- [x] An E2E workflow records PASS, FAIL, INCONCLUSIVE, and BLOCKED. A missing
+  mandatory check cannot become PASS.
+- [ ] Live PostgreSQL, MySQL, and Kafka were not contacted. Drivers are not
+  bundled, so this is not `LIVE_VERIFIED`.
+
+## Executed verification — Milestone 07
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
+| `uv lock --check` | 0 | lock matches project metadata |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 295 files already formatted |
+| `uv run mypy src` | 0 | no issues in 183 source files |
+| `uv run pytest -q` | 0 | 131 passed, 1 skipped |
+| `uv build` | 0 | sdist and wheel built |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 354 files, 101 directories, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py`. `QA_MCP_LIVE_PROVIDERS`
+was not set. Database and Kafka tests used fixture sessions and an in-memory
+observer. No PostgreSQL, MySQL, Kafka, Bruno CLI, Newman CLI, Confluence,
+Google, or Git host was called. Windows and Linux execution remains `BLOCKED`.
+
+## Milestones 08–11
+
+CI/CD, test management, evidence publication, and release intelligence remain
+`SCAFFOLDED` or `NOT_IMPLEMENTED`. Native Windows/Linux execution and Python
+3.13 execution remain `BLOCKED`. Writes, Google Sheets, and interactive browser
+OAuth are not implemented.

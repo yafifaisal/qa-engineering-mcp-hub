@@ -37,6 +37,8 @@ Confluence adapter, Google Docs adapter, and knowledge document models to
 `IMPLEMENTED`. Milestone 05 moved the knowledge engine, index store, and
 planning drafts to `IMPLEMENTED`. Milestone 06 moved the suite registry,
 workflow engine, process runner, and execution store to `IMPLEMENTED`.
+Milestone 07 moved the SQL policy, database and Kafka adapters, and
+verification package to `IMPLEMENTED`.
 
 Meaningful README files preserve otherwise-empty QA Workspace and test directories.
 The extra machine manifest and `STRUCTURE_AUDIT.json` provide deterministic input
