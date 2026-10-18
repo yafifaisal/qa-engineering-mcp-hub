@@ -60,9 +60,11 @@ def list_capabilities() -> CapabilityCatalog:
             "get_pipeline_status",
             "get_pipeline_artifacts",
             "prepare_pipeline_trigger",
+            "search_test_cases",
+            "compare_test_cases",
+            "preview_test_case_import",
+            "export_test_cases",
+            "prepare_result_publication",
         ),
-        planned=(
-            "xray_testrail_spreadsheet",
-            "qa_evidence_and_release",
-        ),
+        planned=("qa_evidence_and_release",),
     )

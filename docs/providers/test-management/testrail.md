@@ -1,12 +1,12 @@
 # TestRail provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **09**  
-> Verification: documentation scaffold only; no provider request or file operation has occurred.
+> Verification: mocked TestRail case and run tests. No live TestRail call was made, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-TestRail is a supported test-management provider. The future adapter will normalize authorized projects, suites, sections, cases, runs, tests, and results.
+TestRail reads map projects, suites, sections, cases, and runs into the canonical models. Separated steps keep their newlines. Priority ids must appear in the mapping. The read uses a Bearer token and `index.php?/api/v2/get_cases/{project}` with the page size kept in that query string.
 
 ## 2. Supported editions
 
@@ -106,23 +106,23 @@ Allowlist instance/projects, minimize permissions, redact auth and PII, validate
 
 Check instance URL/path, edition/version, API enablement, identity/token, project role, custom fields, pagination, proxy/CA, and throttling. Requires installation verification.
 
-Because the provider is not implemented, current inability to connect or operate is expected.
+Because publication is not an MCP tool, a preview cannot add TestRail results. The guarded dispatch path is the only POST, and the example mapping leaves it disabled.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/test_management/testrail.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/test_management/testrail.py` — IMPLEMENTED case, suite, section, and run reads.
+- `src/qa_mcp_hub/adapters/test_management/base.py` — IMPLEMENTED canonical models and column mapping.
+- `src/qa_mcp_hub/mcp/tools/test_management.py` — search, compare, preview, export, and publication preview.
 
 ## 19. Related tests
 
-Planned pagination, hierarchy, custom-field mapping, permission, duplicate ID, publication-denial/idempotency, sanitized-error, and gated live-read tests.
+`tests/contracts/test_testrail.py` covers separated steps, suite and plan ids, priority rejection, permission failure, run ids, and comparison with an Xray case.
 
-No test currently validates a real provider integration.
+No live TestRail call was made.
 
 ## 20. Current implementation status
 
-**NOT_IMPLEMENTED.** The adapter file is **SCAFFOLDED** and contains no client, connection, file, query, parsing, publication, or registration logic. It is not exposed through FastMCP.
+**OFFLINE_VERIFIED.** Mocked HTTP tests cover case and run reads. Result publication stays off unless a mapping sets `allow_publish` and a separate approval is consumed. This is not LIVE_VERIFIED.
 
 ## 21. Official documentation references
 

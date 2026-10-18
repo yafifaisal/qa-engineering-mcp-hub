@@ -138,6 +138,16 @@ module.
 | Trigger | prepare does not call a provider; remote trigger is not an MCP tool |
 | Correlation | suite ids and issue keys come from the run revision and mapping |
 
+## Milestone 09 matrix
+
+| Area | Required evidence |
+|---|---|
+| Xray | Cloud `action` steps and Data Center `step` fields, unknown priority, one POST |
+| TestRail | separated steps, suite and section ids, run ids, permission failure |
+| CSV/XLSX | UTF-8, rejected UTF-16, formula prefix, multiline roundtrip, dry-run |
+| Google Sheets | read-only scope and mocked values range |
+| Publication | prepare does not call a provider; publishing is not an MCP tool |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

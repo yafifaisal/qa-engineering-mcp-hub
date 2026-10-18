@@ -7,6 +7,12 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 09 maps Xray Cloud, Xray Data Center, TestRail, CSV, XLSX, and
+  Google Sheets into one canonical case. Multiline steps, extra columns, and
+  formula neutralization are OFFLINE_VERIFIED. `prepare_result_publication`
+  does not call a provider. Result publication is not an MCP tool. No live
+  Xray, TestRail, or Google Sheets system was contacted, so these providers
+  are not LIVE_VERIFIED.
 - Milestone 08 registered CI inspection for Bitbucket Pipelines, GitHub
   Actions, and Jenkins. Success, failure, cancellation, permission errors,
   expired artifacts, redacted logs, and exact Git revisions are

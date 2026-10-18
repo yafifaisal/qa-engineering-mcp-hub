@@ -1,12 +1,12 @@
 # CSV and XLSX spreadsheet provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **09**  
-> Verification: documentation scaffold only; no provider request or file operation has occurred.
+> Verification: local CSV and XLSX tests with openpyxl 3.1.5. No cloud spreadsheet was contacted.
 
 ## 1. Provider overview
 
-The spreadsheet provider covers local CSV and XLSX interchange for test cases. It is a file-format adapter, not a general spreadsheet execution engine or cloud-storage integration.
+Local CSV and XLSX files map into the same canonical case. CSV accepts UTF-8 and rejects a UTF-16 BOM. XLSX is read with openpyxl and formulas stay text. Export prefixes cells that start with `=`, `+`, `-`, `@`, tab, or carriage return. Extra columns are preserved. A dry-run export does not write a file.
 
 ## 2. Supported editions
 
@@ -94,23 +94,22 @@ Restrict paths, reject unsafe formulas on export, avoid evaluating formulas/macr
 
 Check registered path, OS permission/lock, CSV encoding/dialect/newline, XLSX sheet/table, headers, duplicate IDs, formulas, mapping definition, and size limits.
 
-Because the provider is not implemented, current inability to connect or operate is expected.
+A local file can be imported and exported inside the workspace. Publishing those rows to a remote system is rejected unless the mapping format is an API provider and every publication guard passes.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/test_management/spreadsheet.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/test_management/spreadsheet.py` — IMPLEMENTED CSV and XLSX import and export.
+- `templates/qa-workspace/test-management/import-templates/example-cases.csv` — UTF-8 template with multiline steps.
 
 ## 19. Related tests
 
-Planned path-escape, CSV dialect/encoding, XLSX mapping, empty/malformed cells, formula safety, duplicate IDs, round-trip/loss report, collision, and native-OS tests.
+`tests/contracts/test_spreadsheet.py` covers Unicode, step formats, missing fields, invalid status and priority, duplicate ids, formula neutralization, XLSX roundtrip, and dry-run export.
 
-No test currently validates a real provider integration.
+No cloud spreadsheet was contacted.
 
 ## 20. Current implementation status
 
-**NOT_IMPLEMENTED.** The adapter file is **SCAFFOLDED** and contains no client, connection, file, query, parsing, publication, or registration logic. It is not exposed through FastMCP.
+**OFFLINE_VERIFIED.** Local CSV and XLSX tests cover import, export, and formula neutralization. A dry-run does not write. This is not a live Google Sheets check.
 
 ## 21. Official documentation references
 

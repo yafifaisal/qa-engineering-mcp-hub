@@ -8,8 +8,9 @@
 - Google Docs can refresh an access token from a stored refresh token. The
   refresh token is not returned by MCP tools. Interactive browser login is not
   implemented.
-- Other provider integrations remain `NOT_IMPLEMENTED`. Their registry entries
-  still return contract stubs.
+- Evidence and release adapters remain `NOT_IMPLEMENTED`. The generic
+  `read_case` port stays unavailable even though the Milestone 09 tools read
+  through reviewed mappings.
 - Milestone 01 implements local configuration, profiles, credential references,
   redaction, offline OAuth/PKCE state, and the setup/config CLI. It does not
   perform a provider OAuth exchange, token refresh, or network connectivity test.
@@ -31,8 +32,12 @@
   observation does not commit offsets. A topic read is not consumer completion.
   Live database and Kafka drivers are not bundled. `QA_MCP_LIVE_DATABASES` and
   `QA_MCP_LIVE_KAFKA` do not create a successful stand-in connection.
-- Test management, evidence publication, and release intelligence remain
-  Milestones 09–10.
+- Test-case import is OFFLINE_VERIFIED for Xray, TestRail, CSV, XLSX, and
+  Google Sheets. Unknown priority and result values fail the mapping. Extra
+  columns are preserved. Result publication is not an MCP tool. The example
+  mapping keeps `allow_publish` false. No live Xray, TestRail, or Google
+  Sheets call was made.
+- Evidence publication and release intelligence remain Milestone 10.
 - CI reads are OFFLINE_VERIFIED with mocked HTTP. Remote triggering is not an
   MCP tool. No live CI system was contacted.
 - Ticket analysis does not call a language model.

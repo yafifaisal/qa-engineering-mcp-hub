@@ -80,9 +80,11 @@ Live CI systems were not contacted, so this exit is not LIVE_VERIFIED.
 
 ## 09 — test management
 
-Owns Xray, TestRail, CSV/XLSX, Google Sheets, canonical case mapping, previews,
-loss reports, and approved publication. Exit: mapping/round-trip/formula-safety/
-idempotency tests and gated sandbox reads/writes for each live claim.
+Owns Xray Cloud, Xray Data Center, TestRail, CSV/XLSX, Google Sheets, canonical
+case mapping, and publication preview. Exit status: OFFLINE_VERIFIED with local
+files and mocked HTTP. `prepare_result_publication` does not call a provider.
+Result publication is not an MCP tool. Live Xray, TestRail, and Google Sheets
+were not contacted, so this exit is not LIVE_VERIFIED.
 
 ## 10 — evidence and release intelligence
 

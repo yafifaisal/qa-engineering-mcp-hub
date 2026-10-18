@@ -6,8 +6,8 @@ Result: **PASS**
 
 | Measure | Count |
 |---|---:|
-| Expected Files | 359 |
-| Existing Expected Files | 359 |
+| Expected Files | 366 |
+| Existing Expected Files | 366 |
 | Missing Files | 0 |
 | Unlisted Files | 0 |
 | Expected Directories | 101 |
@@ -18,7 +18,7 @@ Result: **PASS**
 
 ## MCP discovery
 
-- Tools: `analyze_change_impact, analyze_jira_ticket, explain_workflow, find_implementation, find_kafka_event, find_related_implementation, generate_test_scenario_draft, get_pipeline_artifacts, get_pipeline_status, get_repository_changes, get_test_run, hub_capabilities, hub_health, list_pipeline_runs, list_registered_assertions, list_registered_suites, list_workflows, prepare_pipeline_trigger, read_document, run_database_assertion, search_documents, search_knowledge, search_repository_code, submit_test_run, trace_cross_repo_flow, verify_e2e_workflow`
+- Tools: `analyze_change_impact, analyze_jira_ticket, compare_test_cases, explain_workflow, export_test_cases, find_implementation, find_kafka_event, find_related_implementation, generate_test_scenario_draft, get_pipeline_artifacts, get_pipeline_status, get_repository_changes, get_test_run, hub_capabilities, hub_health, list_pipeline_runs, list_registered_assertions, list_registered_suites, list_workflows, prepare_pipeline_trigger, prepare_result_publication, preview_test_case_import, read_document, run_database_assertion, search_documents, search_knowledge, search_repository_code, search_test_cases, submit_test_run, trace_cross_repo_flow, verify_e2e_workflow`
 - Resources: `qa-hub://status`
 - Prompts: `qa_hub_orientation`
 

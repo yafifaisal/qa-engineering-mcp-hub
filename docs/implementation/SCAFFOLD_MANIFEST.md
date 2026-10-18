@@ -9,17 +9,17 @@ explainable and testable.
 
 ## Status meaning
 
-- `IMPLEMENTED` describes a complete Milestone 00, 01, or 02 artifact:
+- `IMPLEMENTED` describes a complete Milestone 00 through 09 artifact:
   working source, tests, scripts, documentation, schemas, safe examples, or
-  templates. Milestone 01 is local configuration. Milestone 02 is provider
-  contracts and repository registration. Neither is a provider adapter.
+  templates. Milestone 09 maps test cases. It does not publish results from
+  an MCP tool and it does not contact a live test-management system.
 - `SCAFFOLDED` describes a future Python ownership boundary. Its module docstring
   declares purpose, milestone, ownership, dependencies, and expected tests, but it
   exposes no provider or domain behavior.
 
-Provider documentation is implemented documentation about a `NOT_IMPLEMENTED`
-integration. Likewise, a complete disabled template does not make its future runner
-or workflow engine implemented.
+Provider documentation records the current adapter boundary. An
+`OFFLINE_VERIFIED` page is not a live provider call. A complete disabled
+template does not make its future runner or workflow engine implemented.
 
 ## Completeness policy
 

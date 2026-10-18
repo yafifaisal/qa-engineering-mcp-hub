@@ -319,9 +319,45 @@ used mocked HTTP. No Bitbucket, GitHub Actions, Jenkins, PostgreSQL, MySQL,
 Kafka, Bruno CLI, Newman CLI, Confluence, Google, or Git host was called.
 Windows and Linux execution remains `BLOCKED`.
 
-## Milestones 09–11
+## Milestone 09 — implemented and offline verified
 
-Test management, evidence publication, and release intelligence remain
-`SCAFFOLDED` or `NOT_IMPLEMENTED`. Native Windows/Linux execution and Python
-3.13 hosted-runner evidence remain `BLOCKED`. Writes, Google Sheets, and
-interactive browser OAuth are not implemented.
+- [x] Xray Cloud and Data Center, TestRail, CSV, XLSX, and Google Sheets map
+  into one canonical case, suite, plan, execution, and result model.
+- [x] Extra columns are preserved. Unknown priority and result values fail.
+  Multiline steps survive import and export. Formula-like cells are prefixed.
+- [x] `search_test_cases`, `compare_test_cases`, `preview_test_case_import`,
+  `export_test_cases`, and `prepare_result_publication` are registered.
+  `prepare_result_publication` does not call a provider. Result publication
+  is not an MCP tool.
+- [x] A guarded publication spends one approval, sends one POST, and does not
+  send a second POST for the same execution digest. A local spreadsheet
+  mapping cannot use that path. The example mapping keeps `allow_publish`
+  false.
+- [ ] Live Xray, TestRail, and Google Sheets were not contacted, so this is
+  not `LIVE_VERIFIED`.
+
+## Executed verification — Milestone 09
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | audited 85 packages |
+| `uv lock --check` | 0 | resolved 91 packages |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 302 files already formatted |
+| `uv run mypy src` | 0 | no issues in 183 source files |
+| `uv run pytest -q` | 0 | 164 passed, 1 skipped |
+| `uv build` | 0 | sdist and wheel built |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 366 files, 101 directories, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py` because live
+provider calls are not enabled. `QA_MCP_LIVE_PROVIDERS` was not set. Xray,
+TestRail, and Google Sheets tests used mocked HTTP. CSV and XLSX tests used
+local files. No Xray, TestRail, Google Sheets, Bitbucket, GitHub Actions,
+Jenkins, PostgreSQL, MySQL, Kafka, Bruno CLI, Newman CLI, Confluence, or Git
+host was called. Windows and Linux execution remains `BLOCKED`.
+
+## Milestones 10–11
+
+Evidence publication and release intelligence remain `SCAFFOLDED` or
+`NOT_IMPLEMENTED`. Native Windows/Linux execution and Python 3.13 hosted-runner
+evidence remain `BLOCKED`. Interactive browser OAuth is not implemented.

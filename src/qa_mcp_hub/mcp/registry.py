@@ -41,6 +41,13 @@ from qa_mcp_hub.mcp.tools.planning import (
     generate_test_scenario_draft_tool,
 )
 from qa_mcp_hub.mcp.tools.system import hub_capabilities, hub_health
+from qa_mcp_hub.mcp.tools.test_management import (
+    compare_test_cases_tool,
+    export_test_cases_tool,
+    prepare_result_publication_tool,
+    preview_test_case_import_tool,
+    search_test_cases_tool,
+)
 from qa_mcp_hub.mcp.tools.verification import (
     find_kafka_event_tool,
     list_registered_assertions_tool,
@@ -112,3 +119,12 @@ def register_milestone_08(server: FastMCP) -> None:
     server.tool(get_pipeline_status_tool, name="get_pipeline_status")
     server.tool(get_pipeline_artifacts_tool, name="get_pipeline_artifacts")
     server.tool(prepare_pipeline_trigger_tool, name="prepare_pipeline_trigger")
+
+
+def register_milestone_09(server: FastMCP) -> None:
+    """Register test-case tools. Result publication is not registered."""
+    server.tool(search_test_cases_tool, name="search_test_cases")
+    server.tool(compare_test_cases_tool, name="compare_test_cases")
+    server.tool(preview_test_case_import_tool, name="preview_test_case_import")
+    server.tool(export_test_cases_tool, name="export_test_cases")
+    server.tool(prepare_result_publication_tool, name="prepare_result_publication")

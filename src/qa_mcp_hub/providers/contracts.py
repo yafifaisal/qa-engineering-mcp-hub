@@ -87,7 +87,13 @@ class CicdProvider(Protocol):
 
 @runtime_checkable
 class TestManagementProvider(Protocol):
-    """Read-oriented test-management port."""
+    """Read-oriented test-management port. Publication is not part of this port."""
 
     def read_case(self, context: ExecutionContext) -> ToolResult:
         """Read one test case for the bound connection."""
+
+    def search_cases(self, context: ExecutionContext, page: Pagination) -> ToolResult:
+        """Search canonical cases for the bound connection."""
+
+    def compare_cases(self, context: ExecutionContext) -> ToolResult:
+        """Compare two canonical cases for the bound connection."""

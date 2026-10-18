@@ -78,6 +78,11 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
 - `prepare_pipeline_trigger` returns a preview and does not call the provider.
   Remote triggering is not an MCP tool. A guarded dispatch function spends a
   single-use approval before one POST and does not retry that POST.
+- `prepare_result_publication` returns a preview and does not call the
+  provider. Result publication is not an MCP tool. A guarded dispatch function
+  spends a single-use approval before one POST and does not retry that POST.
+  A local CSV or XLSX mapping cannot use that path. The example mapping keeps
+  `allow_publish` false.
 
 An API token with broad permissions does not broaden the Hub's authorized scope.
 The Hub must still deny any operation not enabled by its policy.

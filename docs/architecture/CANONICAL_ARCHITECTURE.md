@@ -250,9 +250,9 @@ they do not establish a live OS credential backend or provider connection.
 Milestone 01 ends at secure local configuration and credential readiness. It does
 not create provider clients, make network requests, execute suites, query databases,
 consume Kafka, or mutate an external system. Later milestones add read-only
-providers, local knowledge, registered API execution, and registered database
-and Kafka observation, and registered CI inspection. Test management, evidence
-publication, and release approval remain `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
+providers, local knowledge, registered API execution, registered database
+and Kafka observation, registered CI inspection, and canonical test-case
+import. Evidence publication and release approval remain `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
 `IMPLEMENTED` only when its requirements, tests, security policy, and progress
 records change together.
 

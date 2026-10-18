@@ -139,19 +139,23 @@ CATALOG: tuple[ProviderDescriptor, ...] = (
         id=ProviderKind.xray,
         category=ProviderCategory.test_management,
         variants=("cloud", "self_managed"),
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(
         id=ProviderKind.testrail,
         category=ProviderCategory.test_management,
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(
         id=ProviderKind.spreadsheet,
         category=ProviderCategory.test_management,
         formats=("csv", "xlsx"),
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(
         id=ProviderKind.google_sheets,
         category=ProviderCategory.test_management,
+        implementation_status=_OFFLINE,
     ),
 )
 
@@ -173,6 +177,10 @@ _OFFLINE_PROVIDERS = _READ_PROVIDERS | {
     ProviderKind.bitbucket_pipelines,
     ProviderKind.github_actions,
     ProviderKind.jenkins,
+    ProviderKind.xray,
+    ProviderKind.testrail,
+    ProviderKind.spreadsheet,
+    ProviderKind.google_sheets,
 }
 _EXPOSED_CAPABILITIES = {
     "search_code",
@@ -279,6 +287,13 @@ class TestManagementContractStub(_Unavailable):
 
     def read_case(self, context: ExecutionContext) -> ToolResult:
         return self._unavailable("read_case")
+
+    def search_cases(self, context: ExecutionContext, page: Pagination) -> ToolResult:
+        del context, page
+        return self._unavailable("search_cases")
+
+    def compare_cases(self, context: ExecutionContext) -> ToolResult:
+        return self._unavailable("compare_cases")
 
 
 def ensure_catalog() -> None:

@@ -50,14 +50,14 @@ providers:
   - id: xray
     category: test_management
     variants: [cloud, self_managed]
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: testrail
     category: test_management
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: spreadsheet
     category: test_management
     formats: [csv, xlsx]
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: google_sheets
     category: test_management
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED

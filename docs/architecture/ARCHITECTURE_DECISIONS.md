@@ -240,3 +240,22 @@ structural changes must be added here before code is moved or ownership changes.
 - **Consequence:** Mocked HTTP tests are OFFLINE_VERIFIED. No live CI system
   was contacted. The generic `read_pipeline` port stays unavailable.
 
+## ADR-021 — Canonical test cases, publication denied by default
+
+- **Status:** Accepted
+- **Decision:** Milestone 09 maps Xray Cloud, Xray Data Center, TestRail, local
+  CSV, local XLSX, and Google Sheets into one case model. Extra source fields
+  are preserved. Unknown priority and result values fail the mapping. CSV and
+  XLSX export prefixes formula-like cells. Google Sheets reads require
+  `https://www.googleapis.com/auth/spreadsheets.readonly`.
+  `prepare_result_publication` does not call a provider. Result publication is
+  not an MCP tool. The guarded dispatch path requires `allow_publish`, mutation
+  permission, confirmation, and a single-use approval. A repeated digest does
+  not send a second POST. A local spreadsheet mapping cannot take that path.
+- **Reason:** Silent truncation and an unapproved result write would change a
+  system of record or hide a case field.
+- **Consequence:** Contract tests are OFFLINE_VERIFIED. No live Xray, TestRail,
+  or Google Sheets call was made. The generic `read_case` port stays
+  unavailable. Evidence publication and release approval remain later
+  milestones.
+

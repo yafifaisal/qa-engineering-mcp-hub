@@ -95,6 +95,10 @@ def test_catalog_matches_architecture_document() -> None:
         "bitbucket_pipelines",
         "github_actions",
         "jenkins",
+        "xray",
+        "testrail",
+        "spreadsheet",
+        "google_sheets",
     }
     assert {
         item.id.value

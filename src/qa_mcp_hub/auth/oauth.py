@@ -174,6 +174,7 @@ def refresh_google_access_token(
     client_secret: SecretStr,
     http_client: object,
     clock: Callable[[], datetime] | None = None,
+    expected_scope: str = _DOCS_SCOPE,
 ) -> GoogleAccessToken:
     """Exchange a refresh token at Google's token endpoint.
 
@@ -246,10 +247,10 @@ def refresh_google_access_token(
         )
     scope_text = payload.get("scope")
     scopes = tuple(scope_text.split()) if isinstance(scope_text, str) else ()
-    if scopes and _DOCS_SCOPE not in scopes:
+    if scopes and expected_scope not in scopes:
         raise ProviderRequestError(
             "insufficient_scope",
-            "google oauth token is missing the Docs read scope",
+            "google oauth token is missing the required read scope",
             status_code=0,
         )
     return GoogleAccessToken(

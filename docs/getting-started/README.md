@@ -6,13 +6,14 @@ setup, configuration, profiles, connection identities, credential references, an
 MCP-client configuration generation. Milestone 02 adds provider contracts and
 `qa-mcp repositories` for local registration and remote definitions. Milestone 03
 adds read-only GitHub, GitLab, Bitbucket, and Jira tools. Milestone 04 adds
-read-only Confluence and Google Docs tools. Other provider APIs remain
-`NOT_IMPLEMENTED`. Milestone 05 indexes permitted local Git checkouts.
+read-only Confluence and Google Docs tools. Milestone 05 indexes permitted local Git checkouts.
 Milestone 06 runs registered Bruno and Newman API suites. Milestone 07 runs
 registered database, Kafka, and business checks. Milestone 08 reads registered
 Bitbucket Pipelines, GitHub Actions, and Jenkins metadata. A pipeline status
-is not a QA assertion result. Live provider calls, live runner CLIs, live
-database or Kafka systems, and live CI systems are not claimed.
+is not a QA assertion result. Milestone 09 maps Xray, TestRail, CSV, XLSX, and
+Google Sheets into one canonical case. `prepare_result_publication` does not
+call a provider. Live provider calls, live runner CLIs, live database or Kafka
+systems, live CI systems, and live test-management systems are not claimed.
 
 ## Choose your platform
 

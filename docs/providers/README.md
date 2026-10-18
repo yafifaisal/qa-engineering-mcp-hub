@@ -45,10 +45,10 @@ The table above is the status source. No provider on this page is
 | CI/CD | Bitbucket Pipelines | 08 | OFFLINE_VERIFIED | [Bitbucket Pipelines](cicd/bitbucket-pipelines.md) |
 | CI/CD | GitHub Actions | 08 | OFFLINE_VERIFIED | [GitHub Actions](cicd/github-actions.md) |
 | CI/CD | Jenkins | 08 | OFFLINE_VERIFIED | [Jenkins](cicd/jenkins.md) |
-| Test management | Xray | 09 | NOT_IMPLEMENTED | [Xray](test-management/xray.md) |
-| Test management | TestRail | 09 | NOT_IMPLEMENTED | [TestRail](test-management/testrail.md) |
-| Test management | CSV/XLSX spreadsheet | 09 | NOT_IMPLEMENTED | [Spreadsheet](test-management/spreadsheet.md) |
-| Test management | Google Sheets | 09 | NOT_IMPLEMENTED | [Google Sheets](test-management/google-sheets.md) |
+| Test management | Xray | 09 | OFFLINE_VERIFIED | [Xray](test-management/xray.md) |
+| Test management | TestRail | 09 | OFFLINE_VERIFIED | [TestRail](test-management/testrail.md) |
+| Test management | CSV/XLSX spreadsheet | 09 | OFFLINE_VERIFIED | [Spreadsheet](test-management/spreadsheet.md) |
+| Test management | Google Sheets | 09 | OFFLINE_VERIFIED | [Google Sheets](test-management/google-sheets.md) |
 
 ## Documentation and verification policy
 

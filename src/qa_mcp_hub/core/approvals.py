@@ -36,8 +36,8 @@ class ApprovalLedger:
 
     def issue(self, grant: ApprovalGrant) -> ApprovalGrant:
         """Record a grant. The same token cannot be issued twice."""
-        if grant.action != "pipeline_trigger":
-            raise HubError("approval_rejected", "approval action is not a trigger")
+        if grant.action not in {"pipeline_trigger", "result_publication"}:
+            raise HubError("approval_rejected", "approval action is not recognized")
         if grant.token in self._issued:
             raise HubError("approval_rejected", "approval token is already issued")
         self._issued[grant.token] = grant

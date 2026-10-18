@@ -1,12 +1,12 @@
 # Xray provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **09**  
-> Verification: documentation scaffold only; no provider request or file operation has occurred.
+> Verification: mocked Xray Cloud GraphQL and Data Center REST tests. No live Xray call was made, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-Xray is a supported test-management provider associated with Jira. The future adapter will normalize authorized test, set, plan, execution, and result records without assuming Cloud/Data Center parity.
+Xray Cloud and Xray Data Center reads normalize tests into one canonical case. Cloud uses GraphQL at `https://xray.cloud.getxray.app/api/v2/graphql` and step field `action`. Data Center uses `{base}/rest/raven/1.0/api/test` and step field `step`. Extra source fields are preserved. Unknown priority values fail the mapping.
 
 ## 2. Supported editions
 
@@ -106,23 +106,23 @@ Allowlist editions/origins/projects, minimize scopes, redact credentials and evi
 
 Confirm edition, Xray/Jira base URLs, client/token flow, project permissions, entity IDs, field mappings, Jira issue security, quotas, proxy, and CA settings.
 
-Because the provider is not implemented, current inability to connect or operate is expected.
+Because publication is not an MCP tool, a preview cannot update an Xray execution. A guarded dispatch function sends one POST only after `allow_publish`, mutation permission, confirmation, and a single-use approval.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/test_management/xray.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/test_management/xray.py` — IMPLEMENTED Cloud and Data Center reads.
+- `src/qa_mcp_hub/adapters/test_management/base.py` — IMPLEMENTED canonical case, suite, plan, execution, and result models.
+- `src/qa_mcp_hub/mcp/tools/test_management.py` — search, compare, preview, export, and publication preview. Publication itself is not registered.
 
 ## 19. Related tests
 
-Planned separate Cloud/Data Center contracts, pagination, permission, mapping/loss report, duplicate ID, publication-denial/idempotency, and gated live-read tests.
+`tests/contracts/test_xray.py` covers Cloud and Data Center step fields, unknown priorities, missing fields, duplicate ids, permission failure, disabled publication, and a single POST.
 
-No test currently validates a real provider integration.
+No live Xray Cloud or Data Center call was made.
 
 ## 20. Current implementation status
 
-**NOT_IMPLEMENTED.** The adapter file is **SCAFFOLDED** and contains no client, connection, file, query, parsing, publication, or registration logic. It is not exposed through FastMCP.
+**OFFLINE_VERIFIED.** Mocked HTTP tests cover Cloud and Data Center reads. `prepare_result_publication` does not call Xray. The checked-in example mapping keeps publishing disabled. This is not LIVE_VERIFIED.
 
 ## 21. Official documentation references
 

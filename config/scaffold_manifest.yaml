@@ -9,11 +9,6 @@ files:
     - "src/qa_mcp_hub/adapters/git/__init__.py"
     - "src/qa_mcp_hub/adapters/streaming/__init__.py"
     - "src/qa_mcp_hub/adapters/test_management/__init__.py"
-    - "src/qa_mcp_hub/adapters/test_management/base.py"
-    - "src/qa_mcp_hub/adapters/test_management/google_sheets.py"
-    - "src/qa_mcp_hub/adapters/test_management/spreadsheet.py"
-    - "src/qa_mcp_hub/adapters/test_management/testrail.py"
-    - "src/qa_mcp_hub/adapters/test_management/xray.py"
     - "src/qa_mcp_hub/adapters/tickets/__init__.py"
     - "src/qa_mcp_hub/cli/evidence.py"
     - "src/qa_mcp_hub/cli/workflows.py"
@@ -34,7 +29,6 @@ files:
     - "src/qa_mcp_hub/mcp/tools/__init__.py"
     - "src/qa_mcp_hub/mcp/tools/evidence.py"
     - "src/qa_mcp_hub/mcp/tools/release.py"
-    - "src/qa_mcp_hub/mcp/tools/test_management.py"
     - "src/qa_mcp_hub/planning/__init__.py"
     - "src/qa_mcp_hub/release/__init__.py"
     - "src/qa_mcp_hub/release/coverage_engine.py"
@@ -101,6 +95,7 @@ files:
     - "config/schemas/profile.schema.json"
     - "config/schemas/repository.schema.json"
     - "config/schemas/suite.schema.json"
+    - "config/schemas/test-mapping.schema.json"
     - "config/schemas/workflow.schema.json"
     - "config/supported_providers.yaml"
     - "docs/architecture/ARCHITECTURE_DECISIONS.md"
@@ -181,6 +176,11 @@ files:
     - "src/qa_mcp_hub/adapters/git/github.py"
     - "src/qa_mcp_hub/adapters/git/gitlab.py"
     - "src/qa_mcp_hub/adapters/streaming/kafka.py"
+    - "src/qa_mcp_hub/adapters/test_management/base.py"
+    - "src/qa_mcp_hub/adapters/test_management/google_sheets.py"
+    - "src/qa_mcp_hub/adapters/test_management/spreadsheet.py"
+    - "src/qa_mcp_hub/adapters/test_management/testrail.py"
+    - "src/qa_mcp_hub/adapters/test_management/xray.py"
     - "src/qa_mcp_hub/adapters/tickets/jira.py"
     - "src/qa_mcp_hub/app.py"
     - "src/qa_mcp_hub/auth/__init__.py"
@@ -238,6 +238,7 @@ files:
     - "src/qa_mcp_hub/mcp/tools/knowledge.py"
     - "src/qa_mcp_hub/mcp/tools/planning.py"
     - "src/qa_mcp_hub/mcp/tools/system.py"
+    - "src/qa_mcp_hub/mcp/tools/test_management.py"
     - "src/qa_mcp_hub/mcp/tools/verification.py"
     - "src/qa_mcp_hub/planning/change_impact.py"
     - "src/qa_mcp_hub/planning/coverage_mapper.py"
@@ -324,7 +325,9 @@ files:
     - "templates/qa-workspace/suites/postman/example.postman_collection.json"
     - "templates/qa-workspace/suites/suites.yaml"
     - "templates/qa-workspace/test-management/import-templates/README.md"
+    - "templates/qa-workspace/test-management/import-templates/example-cases.csv"
     - "templates/qa-workspace/test-management/mappings/README.md"
+    - "templates/qa-workspace/test-management/mappings/example-billing.yaml"
     - "templates/qa-workspace/workflows/api/README.md"
     - "templates/qa-workspace/workflows/api/api-only.yaml"
     - "templates/qa-workspace/workflows/e2e/README.md"
@@ -339,8 +342,12 @@ files:
     - "tests/contracts/test_documentation_adapters.py"
     - "tests/contracts/test_git_jira_adapters.py"
     - "tests/contracts/test_github_actions.py"
+    - "tests/contracts/test_google_sheets.py"
     - "tests/contracts/test_jenkins.py"
     - "tests/contracts/test_provider_contracts.py"
+    - "tests/contracts/test_spreadsheet.py"
+    - "tests/contracts/test_testrail.py"
+    - "tests/contracts/test_xray.py"
     - "tests/e2e/README.md"
     - "tests/fixtures/README.md"
     - "tests/integration/test_cli.py"
@@ -367,7 +374,9 @@ expected_mcp:
   tools:
     - analyze_change_impact
     - analyze_jira_ticket
+    - compare_test_cases
     - explain_workflow
+    - export_test_cases
     - find_implementation
     - find_kafka_event
     - find_related_implementation
@@ -383,11 +392,14 @@ expected_mcp:
     - list_registered_suites
     - list_workflows
     - prepare_pipeline_trigger
+    - prepare_result_publication
+    - preview_test_case_import
     - read_document
     - run_database_assertion
     - search_documents
     - search_knowledge
     - search_repository_code
+    - search_test_cases
     - submit_test_run
     - trace_cross_repo_flow
     - verify_e2e_workflow
@@ -403,6 +415,7 @@ json_schemas:
   - "config/schemas/profile.schema.json"
   - "config/schemas/repository.schema.json"
   - "config/schemas/suite.schema.json"
+  - "config/schemas/test-mapping.schema.json"
   - "config/schemas/workflow.schema.json"
 schema_validations:
   - document: "config/examples/config.example.yaml"
@@ -427,6 +440,8 @@ schema_validations:
     schema: "config/schemas/ci-job.schema.json"
   - document: "templates/qa-workspace/ci/pipeline-mappings.yaml"
     schema: "config/schemas/ci-mapping.schema.json"
+  - document: "templates/qa-workspace/test-management/mappings/example-billing.yaml"
+    schema: "config/schemas/test-mapping.schema.json"
   - document: "templates/qa-workspace/evidence-policies/api-only.yaml"
     schema: "config/schemas/evidence-policy.schema.json"
   - document: "templates/qa-workspace/evidence-policies/api-database.yaml"
