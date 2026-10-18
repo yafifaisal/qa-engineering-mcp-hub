@@ -7,6 +7,9 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 02 provider contracts, capability discovery, and a profile-scoped
+  repository registry. Local Git metadata can be validated. Remote provider APIs
+  and repository indexing remain unimplemented.
 - Cursor `mcp.json` generation alongside the existing Codex and VS Code client
   contracts. The repository includes a project `.cursor/mcp.json`.
 - Milestone 01 local setup wizard, profiles, connection records, credential

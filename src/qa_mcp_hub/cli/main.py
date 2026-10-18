@@ -19,6 +19,7 @@ from qa_mcp_hub.cli.config import app as config_app
 from qa_mcp_hub.cli.doctor import doctor_command
 from qa_mcp_hub.cli.integrations import app as integrations_app
 from qa_mcp_hub.cli.profiles import app as profiles_app
+from qa_mcp_hub.cli.repositories import app as repositories_app
 from qa_mcp_hub.cli.setup import setup_command
 from qa_mcp_hub.core.capabilities import list_capabilities
 
@@ -34,6 +35,7 @@ app.add_typer(profiles_app, name="profiles")
 app.add_typer(integrations_app, name="integrations")
 app.add_typer(config_app, name="config")
 app.add_typer(clients_app, name="clients")
+app.add_typer(repositories_app, name="repositories")
 
 
 @app.command("serve")

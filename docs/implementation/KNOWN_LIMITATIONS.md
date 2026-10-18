@@ -2,14 +2,17 @@
 
 ## Milestone boundary
 
-- Every external provider integration is `NOT_IMPLEMENTED`. Provider modules and
-  documentation are scaffolds, not callable adapters.
+- Every external provider integration is `NOT_IMPLEMENTED`. Provider modules
+  expose typed contracts and stubs. They are not callable adapters.
 - Milestone 01 implements local configuration, profiles, credential references,
   redaction, offline OAuth/PKCE state, and the setup/config CLI. It does not
   perform a provider OAuth exchange, token refresh, or network connectivity test.
-- Repository access, knowledge indexing, planning, workflows, suite execution,
-  assertions, CI/CD, test management, evidence, and release intelligence remain
-  Milestones 03–10.
+- Milestone 02 registers local and remote repository definitions, discovers Git
+  checkouts inside an approved workspace, and reads local branch, HEAD, remote
+  URL, and dirty state. It does not call GitHub, GitLab, or Bitbucket, and it
+  does not index file contents.
+- Knowledge indexing, planning, workflows, suite execution, assertions, CI/CD,
+  test management, evidence, and release intelligence remain Milestones 03–10.
 - Python keyring is a direct development dependency and an optional `credentials`
   extra. A missing or unusable backend fails closed. The application does not fall
   back to a plaintext file.

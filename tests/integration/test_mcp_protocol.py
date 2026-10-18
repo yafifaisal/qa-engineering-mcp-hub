@@ -60,7 +60,7 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         assert len(rendered.messages) == 1
         prompt_text = rendered.messages[0].content.text
         assert "credential references are implemented" in prompt_text
-        assert "External providers and Milestones 02–11 are not implemented" in (
+        assert "Remote provider APIs and Milestones 03–11 are not implemented" in (
             prompt_text
         )
 

@@ -60,6 +60,18 @@ module.
 | Clients | parsed Codex TOML, Cursor JSON, and native VS Code JSON, merge, and no embedded secrets |
 | Doctor | local configuration validity and keyring availability without secret reads |
 
+## Milestone 02 matrix
+
+| Area | Required evidence |
+|---|---|
+| Provider catalog | exact match to the architecture document and `ProviderKind` |
+| Capabilities | unimplemented operations raise typed errors and are not MCP tools |
+| Isolation | two connections of one provider stay distinct; profiles do not share them |
+| Repositories | local registration, duplicate rejection, discovery, and CLI commands |
+| Git metadata | branch, HEAD, dirty state, and redacted remote URL on this machine |
+| Paths | Windows, macOS, and Linux logical containment, plus symlink escape |
+| Indexing | a plan is recorded and file contents are not read |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

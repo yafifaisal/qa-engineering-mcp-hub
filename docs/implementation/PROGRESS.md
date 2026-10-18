@@ -95,8 +95,45 @@ freeze.
 No credential was written to Keychain, Windows Credential Manager, or a Linux
 secret service in this session, so those stores are not `LIVE_VERIFIED`.
 
-## Milestones 02–11
+## Milestone 02 — implemented and offline verified
 
-All remain `SCAFFOLDED` or `NOT_IMPLEMENTED`. No external integration is claimed as
-working. Native Windows/Linux execution and Python 3.13 execution remain `BLOCKED`
-on hosted-runner access.
+- [x] Typed provider ports, shared result models, and a catalog that matches the
+  architecture document. Every provider operation on those ports raises a typed
+  not-implemented error.
+- [x] Multiple connections for one provider stay distinct, and a connection cannot
+  be bound from another profile.
+- [x] `qa-mcp repositories add/list/remove/discover/validate` registers local
+  checkouts and remote definitions. Discovery and registration stay inside the
+  profile workspace.
+- [x] Local Git metadata reports branch, HEAD, redacted origin URL, and dirty
+  state. Symlink escape and path traversal are rejected.
+- [x] Indexing permission is recorded as a plan with status `NOT_EXECUTED`.
+  File contents are not read.
+- [x] MCP discovery remains two tools, one resource, and one prompt. Provider
+  groups stay planned.
+
+## Executed verification — Milestone 02
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
+| `uv lock --check` | 0 | lock matches project metadata |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 285 files already formatted |
+| `uv run mypy src` | 0 | no issues in 182 source files |
+| `uv run pytest -q` | 0 | 84 passed, including the real stdio subprocess |
+| `uv build` | 0 | wheel and source distribution built |
+| `uv run python scripts/structure_audit.py` | 0 | 335 files, 100 directories, zero findings |
+| `uv run qa-mcp capabilities` | 0 | provider contracts and repository registry implemented; provider groups planned |
+| `uv run qa-mcp doctor` | 0 | local config valid; keyring backend name `Keyring`; provider network `NOT_IMPLEMENTED` |
+
+Local Git metadata was read on this macOS machine. Windows and Linux path checks
+are simulations. No GitHub, GitLab, or Bitbucket API was called. Repository
+indexing was not executed.
+
+## Milestones 03–11
+
+Remote provider adapters, indexing execution, planning, workflows, suite
+execution, assertions, evidence, and release intelligence remain `SCAFFOLDED` or
+`NOT_IMPLEMENTED`. Native Windows/Linux execution and Python 3.13 execution
+remain `BLOCKED` on hosted-runner access.

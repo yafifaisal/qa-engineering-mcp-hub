@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://qa-mcp-hub.example/schemas/repository.schema.json",
-  "title": "Milestone 01 repository registry fragment",
+  "title": "Repository registry fragment",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "repositories"],
@@ -28,12 +28,29 @@
         "connection_id": {
           "anyOf": [{"$ref": "#/$defs/identifier"}, {"type": "null"}]
         },
+        "remote": {"type": ["string", "null"], "minLength": 1, "maxLength": 1024},
+        "include": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "exclude": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 256}
+        },
+        "indexing": {"enum": ["none", "metadata_only", "content"]},
         "default_branch": {"type": "string", "minLength": 1, "maxLength": 1024},
         "enabled": {"type": "boolean"}
       },
       "oneOf": [
         {"required": ["path"], "not": {"required": ["path_env"]}},
-        {"required": ["path_env"], "not": {"required": ["path"]}}
+        {"required": ["path_env"], "not": {"required": ["path"]}},
+        {
+          "required": ["remote", "connection_id"],
+          "allOf": [
+            {"not": {"required": ["path"]}},
+            {"not": {"required": ["path_env"]}}
+          ]
+        }
       ]
     }
   },

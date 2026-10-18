@@ -34,6 +34,18 @@ consume Kafka, trigger CI, or publish evidence.
 | `qa-mcp clients generate` | Print Codex TOML or VS Code JSON | Embedding provider credentials |
 | `qa-mcp clients install` | Merge `qa_hub` into an explicit destination, with backup | Replacing unrelated client settings |
 
+## Milestone 02 repository permissions
+
+| Command | Local effect | Explicitly not allowed |
+|---|---|---|
+| `qa-mcp repositories add` | Store a local path or remote definition on one profile | Registering a path outside that profile's workspace |
+| `qa-mcp repositories list/remove` | Show or delete only the selected profile's repositories | Reading another profile's repository list |
+| `qa-mcp repositories discover` | List Git checkouts inside the approved workspace | Following a symlink outside that workspace or registering matches |
+| `qa-mcp repositories validate` | Read local Git metadata or check that a credential reference resolves | Calling a Git host API or printing a credential value |
+
+Indexing permission is stored only. File contents are not indexed in this milestone.
+Mandatory secret-path patterns stay excluded from any later indexing plan.
+
 ## Future authorization defaults
 
 - Deny access until a profile, connection, workspace, and requested capability

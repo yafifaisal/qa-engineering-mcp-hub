@@ -3,8 +3,9 @@
 QA Engineering MCP Hub is a local Python 3.12+ FastMCP server. Milestone 00
 provides two tools, one resource, and one prompt. Milestone 01 adds secure local
 setup, configuration, profiles, connection identities, credential references, and
-MCP-client configuration generation. Every external provider remains
-`NOT_IMPLEMENTED`.
+MCP-client configuration generation. Milestone 02 adds provider contracts and
+`qa-mcp repositories` for local registration and remote definitions. Every
+external provider API remains `NOT_IMPLEMENTED`.
 
 ## Choose your platform
 
@@ -17,7 +18,7 @@ MCP-client configuration generation. Every external provider remains
 - [Cursor, Codex, and VS Code registration](codex-vscode.md) — keeps Cursor
   JSON, Codex TOML, and native VS Code JSON as separate contracts.
 
-## What works through Milestone 01
+## What works through Milestone 02
 
 | Surface | Implemented item |
 |---|---|
@@ -26,8 +27,12 @@ MCP-client configuration generation. Every external provider remains
 | MCP prompt | `qa_hub_orientation` |
 | M00 CLI | `serve`, `doctor`, `capabilities`, plus `--help` and `--version` |
 | M01 CLI | `setup`; `profiles` (6 commands); `integrations` (6); `config` (2); `clients` (2) |
+| M02 CLI | `repositories` `add`, `list`, `remove`, `discover`, and `validate` |
 
-There are 20 leaf commands in total: three M00 commands and seventeen M01 commands.
+There are 25 leaf commands in total: three M00 commands, seventeen M01 commands,
+and five repository commands. `repositories discover` does not register matches.
+`repositories validate` can read local Git metadata; a remote definition reports
+provider API status `NOT_IMPLEMENTED`.
 Use `qa-mcp <group> --help` for exact options. `hub_health` reports readiness of
 the local process only. Likewise, `integrations test` validates local connection
 configuration and credential presence; it reports provider network connectivity as

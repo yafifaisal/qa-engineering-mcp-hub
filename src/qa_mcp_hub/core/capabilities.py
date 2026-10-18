@@ -1,10 +1,10 @@
-"""Truthful local capability catalog through Milestone 01.
+"""Truthful local capability catalog through Milestone 02.
 
-The catalog distinguishes implemented local setup/configuration behavior from
-provider adapters and network verification that remain future work.
+The catalog distinguishes implemented local setup, provider contracts, and
+repository registration from provider adapters that remain future work.
 
 Purpose: separate callable local capabilities from planned provider work.
-Milestone: 01
+Milestone: 02
 Status: IMPLEMENTED
 Ownership: core.capabilities
 Dependencies: Pydantic.
@@ -34,6 +34,8 @@ def list_capabilities() -> CapabilityCatalog:
             "profiles_and_credentials",
             "interactive_setup",
             "mcp_client_config_generation",
+            "provider_contracts",
+            "repository_registry",
         ),
         planned=(
             "github_gitlab_bitbucket",

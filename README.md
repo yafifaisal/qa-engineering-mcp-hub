@@ -2,10 +2,11 @@
 
 QA Engineering MCP Hub is a local-first, cross-platform FastMCP foundation for
 governed QA workflows. Milestones 00 and 01 provide the MCP foundation and secure
-local configuration control plane. All external providers and QA execution features
-remain explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
+local configuration control plane. Milestone 02 adds provider contracts and local
+repository registration. External provider APIs and QA execution features remain
+explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 
-## What works through Milestone 01
+## What works through Milestone 02
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -25,8 +26,11 @@ remain explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
   inspect local readiness. Integration tests do not make provider network calls.
 - Cursor JSON, Codex TOML, and native VS Code JSON can be generated without
   provider credentials. This repository includes `.cursor/mcp.json` for Cursor.
+- `qa-mcp repositories` registers, lists, removes, discovers, and validates
+  repositories. Discovery stays inside the profile workspace. Validation can
+  read local Git branch, HEAD, remote URL, and dirty state.
 
-No provider adapter, provider OAuth exchange, repository or ticket read, test
+No provider adapter, provider OAuth exchange, remote Git or ticket read, test
 execution, database query, Kafka operation, CI/CD action, test-management action,
 evidence publication, or release approval is implemented.
 

@@ -25,15 +25,17 @@ credential-store validation on each claimed OS. No provider operation yet.
 
 ## 02 — provider contracts and registry
 
-Owns provider-neutral contracts/models/registry, normalized errors/capabilities, and
-connection-to-adapter construction. Exit: deterministic contract suites, unknown
-provider/capability rejection, and connection/profile isolation.
+Owns provider-neutral contracts/models/registry, normalized errors/capabilities,
+connection-to-adapter construction, and local/remote repository registration.
+Exit: deterministic contract suites, unknown provider/capability rejection,
+connection/profile isolation, and local Git metadata without a remote API call.
+Indexing execution remains Milestone 05.
 
 ## 03 — Git and ticket intelligence
 
-Owns GitHub, GitLab, Bitbucket, Jira, repository registration/discovery, and grounded
-source resolution. Exit: read-only contract fixtures plus separately gated sandbox
-reads for every edition claimed live.
+Owns GitHub, GitLab, Bitbucket, and Jira adapters plus grounded source resolution.
+Local registration is Milestone 02. Exit: read-only contract fixtures plus
+separately gated sandbox reads for every edition claimed live.
 
 ## 04 — documentation providers
 

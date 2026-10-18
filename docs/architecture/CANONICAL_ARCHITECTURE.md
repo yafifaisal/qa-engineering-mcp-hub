@@ -11,8 +11,9 @@ QA Engineering MCP Hub is an open-source, local-first framework that lets an MCP
 client invoke governed QA capabilities. The architecture reserves boundaries for
 the supported providers and Milestones 02–11. Milestone 00 implements local MCP
 introspection; Milestone 01 adds the local configuration, profile, credential, and
-setup control plane. A file in the scaffold is not evidence that its capability
-works, and Milestone 01 does not call provider APIs.
+setup control plane. Milestone 02 adds provider contracts, capability discovery,
+and local repository registration. A file in the scaffold is not evidence that
+its capability works. Milestone 02 does not call provider APIs.
 
 Only these provider families belong in the framework: GitHub, GitLab, Bitbucket,
 Jira, Confluence, Google Docs, Bruno, Postman, PostgreSQL, MySQL, Kafka, Bitbucket
@@ -84,13 +85,13 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `mcp/tools/system.py` | `hub_health` and `hub_capabilities` thin tools | IMPLEMENTED |
 | `mcp/resources.py` | Read-only hub status resource | IMPLEMENTED |
 | `mcp/prompts.py` | Reusable M00 orientation prompt | IMPLEMENTED |
-| `cli/` | Typer commands and Rich presentation | M00 system and M01 local setup/configuration commands implemented |
-| `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for M01 local configuration |
+| `cli/` | Typer commands and Rich presentation | M00 system, M01 setup, and M02 repository commands implemented |
+| `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for M01 local configuration, with M02 repository fields |
 | `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for M01 local credential handling; provider OAuth is not implemented |
-| `core/` | Stable types, results, capability declarations, policy boundaries | minimal M00 subset implemented |
-| `providers/` | Provider-neutral contracts, descriptors, and registry | SCAFFOLDED |
+| `core/` | Stable types, results, capability declarations, policy boundaries | M02 contracts, results, errors, context, policies, and retry implemented; other core modules remain scaffolded |
+| `providers/` | Provider-neutral contracts, descriptors, and registry | IMPLEMENTED as contracts and stubs; no vendor I/O |
 | `adapters/` | One implementation boundary per supported provider | SCAFFOLDED |
-| `repositories/` | Local/remote repository registration and discovery | SCAFFOLDED |
+| `repositories/` | Local/remote repository registration and discovery | IMPLEMENTED for registration, discovery, validation, and local Git metadata; content indexing is not executed |
 | `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | SCAFFOLDED |
 | `planning/` | Ticket analysis, impact, scenarios, and coverage plans | SCAFFOLDED |
 | `suites/` | Approved executable-suite registry | SCAFFOLDED |
@@ -100,7 +101,7 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `evidence/` | Redacted evidence collection, manifests, rendering, publishing | SCAFFOLDED |
 | `release/` | Deterministic coverage and risk facts; never automatic sign-off | SCAFFOLDED |
 | `storage/` | Local persistence abstractions and migrations | SCAFFOLDED |
-| `security/` | Path/URL/process/SQL policy and secret detection | SCAFFOLDED |
+| `security/` | Path/URL/process/SQL policy and secret detection | path allowlist IMPLEMENTED; other security policies remain scaffolded |
 
 The exact file inventory and ownership metadata are recorded in
 [`../implementation/SCAFFOLD_MANIFEST.md`](../implementation/SCAFFOLD_MANIFEST.md).

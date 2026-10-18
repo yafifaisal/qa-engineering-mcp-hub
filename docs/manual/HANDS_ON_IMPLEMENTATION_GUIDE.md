@@ -90,19 +90,18 @@ Keychain, or Secret Service support requires native verification.
 
 ## Milestone 02 — provider contracts and registry
 
-Owns `providers/`. Define capability-oriented protocols, normalized records and
-source references, typed provider errors, and a strict provider/connection registry.
-One provider may have multiple connection IDs and cloud/self-managed editions.
-Do not put vendor HTTP endpoints into MCP tools.
-
-Exit evidence: contract suites, unknown-provider rejection, capability checks,
-profile isolation, timeout/error normalization, and no registered provider tools.
+Implemented: capability-oriented protocols, normalized records and source
+references, typed provider errors, a strict provider/connection registry, and
+profile-scoped repository registration. One provider may have multiple
+connection IDs. Vendor HTTP endpoints are not called from MCP tools. Local Git
+metadata is read with a fixed `git` argument list. Indexing is planned only.
 
 ## Milestone 03 — Git and tickets
 
-Owns GitHub, GitLab, Bitbucket, and Jira adapters plus repository registration and
-source resolution. Start read-only. Preserve revision, path, line/issue, provider,
-connection, and URL provenance. Treat provider content as untrusted data.
+Owns GitHub, GitLab, Bitbucket, and Jira adapters plus grounded source
+resolution. Local registration is already Milestone 02. Start read-only.
+Preserve revision, path, line/issue, provider, connection, and URL provenance.
+Treat provider content as untrusted data.
 
 Exit evidence: deterministic contract fixtures for pagination, permission, missing
 objects, cloud/self-managed routing, and grounded source references; separately

@@ -1,12 +1,39 @@
-"""Provider abstraction namespace.
+"""Provider contract namespace.
 
-Purpose: Expose the future provider abstraction boundary without registering
-implementations.
+Purpose: export catalog lookup and protocol types without vendor adapters.
 Milestone: 02
-Status: SCAFFOLDED
+Status: IMPLEMENTED
 Ownership: Provider package namespace and public-contract curation.
 Dependencies: Pydantic and standard-library typing only when implemented.
-Expected tests: Package import and public-surface tests.
-
-This module intentionally contains no provider implementation in Milestone 00.
+Expected tests: package import and public-surface tests.
 """
+
+from qa_mcp_hub.providers.contracts import (
+    ApiAutomationProvider,
+    CicdProvider,
+    DatabaseProvider,
+    DocumentationProvider,
+    GitProvider,
+    StreamingProvider,
+    TestManagementProvider,
+    TicketProvider,
+)
+from qa_mcp_hub.providers.registry import (
+    ProviderRegistry,
+    ServiceContainer,
+    discover_capabilities,
+)
+
+__all__ = [
+    "ApiAutomationProvider",
+    "CicdProvider",
+    "DatabaseProvider",
+    "DocumentationProvider",
+    "GitProvider",
+    "ProviderRegistry",
+    "ServiceContainer",
+    "StreamingProvider",
+    "TestManagementProvider",
+    "TicketProvider",
+    "discover_capabilities",
+]

@@ -1,11 +1,11 @@
 # Provider documentation index
 
 The QA Engineering MCP Hub recognizes only the provider families listed here.
-Through Milestone 01 every provider integration is **NOT_IMPLEMENTED**. M01 can
-validate connection identities and credential references locally, but the Python
-adapter files remain ownership scaffolds: they contain no network clients,
-provider OAuth flows, subprocess runners, database sessions, Kafka consumers, or
-publication logic.
+Milestone 02 publishes typed contracts and a registry for every family below.
+Every provider integration remains **NOT_IMPLEMENTED**. The registry returns a
+contract stub that raises a typed error. Adapter files remain ownership
+scaffolds: they contain no network clients, provider OAuth flows, database
+sessions, Kafka consumers, or publication logic.
 
 Documentation examples use the versioned M01 configuration shape, contain only
 credential references, and remain disabled. A schema-valid local connection is not

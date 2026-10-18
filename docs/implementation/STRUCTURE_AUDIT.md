@@ -6,8 +6,8 @@ Result: **PASS**
 
 | Measure | Count |
 |---|---:|
-| Expected Files | 332 |
-| Existing Expected Files | 332 |
+| Expected Files | 335 |
+| Existing Expected Files | 335 |
 | Missing Files | 0 |
 | Unlisted Files | 0 |
 | Expected Directories | 100 |

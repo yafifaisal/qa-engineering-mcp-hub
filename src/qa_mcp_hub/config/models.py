@@ -15,6 +15,7 @@ Expected tests: schema validation, isolation, and unknown-provider rejection.
 
 import re
 from enum import StrEnum
+from pathlib import PurePosixPath
 from typing import Annotated, Literal, Self
 from urllib.parse import urlsplit
 
@@ -22,6 +23,7 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_vali
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from qa_mcp_hub.auth.models import AuthKind, CredentialReference
+from qa_mcp_hub.core.enums import IndexingPermission
 from qa_mcp_hub.core.models import ProviderKind
 
 CURRENT_SCHEMA_VERSION: Literal[1] = 1
@@ -154,8 +156,27 @@ class ConnectionConfig(BaseModel):
         return f"{normalized}:{endpoint.port}"
 
 
+def _reject_unsafe_pattern(value: str) -> None:
+    normalized = value.replace("\\", "/")
+    pure = PurePosixPath(normalized)
+    if (
+        pure.is_absolute()
+        or ".." in pure.parts
+        or "\x00" in value
+        or re.match(r"^[A-Za-z]:", value)
+    ):
+        raise ValueError("repository pattern must be a relative path")
+
+
+def _reject_unsafe_remote(value: str) -> None:
+    if any(character in value for character in ("@", " ", "\\", "\x00")):
+        raise ValueError("remote repository reference is invalid")
+    if ".." in value.split("/"):
+        raise ValueError("remote repository reference is invalid")
+
+
 class RepositoryReference(BaseModel):
-    """A registered local repository reference; it performs no repository access."""
+    """A local checkout, a remote definition, or both. Registration does not index."""
 
     model_config = ConfigDict(extra="forbid", frozen=True, str_strip_whitespace=True)
 
@@ -163,14 +184,29 @@ class RepositoryReference(BaseModel):
     display_name: NonEmptyString
     path: NonEmptyString | None = None
     path_env: EnvironmentName | None = None
+    remote: NonEmptyString | None = None
     connection_id: Identifier | None = None
     default_branch: NonEmptyString = "main"
+    include: tuple[NonEmptyString, ...] = ()
+    exclude: tuple[NonEmptyString, ...] = ()
+    indexing: IndexingPermission = IndexingPermission.none
     enabled: bool = True
 
     @model_validator(mode="after")
-    def exactly_one_path_source(self) -> Self:
-        if (self.path is None) == (self.path_env is None):
-            raise ValueError("repository requires exactly one of path or path_env")
+    def one_unambiguous_source(self) -> Self:
+        has_path = self.path is not None
+        has_env = self.path_env is not None
+        has_remote = self.remote is not None
+        if has_path and has_env:
+            raise ValueError("repository source is ambiguous")
+        if not has_path and not has_env and not has_remote:
+            raise ValueError("repository requires a local path or a remote definition")
+        if has_remote and self.connection_id is None:
+            raise ValueError("remote repository requires a connection reference")
+        for pattern in (*self.include, *self.exclude):
+            _reject_unsafe_pattern(pattern)
+        if self.remote is not None:
+            _reject_unsafe_remote(self.remote)
         return self
 
 
@@ -228,6 +264,7 @@ class HubConfig(BaseModel):
         workspace_by_id = _unique_by_id(self.workspaces, "workspace")
 
         assigned_connection: dict[str, str] = {}
+        assigned_repository: dict[str, str] = {}
         for profile_name, profile in self.profiles.items():
             if not re.fullmatch(IDENTIFIER_PATTERN, profile_name):
                 raise ValueError("profile name is invalid")
@@ -248,6 +285,12 @@ class HubConfig(BaseModel):
                 )
                 if previous_profile != profile_name:
                     raise ValueError("connection cannot be shared across profiles")
+            for repository_id in profile.repository_ids:
+                previous_repository = assigned_repository.setdefault(
+                    repository_id, profile_name
+                )
+                if previous_repository != profile_name:
+                    raise ValueError("repository cannot be shared across profiles")
 
         for repository in self.repositories:
             if (
@@ -255,6 +298,11 @@ class HubConfig(BaseModel):
                 and repository.connection_id not in connection_by_id
             ):
                 raise ValueError("repository references an unknown connection")
+            if repository.connection_id is not None:
+                owner = assigned_repository.get(repository.id)
+                connection_owner = assigned_connection.get(repository.connection_id)
+                if owner is None or owner != connection_owner:
+                    raise ValueError("repository connection crosses profiles")
 
         for connection in self.connections:
             credential = connection.credential

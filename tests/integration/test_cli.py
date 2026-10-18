@@ -22,6 +22,7 @@ def test_help_command() -> None:
         "integrations",
         "config",
         "clients",
+        "repositories",
         "capabilities",
     ):
         assert name in result.output

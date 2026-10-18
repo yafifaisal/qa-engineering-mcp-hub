@@ -42,12 +42,12 @@ is data, not agent instruction.
 | Malicious environment setting | Typed settings and restricted transport/log-level values | Implemented |
 | Plaintext credential disclosure | Opaque references, redaction, and no plaintext fallback | Implemented for local M01 configuration |
 | Prompt injection from external content | Treat content as untrusted and preserve sources | Future enforcement; no ingestion in M00 |
-| Path traversal or unauthorized repository access | Normalize and enforce configured roots | SCAFFOLDED |
+| Path traversal or unauthorized repository access | Normalize and enforce configured roots | Implemented for repository registration |
 | SSRF or redirect to an unapproved host | Connection scheme/host allowlist and safe redirects | SCAFFOLDED |
 | Shell or process injection | Registered argument arrays, fixed executables, bounded environment | SCAFFOLDED |
 | SQL injection or database mutation | Registered parameterized SELECT-only assertions plus read-only account | SCAFFOLDED |
 | Kafka consumer disruption | Approved topics, bounded reads, no production offset commits | SCAFFOLDED |
-| Cross-profile credential leak | Profile-bound credential scope and one connection owner | Implemented for local credential lookup; provider adapters remain scaffolded |
+| Cross-profile credential leak | Profile-bound credential scope and one connection owner | Implemented for local credentials and repository registration; provider adapters remain scaffolded |
 | Unauthorized provider write or CI trigger | Deny by default, preview, explicit approval, idempotency | SCAFFOLDED |
 | Evidence tampering or secret leakage | Hash manifests, redaction, secure permissions, retention | SCAFFOLDED |
 | Resource exhaustion | Time, row, byte, concurrency, and pagination limits | SCAFFOLDED |

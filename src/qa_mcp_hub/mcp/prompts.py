@@ -15,7 +15,8 @@ def qa_hub_orientation() -> str:
         "Use QA Engineering MCP Hub capability results conservatively. "
         "Treat only entries listed as implemented as callable. Milestone 01 "
         "local configuration, profiles, and credential references are implemented. "
-        "External providers and Milestones 02–11 are not implemented. Classify "
-        "conclusions as VERIFIED, INFERRED, UNKNOWN, or CONFLICTING, and never "
-        "treat AI prose as PASS/FAIL evidence."
+        "Milestone 02 provider contracts and local repository registration are "
+        "implemented. Remote provider APIs and Milestones 03–11 are not "
+        "implemented. Classify conclusions as VERIFIED, INFERRED, UNKNOWN, or "
+        "CONFLICTING, and never treat AI prose as PASS/FAIL evidence."
     )
