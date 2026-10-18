@@ -1,8 +1,8 @@
 # GitLab provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED** read-only REST adapter  
 > Owning milestone: **03**  
-> Verification: documentation scaffold only; no provider request has been executed.
+> Verification: mocked HTTP tests. No live GitLab request has been executed.
 
 ## 1. Provider overview
 
@@ -20,7 +20,9 @@ SaaS and self-managed installations use different hosts and may run different AP
 
 Planned read scope: project metadata, branches and commits, files at exact revisions, merge-request metadata/diffs, and relevant pipeline or status links. Exact endpoints require verification.
 
-These are planned capabilities, not current support.
+The read-only adapter implements project metadata, commits, files, blob search,
+compare, and merge-request diffs. Writes are not implemented. Mocked tests are
+OFFLINE_VERIFIED. Live calls are not claimed.
 
 ## 5. Authentication methods
 

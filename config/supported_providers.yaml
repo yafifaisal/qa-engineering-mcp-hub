@@ -3,18 +3,18 @@ milestone: "00"
 providers:
   - id: github
     category: git
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: gitlab
     category: git
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: bitbucket
     category: git
     variants: [cloud, self_managed]
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: jira
     category: tickets
     variants: [cloud, self_managed]
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: confluence
     category: documentation
     variants: [cloud, self_managed]

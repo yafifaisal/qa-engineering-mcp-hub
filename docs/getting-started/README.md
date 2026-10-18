@@ -4,8 +4,9 @@ QA Engineering MCP Hub is a local Python 3.12+ FastMCP server. Milestone 00
 provides two tools, one resource, and one prompt. Milestone 01 adds secure local
 setup, configuration, profiles, connection identities, credential references, and
 MCP-client configuration generation. Milestone 02 adds provider contracts and
-`qa-mcp repositories` for local registration and remote definitions. Every
-external provider API remains `NOT_IMPLEMENTED`.
+`qa-mcp repositories` for local registration and remote definitions. Milestone 03
+adds read-only GitHub, GitLab, Bitbucket, and Jira tools. Other provider APIs
+remain `NOT_IMPLEMENTED`. Live Git and Jira calls are not claimed.
 
 ## Choose your platform
 

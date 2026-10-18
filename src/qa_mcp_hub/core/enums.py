@@ -27,6 +27,7 @@ class OperationStatus(StrEnum):
     failed = "failed"
     not_implemented = "not_implemented"
     unsupported = "unsupported"
+    available = "available"
 
 
 class ProviderCategory(StrEnum):

@@ -11,7 +11,14 @@ from fastmcp.client.transports import StdioTransport
 from qa_mcp_hub import __version__
 from qa_mcp_hub.server import mcp
 
-EXPECTED_TOOLS = {"hub_health", "hub_capabilities"}
+EXPECTED_TOOLS = {
+    "hub_health",
+    "hub_capabilities",
+    "search_repository_code",
+    "get_repository_changes",
+    "analyze_jira_ticket",
+    "find_related_implementation",
+}
 EXPECTED_RESOURCES = {"qa-hub://status"}
 EXPECTED_PROMPTS = {"qa_hub_orientation"}
 
@@ -40,8 +47,9 @@ async def test_mcp_tool_discovery_and_invocation() -> None:
         planned = catalog.structured_content["planned"]
         assert "profiles_and_credentials" in implemented
         assert "interactive_setup" in implemented
-        assert "github_gitlab_bitbucket" in planned
-        assert "github_gitlab_bitbucket" not in implemented
+        assert "search_repository_code" in implemented
+        assert "confluence_google_docs" in planned
+        assert "confluence_google_docs" not in implemented
 
 
 @pytest.mark.asyncio
@@ -52,7 +60,7 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         content = await client.read_resource("qa-hub://status")
         payload = json.loads(content[0].text)
         assert payload["health"]["status"] == "healthy"
-        assert payload["external_integrations"] == "not_implemented"
+        assert payload["external_integrations"] == "git_jira_read_only"
 
         prompts = await client.list_prompts()
         assert {prompt.name for prompt in prompts} == EXPECTED_PROMPTS
@@ -60,9 +68,10 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         assert len(rendered.messages) == 1
         prompt_text = rendered.messages[0].content.text
         assert "credential references are implemented" in prompt_text
-        assert "Remote provider APIs and Milestones 03–11 are not implemented" in (
+        assert "Milestone 03 read-only GitHub, GitLab, Bitbucket, and Jira" in (
             prompt_text
         )
+        assert "Milestones 04–11" in prompt_text
 
 
 @pytest.mark.asyncio

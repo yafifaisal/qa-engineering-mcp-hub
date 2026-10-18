@@ -72,6 +72,16 @@ module.
 | Paths | Windows, macOS, and Linux logical containment, plus symlink escape |
 | Indexing | a plan is recorded and file contents are not read |
 
+## Milestone 03 matrix
+
+| Area | Required evidence |
+|---|---|
+| GitHub/GitLab/Bitbucket/Jira | respx authentication, pagination, 401/403/404, and edition routing |
+| Source integrity | every code hit has a commit SHA and URL; local HEAD stays separate |
+| Secrets | provider error messages omit response bodies and credentials |
+| MCP tools | in-memory invocation of the four read tools against mocked HTTP |
+| Live providers | skipped unless `QA_MCP_LIVE_PROVIDERS=1` |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

@@ -16,7 +16,9 @@ def qa_hub_orientation() -> str:
         "Treat only entries listed as implemented as callable. Milestone 01 "
         "local configuration, profiles, and credential references are implemented. "
         "Milestone 02 provider contracts and local repository registration are "
-        "implemented. Remote provider APIs and Milestones 03–11 are not "
-        "implemented. Classify conclusions as VERIFIED, INFERRED, UNKNOWN, or "
+        "implemented. Milestone 03 read-only GitHub, GitLab, Bitbucket, and "
+        "Jira reads are implemented. Writes, Confluence, and Milestones 04–11 "
+        "are not implemented. Classify conclusions as VERIFIED, INFERRED, "
+        "UNKNOWN, or "
         "CONFLICTING, and never treat AI prose as PASS/FAIL evidence."
     )

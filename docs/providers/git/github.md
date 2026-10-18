@@ -1,8 +1,8 @@
 # GitHub provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED** read-only REST adapter  
 > Owning milestone: **03**  
-> Verification: documentation scaffold only; no provider request has been executed.
+> Verification: mocked HTTP tests. No live GitHub request has been executed.
 
 ## 1. Provider overview
 
@@ -20,7 +20,9 @@ GitHub.com and GHES can use different API base URLs, enabled features, and relea
 
 Planned read scope: repository metadata, branches and revisions, file content at an exact revision, commits, pull-request metadata/diffs, and relevant status information. Endpoint availability and response fields require verification.
 
-These are planned capabilities, not current support.
+The read-only adapter implements repository metadata, commits, file content,
+code search, compare, and pull-request files. Writes and GitHub App OAuth are
+not implemented. Mocked tests are OFFLINE_VERIFIED. Live calls are not claimed.
 
 ## 5. Authentication methods
 

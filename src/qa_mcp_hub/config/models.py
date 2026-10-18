@@ -100,6 +100,41 @@ class ExecutionOverrides(BaseModel):
     allow_mutations: bool | None = None
 
 
+_GIT_TICKET_PROVIDERS = frozenset(
+    {
+        ProviderKind.github,
+        ProviderKind.gitlab,
+        ProviderKind.bitbucket,
+        ProviderKind.jira,
+    }
+)
+
+
+def _validate_provider_deployment(connection: "ConnectionConfig") -> None:
+    """Require an explicit API host for self-managed Git and Jira connections."""
+    if connection.provider not in _GIT_TICKET_PROVIDERS:
+        return
+    if (
+        connection.deployment is DeploymentKind.SELF_MANAGED
+        and connection.base_url is None
+    ):
+        raise ValueError("self-managed connection requires base_url")
+    if connection.base_url is None:
+        return
+    host = urlsplit(connection.base_url).hostname
+    if host is None:
+        return
+    normalized = host.lower().rstrip(".")
+    if connection.provider is ProviderKind.bitbucket:
+        cloud_host = normalized == "api.bitbucket.org"
+        if connection.deployment is DeploymentKind.CLOUD and not cloud_host:
+            raise ValueError("bitbucket cloud base_url must use api.bitbucket.org")
+        if connection.deployment is DeploymentKind.SELF_MANAGED and cloud_host:
+            raise ValueError(
+                "bitbucket self-managed base_url must not use the cloud host"
+            )
+
+
 class ConnectionConfig(BaseModel):
     """A provider endpoint and opaque credential reference, never a secret."""
 
@@ -123,6 +158,7 @@ class ConnectionConfig(BaseModel):
         if self.credential is not None and self.credential.kind is not self.auth_kind:
             raise ValueError("credential authentication kind does not match connection")
         if self.base_url is None:
+            _validate_provider_deployment(self)
             return self
         endpoint = urlsplit(self.base_url)
         try:
@@ -139,6 +175,7 @@ class ConnectionConfig(BaseModel):
             raise ValueError(
                 "base_url must be an HTTPS URL without credentials or fragment"
             )
+        _validate_provider_deployment(self)
         return self
 
     @property

@@ -1,8 +1,8 @@
 {
   "counts": {
-    "existing_expected_files": 335,
+    "existing_expected_files": 338,
     "expected_directories": 100,
-    "expected_files": 335,
+    "expected_files": 338,
     "findings": 0,
     "missing_directories": 0,
     "missing_files": 0,
@@ -21,8 +21,12 @@
       "qa-hub://status"
     ],
     "tools": [
+      "analyze_jira_ticket",
+      "find_related_implementation",
+      "get_repository_changes",
       "hub_capabilities",
-      "hub_health"
+      "hub_health",
+      "search_repository_code"
     ]
   },
   "status": "PASS"

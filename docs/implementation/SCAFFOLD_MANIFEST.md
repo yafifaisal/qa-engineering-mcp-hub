@@ -31,7 +31,8 @@ outputs, caches, and other generated paths explicitly ignored by the auditor.
 `src/qa_mcp_hub/py.typed` is the only intentionally zero-byte file. Package
 initializers are documented even where they expose no public initialization logic.
 Future module placeholders are allowed only when their manifest and AST metadata say
-`SCAFFOLDED`.
+`SCAFFOLDED`. Milestone 03 moved the Git adapters, Jira adapter, planning service,
+and the knowledge/planning MCP tools to `IMPLEMENTED`.
 
 Meaningful README files preserve otherwise-empty QA Workspace and test directories.
 The extra machine manifest and `STRUCTURE_AUDIT.json` provide deterministic input

@@ -81,6 +81,14 @@ class GitInspectionError(HubError):
         super().__init__("git_inspection", message)
 
 
+class ProviderRequestError(HubError):
+    """A provider HTTP failure whose message does not include the response body."""
+
+    def __init__(self, code: str, message: str, *, status_code: int) -> None:
+        self.status_code = status_code
+        super().__init__(code, message)
+
+
 class RetryRejectedError(HubError):
     """A retry decision refused another attempt."""
 

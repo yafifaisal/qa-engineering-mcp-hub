@@ -7,6 +7,10 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 03 read-only GitHub, GitLab, Bitbucket Cloud/Data Center, and Jira
+  Cloud/Data Center adapters, plus four MCP tools for code search, change reads,
+  ticket analysis, and related-implementation lookup. Mocked tests are
+  OFFLINE_VERIFIED. Live provider calls were not executed.
 - Milestone 02 provider contracts, capability discovery, and a profile-scoped
   repository registry. Local Git metadata can be validated. Remote provider APIs
   and repository indexing remain unimplemented.

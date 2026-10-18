@@ -54,6 +54,8 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
 - Scope outbound traffic to the selected provider scheme and host.
 - Resolve credentials only after authorization, never from an MCP argument.
 - Prefer read-only provider scopes and read-only database accounts.
+- Git and Jira MCP tools send only GET requests, plus the Jira search POST that
+  reads issues. They do not accept a token argument.
 - Restrict suite execution, SQL, topics, workflows, and CI jobs to registries.
 - Require preview and explicit user approval for provider writes, CI triggers,
   imports, overwrites, and evidence publication.

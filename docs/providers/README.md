@@ -2,10 +2,10 @@
 
 The QA Engineering MCP Hub recognizes only the provider families listed here.
 Milestone 02 publishes typed contracts and a registry for every family below.
-Every provider integration remains **NOT_IMPLEMENTED**. The registry returns a
-contract stub that raises a typed error. Adapter files remain ownership
-scaffolds: they contain no network clients, provider OAuth flows, database
-sessions, Kafka consumers, or publication logic.
+GitHub, GitLab, Bitbucket, and Jira have read-only adapters marked
+**OFFLINE_VERIFIED**. The other families remain **NOT_IMPLEMENTED** and still
+return a contract stub. No adapter performs provider OAuth, database sessions,
+Kafka reads, or publication.
 
 Documentation examples use the versioned M01 configuration shape, contain only
 credential references, and remain disabled. A schema-valid local connection is not
@@ -27,10 +27,10 @@ credential-presence check does not advance provider verification status.
 
 | Category | Provider | Owning milestone | Status | Documentation |
 |---|---|---:|---|---|
-| Git | GitHub | 03 | NOT_IMPLEMENTED | [GitHub](git/github.md) |
-| Git | GitLab | 03 | NOT_IMPLEMENTED | [GitLab](git/gitlab.md) |
-| Git | Bitbucket | 03 | NOT_IMPLEMENTED | [Bitbucket](git/bitbucket.md) |
-| Tickets | Jira | 03 | NOT_IMPLEMENTED | [Jira](tickets/jira.md) |
+| Git | GitHub | 03 | OFFLINE_VERIFIED | [GitHub](git/github.md) |
+| Git | GitLab | 03 | OFFLINE_VERIFIED | [GitLab](git/gitlab.md) |
+| Git | Bitbucket | 03 | OFFLINE_VERIFIED | [Bitbucket](git/bitbucket.md) |
+| Tickets | Jira | 03 | OFFLINE_VERIFIED | [Jira](tickets/jira.md) |
 | Documentation | Confluence | 04 | NOT_IMPLEMENTED | [Confluence](documentation/confluence.md) |
 | Documentation | Google Docs | 04 | NOT_IMPLEMENTED | [Google Docs](documentation/google-docs.md) |
 | API automation | Bruno | 06 | NOT_IMPLEMENTED | [Bruno](api-automation/bruno.md) |

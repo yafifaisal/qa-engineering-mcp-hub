@@ -27,8 +27,10 @@ def test_catalog_distinguishes_future_work() -> None:
     assert "profiles_and_credentials" in catalog.implemented
     assert "interactive_setup" in catalog.implemented
     assert "mcp_client_config_generation" in catalog.implemented
-    assert "github_gitlab_bitbucket" in catalog.planned
-    assert "github_gitlab_bitbucket" not in catalog.implemented
+    assert "search_repository_code" in catalog.implemented
+    assert "analyze_jira_ticket" in catalog.implemented
+    assert "confluence_google_docs" in catalog.planned
+    assert "confluence_google_docs" not in catalog.implemented
 
 
 def test_legacy_core_config_names_resolve_to_canonical_models() -> None:

@@ -19,10 +19,6 @@ files:
     - "src/qa_mcp_hub/adapters/documentation/confluence.py"
     - "src/qa_mcp_hub/adapters/documentation/google_docs.py"
     - "src/qa_mcp_hub/adapters/git/__init__.py"
-    - "src/qa_mcp_hub/adapters/git/base.py"
-    - "src/qa_mcp_hub/adapters/git/bitbucket.py"
-    - "src/qa_mcp_hub/adapters/git/github.py"
-    - "src/qa_mcp_hub/adapters/git/gitlab.py"
     - "src/qa_mcp_hub/adapters/streaming/__init__.py"
     - "src/qa_mcp_hub/adapters/streaming/kafka.py"
     - "src/qa_mcp_hub/adapters/test_management/__init__.py"
@@ -32,7 +28,6 @@ files:
     - "src/qa_mcp_hub/adapters/test_management/testrail.py"
     - "src/qa_mcp_hub/adapters/test_management/xray.py"
     - "src/qa_mcp_hub/adapters/tickets/__init__.py"
-    - "src/qa_mcp_hub/adapters/tickets/jira.py"
     - "src/qa_mcp_hub/cli/evidence.py"
     - "src/qa_mcp_hub/cli/workflows.py"
     - "src/qa_mcp_hub/core/__init__.py"
@@ -64,18 +59,12 @@ files:
     - "src/qa_mcp_hub/mcp/tools/cicd.py"
     - "src/qa_mcp_hub/mcp/tools/evidence.py"
     - "src/qa_mcp_hub/mcp/tools/execution.py"
-    - "src/qa_mcp_hub/mcp/tools/knowledge.py"
-    - "src/qa_mcp_hub/mcp/tools/planning.py"
     - "src/qa_mcp_hub/mcp/tools/release.py"
     - "src/qa_mcp_hub/mcp/tools/test_management.py"
     - "src/qa_mcp_hub/mcp/tools/verification.py"
     - "src/qa_mcp_hub/planning/__init__.py"
-    - "src/qa_mcp_hub/planning/change_impact.py"
     - "src/qa_mcp_hub/planning/coverage_mapper.py"
-    - "src/qa_mcp_hub/planning/models.py"
     - "src/qa_mcp_hub/planning/scenario_builder.py"
-    - "src/qa_mcp_hub/planning/service.py"
-    - "src/qa_mcp_hub/planning/ticket_analyzer.py"
     - "src/qa_mcp_hub/release/__init__.py"
     - "src/qa_mcp_hub/release/coverage_engine.py"
     - "src/qa_mcp_hub/release/models.py"
@@ -234,6 +223,11 @@ files:
     - "scripts/validate.py"
     - "src/qa_mcp_hub/__init__.py"
     - "src/qa_mcp_hub/__main__.py"
+    - "src/qa_mcp_hub/adapters/git/base.py"
+    - "src/qa_mcp_hub/adapters/git/bitbucket.py"
+    - "src/qa_mcp_hub/adapters/git/github.py"
+    - "src/qa_mcp_hub/adapters/git/gitlab.py"
+    - "src/qa_mcp_hub/adapters/tickets/jira.py"
     - "src/qa_mcp_hub/app.py"
     - "src/qa_mcp_hub/auth/__init__.py"
     - "src/qa_mcp_hub/auth/credential_resolver.py"
@@ -274,7 +268,13 @@ files:
     - "src/qa_mcp_hub/mcp/prompts.py"
     - "src/qa_mcp_hub/mcp/registry.py"
     - "src/qa_mcp_hub/mcp/resources.py"
+    - "src/qa_mcp_hub/mcp/tools/knowledge.py"
+    - "src/qa_mcp_hub/mcp/tools/planning.py"
     - "src/qa_mcp_hub/mcp/tools/system.py"
+    - "src/qa_mcp_hub/planning/change_impact.py"
+    - "src/qa_mcp_hub/planning/models.py"
+    - "src/qa_mcp_hub/planning/service.py"
+    - "src/qa_mcp_hub/planning/ticket_analyzer.py"
     - "src/qa_mcp_hub/providers/__init__.py"
     - "src/qa_mcp_hub/providers/contracts.py"
     - "src/qa_mcp_hub/providers/models.py"
@@ -323,12 +323,15 @@ files:
     - "templates/workflows/e2e.yaml"
     - "tests/conftest.py"
     - "tests/contracts/README.md"
+    - "tests/contracts/test_git_jira_adapters.py"
     - "tests/contracts/test_provider_contracts.py"
     - "tests/e2e/README.md"
     - "tests/fixtures/README.md"
     - "tests/integration/test_cli.py"
     - "tests/integration/test_cli_m01.py"
+    - "tests/integration/test_mcp_git_jira.py"
     - "tests/integration/test_mcp_protocol.py"
+    - "tests/integration/test_provider_live.py"
     - "tests/packaging/test_package.py"
     - "tests/security/test_credentials_m01.py"
     - "tests/security/test_m00_boundaries.py"
@@ -340,7 +343,13 @@ files:
 allowed_empty:
   - "src/qa_mcp_hub/py.typed"
 expected_mcp:
-  tools: ["hub_capabilities", "hub_health"]
+  tools:
+    - analyze_jira_ticket
+    - find_related_implementation
+    - get_repository_changes
+    - hub_capabilities
+    - hub_health
+    - search_repository_code
   resources: ["qa-hub://status"]
   prompts: ["qa_hub_orientation"]
 json_schemas:

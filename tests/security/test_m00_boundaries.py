@@ -21,7 +21,7 @@ def test_server_has_no_remote_transport_configuration() -> None:
 
 
 def test_runtime_does_not_import_future_domains() -> None:
-    """A fresh server process may load M01 config/auth, but no later domain."""
+    """A server process may load M03 read adapters, not later domains."""
     project_root = Path(__file__).resolve().parents[2]
     probe = """
 import json
@@ -29,13 +29,15 @@ import sys
 import qa_mcp_hub.server
 
 future_domains = (
-    "qa_mcp_hub.adapters",
+    "qa_mcp_hub.adapters.api_automation",
+    "qa_mcp_hub.adapters.cicd",
+    "qa_mcp_hub.adapters.database",
+    "qa_mcp_hub.adapters.documentation",
+    "qa_mcp_hub.adapters.streaming",
+    "qa_mcp_hub.adapters.test_management",
     "qa_mcp_hub.evidence",
     "qa_mcp_hub.knowledge",
-    "qa_mcp_hub.planning",
-    "qa_mcp_hub.providers",
     "qa_mcp_hub.release",
-    "qa_mcp_hub.repositories",
     "qa_mcp_hub.runners",
     "qa_mcp_hub.storage",
     "qa_mcp_hub.suites",

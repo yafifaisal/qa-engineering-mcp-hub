@@ -34,8 +34,9 @@ Indexing execution remains Milestone 05.
 ## 03 — Git and ticket intelligence
 
 Owns GitHub, GitLab, Bitbucket, and Jira adapters plus grounded source resolution.
-Local registration is Milestone 02. Exit: read-only contract fixtures plus
-separately gated sandbox reads for every edition claimed live.
+Local registration is Milestone 02. Exit: read-only contract fixtures are
+OFFLINE_VERIFIED. Live sandbox reads stay gated and are not LIVE_VERIFIED until
+they are actually executed.
 
 ## 04 — documentation providers
 

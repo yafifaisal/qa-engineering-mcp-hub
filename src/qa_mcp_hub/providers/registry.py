@@ -43,7 +43,12 @@ from qa_mcp_hub.providers.models import (
 )
 
 CATEGORY_CAPABILITIES: dict[ProviderCategory, tuple[str, ...]] = {
-    ProviderCategory.git: ("read_repository", "list_changes"),
+    ProviderCategory.git: (
+        "read_repository",
+        "list_changes",
+        "search_code",
+        "compare_changes",
+    ),
     ProviderCategory.tickets: ("read_issue",),
     ProviderCategory.documentation: ("read_document",),
     ProviderCategory.api_automation: ("list_requests",),
@@ -53,18 +58,30 @@ CATEGORY_CAPABILITIES: dict[ProviderCategory, tuple[str, ...]] = {
     ProviderCategory.test_management: ("read_case",),
 }
 
+_OFFLINE = "OFFLINE_VERIFIED"
+
 CATALOG: tuple[ProviderDescriptor, ...] = (
-    ProviderDescriptor(id=ProviderKind.github, category=ProviderCategory.git),
-    ProviderDescriptor(id=ProviderKind.gitlab, category=ProviderCategory.git),
+    ProviderDescriptor(
+        id=ProviderKind.github,
+        category=ProviderCategory.git,
+        implementation_status=_OFFLINE,
+    ),
+    ProviderDescriptor(
+        id=ProviderKind.gitlab,
+        category=ProviderCategory.git,
+        implementation_status=_OFFLINE,
+    ),
     ProviderDescriptor(
         id=ProviderKind.bitbucket,
         category=ProviderCategory.git,
         variants=("cloud", "self_managed"),
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(
         id=ProviderKind.jira,
         category=ProviderCategory.tickets,
         variants=("cloud", "self_managed"),
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(
         id=ProviderKind.confluence,
@@ -114,6 +131,13 @@ CATALOG: tuple[ProviderDescriptor, ...] = (
 )
 
 _BY_ID: dict[ProviderKind, ProviderDescriptor] = {item.id: item for item in CATALOG}
+_READ_PROVIDERS = {
+    ProviderKind.github,
+    ProviderKind.gitlab,
+    ProviderKind.bitbucket,
+    ProviderKind.jira,
+}
+_EXPOSED_CAPABILITIES = {"search_code", "compare_changes", "read_issue"}
 
 
 class BoundProvider(BaseModel):
@@ -206,8 +230,12 @@ def ensure_catalog() -> None:
     """Reject a catalog that drifted from the ProviderKind allowlist."""
     if {item.id for item in CATALOG} != set(ProviderKind):
         raise CatalogMismatchError("provider catalog does not match ProviderKind")
-    if any(item.implementation_status != "NOT_IMPLEMENTED" for item in CATALOG):
-        raise CatalogMismatchError("catalog must not claim an implementation")
+    for item in CATALOG:
+        expected = (
+            "OFFLINE_VERIFIED" if item.id in _READ_PROVIDERS else "NOT_IMPLEMENTED"
+        )
+        if item.implementation_status != expected:
+            raise CatalogMismatchError("catalog implementation status is inconsistent")
 
 
 def catalog_matches_document(document: dict[str, Any]) -> None:
@@ -227,21 +255,26 @@ def catalog_matches_document(document: dict[str, Any]) -> None:
             raise CatalogMismatchError(f"variant mismatch for {descriptor.id.value}")
         if tuple(row.get("formats", ())) != descriptor.formats:
             raise CatalogMismatchError(f"format mismatch for {descriptor.id.value}")
-        if row.get("implementation_status") != "NOT_IMPLEMENTED":
+        if row.get("implementation_status") != descriptor.implementation_status:
             raise CatalogMismatchError(
-                f"document claims an implementation for {descriptor.id.value}"
+                f"implementation status mismatch for {descriptor.id.value}"
             )
 
 
 def discover_capabilities(provider_id: str) -> tuple[ProviderCapability, ...]:
-    """List contract capabilities. None of them are exposed as MCP tools."""
+    """List contract capabilities. Only read tools that exist are exposed."""
     descriptor = require_descriptor(provider_id)
+    readable = descriptor.id in _READ_PROVIDERS
     return tuple(
         ProviderCapability(
             provider=descriptor.id,
             name=name,
-            status=OperationStatus.not_implemented,
-            exposed_as_mcp_tool=False,
+            status=(
+                OperationStatus.available
+                if readable
+                else OperationStatus.not_implemented
+            ),
+            exposed_as_mcp_tool=readable and name in _EXPOSED_CAPABILITIES,
         )
         for name in CATEGORY_CAPABILITIES[descriptor.category]
     )
@@ -255,6 +288,56 @@ def require_descriptor(provider_id: str) -> ProviderDescriptor:
     except ValueError as exc:
         raise UnknownProviderError(provider_id) from exc
     return _BY_ID[kind]
+
+
+def open_read_adapter(
+    connection: ConnectionConfig, secret: object, http_client: object
+) -> object:
+    """Open a read-only GitHub, GitLab, Bitbucket, or Jira adapter."""
+    import httpx
+    from pydantic import SecretStr
+
+    from qa_mcp_hub.adapters.git.bitbucket import open_bitbucket
+    from qa_mcp_hub.adapters.git.github import open_github
+    from qa_mcp_hub.adapters.git.gitlab import open_gitlab
+    from qa_mcp_hub.adapters.tickets.jira import open_jira
+
+    if not isinstance(secret, SecretStr) or not isinstance(http_client, httpx.Client):
+        raise ProviderResolutionError("read adapter requires a secret and HTTP client")
+    kind = connection.provider
+    if kind is ProviderKind.github:
+        return open_github(
+            base_url=connection.base_url,
+            deployment=connection.deployment,
+            secret=secret,
+            http_client=http_client,
+        )
+    if kind is ProviderKind.gitlab:
+        return open_gitlab(
+            base_url=connection.base_url,
+            deployment=connection.deployment,
+            secret=secret,
+            http_client=http_client,
+        )
+    if kind is ProviderKind.bitbucket:
+        return open_bitbucket(
+            base_url=connection.base_url,
+            deployment=connection.deployment,
+            account=connection.account,
+            auth_kind=connection.auth_kind,
+            secret=secret,
+            http_client=http_client,
+        )
+    if kind is ProviderKind.jira:
+        return open_jira(
+            base_url=connection.base_url,
+            deployment=connection.deployment,
+            account=connection.account,
+            auth_kind=connection.auth_kind,
+            secret=secret,
+            http_client=http_client,
+        )
+    raise UnsupportedCapabilityError(kind.value, "read", implemented=False)
 
 
 def build_stub(provider: ProviderKind) -> object:

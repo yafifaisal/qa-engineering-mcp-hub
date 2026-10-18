@@ -2,8 +2,11 @@
 
 ## Milestone boundary
 
-- Every external provider integration is `NOT_IMPLEMENTED`. Provider modules
-  expose typed contracts and stubs. They are not callable adapters.
+- GitHub, GitLab, Bitbucket, and Jira have read-only adapters. Mocked HTTP tests
+  are `OFFLINE_VERIFIED`. No live provider call was executed in this session, so
+  those integrations are not `LIVE_VERIFIED`.
+- Other provider integrations remain `NOT_IMPLEMENTED`. Their registry entries
+  still return contract stubs.
 - Milestone 01 implements local configuration, profiles, credential references,
   redaction, offline OAuth/PKCE state, and the setup/config CLI. It does not
   perform a provider OAuth exchange, token refresh, or network connectivity test.
@@ -11,8 +14,9 @@
   checkouts inside an approved workspace, and reads local branch, HEAD, remote
   URL, and dirty state. It does not call GitHub, GitLab, or Bitbucket, and it
   does not index file contents.
-- Knowledge indexing, planning, workflows, suite execution, assertions, CI/CD,
-  test management, evidence, and release intelligence remain Milestones 03–10.
+- Knowledge indexing, scenario planning, workflows, suite execution, assertions,
+  CI/CD, test management, evidence, and release intelligence remain Milestones
+  04–10. Ticket analysis in Milestone 03 does not call a language model.
 - Python keyring is a direct development dependency and an optional `credentials`
   extra. A missing or unusable backend fails closed. The application does not fall
   back to a plaintext file.

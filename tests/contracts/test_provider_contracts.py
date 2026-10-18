@@ -80,16 +80,35 @@ def test_catalog_matches_architecture_document() -> None:
     document = yaml.safe_load((ROOT / "config/supported_providers.yaml").read_text())
     catalog_matches_document(document)
     assert {item.id for item in CATALOG} == set(ProviderKind)
-    assert all(item.implementation_status == "NOT_IMPLEMENTED" for item in CATALOG)
+    offline = {"github", "gitlab", "bitbucket", "jira"}
+    assert {
+        item.id.value
+        for item in CATALOG
+        if item.implementation_status == "OFFLINE_VERIFIED"
+    } == offline
+    assert all(
+        item.implementation_status == "NOT_IMPLEMENTED"
+        for item in CATALOG
+        if item.id.value not in offline
+    )
     assert len(CATALOG) == 18
 
 
 def test_capability_discovery_does_not_advertise_tools() -> None:
     capabilities = discover_capabilities("github")
-    assert [item.name for item in capabilities] == ["read_repository", "list_changes"]
-    assert all(item.status is OperationStatus.not_implemented for item in capabilities)
-    assert all(item.exposed_as_mcp_tool is False for item in capabilities)
+    assert [item.name for item in capabilities] == [
+        "read_repository",
+        "list_changes",
+        "search_code",
+        "compare_changes",
+    ]
+    assert all(item.status is OperationStatus.available for item in capabilities)
+    exposed = {item.name for item in capabilities if item.exposed_as_mcp_tool}
+    assert exposed == {"search_code", "compare_changes"}
     assert "hub_health" not in {item.name for item in capabilities}
+    confluence = discover_capabilities("confluence")
+    assert all(item.status is OperationStatus.not_implemented for item in confluence)
+    assert all(item.exposed_as_mcp_tool is False for item in confluence)
 
 
 def test_unknown_provider_and_capability_are_typed_errors() -> None:

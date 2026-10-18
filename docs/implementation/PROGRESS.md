@@ -131,9 +131,42 @@ Local Git metadata was read on this macOS machine. Windows and Linux path checks
 are simulations. No GitHub, GitLab, or Bitbucket API was called. Repository
 indexing was not executed.
 
-## Milestones 03–11
+## Milestone 03 — implemented and offline verified
 
-Remote provider adapters, indexing execution, planning, workflows, suite
+- [x] Read-only GitHub, GitLab, and Bitbucket Cloud/Data Center adapters read
+  repository metadata, commits, files, pull or merge requests, and diffs.
+- [x] Read-only Jira Cloud uses `/rest/api/3/search/jql`. A self-managed
+  connection uses `/rest/api/2/search`. Descriptions become plain text.
+- [x] MCP tools `search_repository_code`, `get_repository_changes`,
+  `analyze_jira_ticket`, and `find_related_implementation` resolve configured
+  credentials. Tool arguments do not accept tokens.
+- [x] Code hits carry a commit SHA and source URL. Local HEAD is recorded
+  separately from the remote SHA.
+- [ ] Live GitHub, GitLab, Bitbucket, and Jira calls were not executed.
+  `QA_MCP_LIVE_PROVIDERS` was not set.
+
+## Executed verification — Milestone 03
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
+| `uv lock --check` | 0 | lock matches project metadata |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 288 files already formatted |
+| `uv run mypy src` | 0 | no issues in 182 source files |
+| `uv run pytest -q` | 0 | 97 passed, 1 skipped |
+| `uv build` | 0 | wheel and source distribution built |
+| `uv run python scripts/structure_audit.py` | 0 | 338 files, 100 directories, zero findings |
+
+The skipped test is `tests/integration/test_provider_live.py`. `QA_MCP_LIVE_PROVIDERS`
+was not set, so no GitHub, GitLab, Bitbucket, or Jira host was called. Those
+reads are `OFFLINE_VERIFIED` from respx mocks and are not `LIVE_VERIFIED`.
+Windows and Linux execution remains `BLOCKED`.
+
+## Milestones 04–11
+
+Confluence, Google Docs, indexing execution, scenario planning, workflows, suite
 execution, assertions, evidence, and release intelligence remain `SCAFFOLDED` or
 `NOT_IMPLEMENTED`. Native Windows/Linux execution and Python 3.13 execution
-remain `BLOCKED` on hosted-runner access.
+remain `BLOCKED` on hosted-runner access. Writes to Git and Jira are not
+implemented. OAuth provider exchange remains `NOT_IMPLEMENTED`.

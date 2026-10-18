@@ -3,10 +3,11 @@
 QA Engineering MCP Hub is a local-first, cross-platform FastMCP foundation for
 governed QA workflows. Milestones 00 and 01 provide the MCP foundation and secure
 local configuration control plane. Milestone 02 adds provider contracts and local
-repository registration. External provider APIs and QA execution features remain
-explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
+repository registration. Milestone 03 adds read-only GitHub, GitLab, Bitbucket,
+and Jira access. Other provider APIs and QA execution features remain
+`NOT_IMPLEMENTED` or `SCAFFOLDED`.
 
-## What works through Milestone 02
+## What works through Milestone 03
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -29,10 +30,14 @@ explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 - `qa-mcp repositories` registers, lists, removes, discovers, and validates
   repositories. Discovery stays inside the profile workspace. Validation can
   read local Git branch, HEAD, remote URL, and dirty state.
+- `search_repository_code`, `get_repository_changes`, `analyze_jira_ticket`, and
+  `find_related_implementation` read Git and Jira through a configured credential.
+  Repository and ticket text is untrusted data. Mocked tests are
+  `OFFLINE_VERIFIED`. Live provider calls were not executed.
 
-No provider adapter, provider OAuth exchange, remote Git or ticket read, test
-execution, database query, Kafka operation, CI/CD action, test-management action,
-evidence publication, or release approval is implemented.
+Provider OAuth exchange, Git and Jira writes, test execution, database query,
+Kafka operation, CI/CD action, test-management action, evidence publication, and
+release approval are not implemented.
 
 ## Prerequisites and setup
 

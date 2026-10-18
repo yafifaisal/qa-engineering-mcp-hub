@@ -22,6 +22,7 @@ class ExecutionContext(BaseModel):
     connection_id: str | None = Field(default=None, max_length=128)
     environment: str = Field(min_length=1, max_length=64)
     source_revision: str | None = Field(default=None, max_length=128)
+    subject: str | None = Field(default=None, max_length=256)
     correlation_id: str = Field(min_length=8, max_length=64)
 
     @classmethod
@@ -32,6 +33,7 @@ class ExecutionContext(BaseModel):
         connection_id: str | None,
         environment: str,
         source_revision: str | None = None,
+        subject: str | None = None,
         correlation_id: str | None = None,
     ) -> "ExecutionContext":
         """Copy the supplied identity into a new immutable context."""
@@ -40,5 +42,6 @@ class ExecutionContext(BaseModel):
             connection_id=connection_id,
             environment=environment,
             source_revision=source_revision,
+            subject=subject,
             correlation_id=correlation_id or uuid4().hex,
         )

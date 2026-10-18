@@ -1,10 +1,10 @@
-"""Truthful local capability catalog through Milestone 02.
+"""Truthful local capability catalog through Milestone 03.
 
-The catalog distinguishes implemented local setup, provider contracts, and
-repository registration from provider adapters that remain future work.
+The catalog distinguishes read-only Git and Jira tools from providers that
+remain future work.
 
 Purpose: separate callable local capabilities from planned provider work.
-Milestone: 02
+Milestone: 03
 Status: IMPLEMENTED
 Ownership: core.capabilities
 Dependencies: Pydantic.
@@ -36,10 +36,13 @@ def list_capabilities() -> CapabilityCatalog:
             "mcp_client_config_generation",
             "provider_contracts",
             "repository_registry",
+            "search_repository_code",
+            "get_repository_changes",
+            "analyze_jira_ticket",
+            "find_related_implementation",
         ),
         planned=(
-            "github_gitlab_bitbucket",
-            "jira_confluence_google_docs",
+            "confluence_google_docs",
             "bruno_postman",
             "postgresql_mysql_kafka",
             "bitbucket_pipelines_github_actions_jenkins",

@@ -162,8 +162,9 @@ configuration of an already-running execution.
 The interactive `qa-mcp setup` wizard and the `profiles`, `integrations`, `config`,
 and `clients` CLI groups operate on local configuration. Integration diagnostics
 validate connection configuration and credential presence only. They report
-provider network connectivity as `NOT_IMPLEMENTED` until the owning adapter
-milestone supplies a real, authorized diagnostic.
+provider network connectivity as `NOT_IMPLEMENTED`. Milestone 03 read tools call
+Git and Jira only when a profile credential is configured. `qa-mcp doctor` and
+`integrations test` still do not make those calls.
 
 Credential values may be stored in an available OS keyring backend or supplied by
 an explicitly named environment variable. YAML contains only the store kind and
