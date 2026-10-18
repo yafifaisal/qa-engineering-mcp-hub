@@ -404,14 +404,17 @@ or Git host was called. Windows and Linux execution remains `BLOCKED`.
   workflows, and evidence artifacts. The simulation does not call those vendors.
 - [x] The distribution scan rejects known token shapes and unsafe archive paths.
   The built wheel and source distribution were clean.
-- [x] OSV was queried for the 91 locked packages and returned no findings on
-  this date. That query is point-in-time evidence, not a standing guarantee.
 - [x] The release workflow builds artifacts and publishes only when the dispatch
-  input is `APPROVE_PUBLIC_RELEASE`. It was not dispatched.
+  input is `APPROVE_PUBLIC_RELEASE`. It was not dispatched, so trusted
+  publishing is `BLOCKED`.
+- [x] OSV was queried again during the completion audit. The response contained
+  one result for each of the 91 locked packages and no findings. A shorter
+  response now fails the report instead of looking complete.
 - [ ] Hosted Windows, macOS, and Linux runners were not observed, so that matrix
   is `BLOCKED`. No provider is `LIVE_VERIFIED`. The package was not published.
+  The completion audit is **PARTIAL**.
 
-## Executed verification — Milestone 11
+## Executed verification — Milestone 11 completion audit
 
 | Command | Exit | Result |
 |---|---:|---|
@@ -420,15 +423,19 @@ or Git host was called. Windows and Linux execution remains `BLOCKED`.
 | `uv run ruff check .` | 0 | all checks passed |
 | `uv run ruff format --check .` | 0 | 309 files already formatted |
 | `uv run mypy src` | 0 | no issues in 183 source files |
-| `uv run pytest -q` | 0 | 180 passed, 1 skipped |
-| `uv build --no-sources` | 0 | sdist and wheel built |
-| `uv run python scripts/build_package.py --query-osv` | 0 | SBOM written, OSV findings 0, published false |
+| `uv run pytest -v` | 0 | 181 passed, 1 skipped in 20.35s |
+| `uv build` | 0 | sdist and wheel built |
 | `uv run python scripts/structure_audit.py` | 0 | PASS, 373 files, 101 directories, 0 findings |
+| `uv run python scripts/build_package.py --query-osv` | 0 | 91 packages, 0 findings, published false |
 
 The skipped test is `tests/integration/test_provider_live.py` because live
 provider calls are not enabled. `QA_MCP_LIVE_PROVIDERS` was not set. The wheel
-install used the local distribution. OSV was the only external query, and it
-asked about locked package versions. No Jira, Xray, TestRail, Google, Git host,
-CI system, database, or Kafka broker was called. Windows and Linux execution
-remains `BLOCKED`. Public release is not approved.
+install in `tests/packaging/test_distribution.py` used the local distribution.
+OSV was queried for locked package versions only. No Jira, Xray, TestRail,
+Google, Git host, CI system, database, or Kafka broker was called. Windows and
+Linux execution remains `BLOCKED`. Public release is not approved.
+
+Audit result: **PARTIAL**. Local implementation and tests passed. Hosted
+platform execution, a live keyring round trip, a Docker build, and the publish
+job were not verified.
 

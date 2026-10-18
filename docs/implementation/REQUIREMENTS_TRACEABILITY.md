@@ -59,11 +59,12 @@ Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
 | R10-01 | Evidence policies, redaction, collection, completeness, manifest | 10 | `evidence/` | `tests/unit/test_evidence.py` | IMPLEMENTED | OFFLINE_VERIFIED | API-only omission, missing E2E evidence, hashes, escaping | No live provider call |
 | R10-02 | Authorized evidence publishing | 10 | `evidence/publisher.py` | `tests/security/test_publication.py` | IMPLEMENTED | OFFLINE_VERIFIED | denied external publish, one POST, no automatic retry | No live Jira, Xray, or TestRail call |
 | R10-03 | Coverage, risk, and release reporting | 10 | `release/` | `tests/unit/test_release.py` | IMPLEMENTED | OFFLINE_VERIFIED | mapped coverage, critical defects, recommendation leaves review unchanged | No automatic release approval |
-| R11-01 | Community package, SBOM, and artifact scan | 11 | `scripts/build_package.py`, `security/secret_scanner.py` | `tests/packaging/test_distribution.py`, `tests/security/test_release_scan.py` | IMPLEMENTED | OFFLINE_VERIFIED | local wheel install, uvx, secret scan | Hosted runners not observed. Package not published |
-| R11-02 | Onboarding CLI and profile isolation | 11 | `cli/workflows.py`, `cli/main.py` | `tests/packaging/test_onboarding.py` | IMPLEMENTED | OFFLINE_VERIFIED | Company A and Company C separation, evidence from stored runs | No live provider call |
-| R11-03 | Trusted publishing workflow | 11 | `.github/workflows/release.yml` | workflow review | IMPLEMENTED | BLOCKED | publish job requires `APPROVE_PUBLIC_RELEASE` | Workflow was not dispatched and nothing was uploaded |
+| R11-01 | Community package, SBOM, and artifact scan | 11 | `scripts/build_package.py`, `security/secret_scanner.py` | `tests/packaging/test_distribution.py`, `tests/security/test_release_scan.py` | IMPLEMENTED | OFFLINE_VERIFIED | local wheel, uvx, uninstall, secret scan, SBOM; OSV returned one result per locked package | Hosted runners not observed. Package not published. Provenance file is unsigned |
+| R11-02 | Onboarding CLI and profile isolation | 11 | `cli/workflows.py`, `cli/main.py` | `tests/packaging/test_onboarding.py`, `tests/integration/test_cli_m01.py`, `tests/unit/test_config_m01.py` | IMPLEMENTED | OFFLINE_VERIFIED | Company A and Company C config isolation, client config, migration, environment credential fallback | Simulation does not call vendors or run their suites. Keyring round trip uses an injected backend |
+| R11-03 | Trusted publishing workflow | 11 | `.github/workflows/release.yml`, `.github/workflows/ci.yml` | workflow review | IMPLEMENTED | BLOCKED | publish job requires `APPROVE_PUBLIC_RELEASE`; tag version is not checked by the workflow | Workflow was not dispatched. Windows, Linux, and hosted macOS runners were not observed |
 
-No requirement row is `LIVE_VERIFIED`. Hosted CI execution remains `BLOCKED`.
-The Community Edition package was not published.
+No requirement row is `LIVE_VERIFIED`. The Milestone 11 completion audit is **PARTIAL**:
+local packaging and onboarding tests passed, and hosted or live verification
+remains `BLOCKED`. The Community Edition package was not published.
 Provider pages document intended contracts and official references; they do not
 replace an executed live check.

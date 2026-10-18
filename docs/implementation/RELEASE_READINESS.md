@@ -24,8 +24,8 @@ explicit maintainer approval. This document does not grant that approval.
 
 | Claim | Status |
 |---|---|
-| Local macOS package install and test suite | OFFLINE_VERIFIED. 180 tests passed, 1 skipped, wheel install and uvx succeeded |
-| OSV query of locked packages | QUERIED on 2026-10-18. 91 packages, 0 findings. Point-in-time only |
+| Local macOS package install and test suite | OFFLINE_VERIFIED in the completion audit. `pytest -v`: 181 passed, 1 skipped |
+| OSV query of locked packages | QUERIED during the audit. 91 packages, one result each, 0 findings. Point-in-time only |
 | Hosted Windows, macOS, and Linux runners | BLOCKED. The workflow file exists and was not observed |
 | Python 3.13 on a hosted runner | BLOCKED |
 | Any live provider, database, Kafka, CI, or test-management system | Not LIVE_VERIFIED |

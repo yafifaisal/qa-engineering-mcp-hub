@@ -29,6 +29,13 @@ def _uv() -> str:
     return uv
 
 
+def test_osv_result_count_must_match_the_lockfile() -> None:
+    packages = ({"name": "example", "version": "1.0.0"},)
+    with pytest.raises(ValueError, match="OSV returned 0 results"):
+        _BUILD.osv_findings(packages, [])
+    assert _BUILD.osv_findings(packages, [{}]) == []
+
+
 def test_locked_sbom_and_unqueried_vulnerability_report(tmp_path: Path) -> None:
     sbom_path = _BUILD.write_sbom(ROOT / "uv.lock", tmp_path / "sbom.cdx.json")
     document = json.loads(sbom_path.read_text(encoding="utf-8"))

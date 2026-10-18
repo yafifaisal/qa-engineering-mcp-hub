@@ -9,8 +9,21 @@
   refresh token is not returned by MCP tools. Interactive browser login is not
   implemented.
 - The generic `read_case` port stays unavailable even though the Milestone 09
-  tools read through reviewed mappings. The Community Edition package is built
-  locally and is not published.
+  tools read through reviewed mappings.
+- The Community Edition package is built locally and is not published. The
+  completion audit is **PARTIAL** because hosted runners, a live keyring round
+  trip, the Docker image, and the PyPI publish job were not executed.
+- Company A and Company C coverage is profile, credential, repository, workflow,
+  and artifact separation through the CLI. It does not run those vendors' suites
+  and it does not make their adapters `LIVE_VERIFIED`.
+- `dist/provenance.json` records local artifact digests. It is not a signed
+  build attestation. The release workflow does not compare a `v*` tag with the
+  version in `pyproject.toml`.
+- An OSV response that does not contain one result per locked package fails the
+  package report. A complete response with no findings is point-in-time evidence
+  for that query only.
+- `cli/evidence.py` remains a scaffold. Evidence commands are the Milestone 10
+  MCP tools, not a CLI group.
 - Milestone 01 implements local configuration, profiles, credential references,
   redaction, offline OAuth/PKCE state, and the setup/config CLI. It does not
   perform a provider OAuth exchange, token refresh, or network connectivity test.

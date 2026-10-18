@@ -96,19 +96,31 @@ def query_osv(packages: tuple[dict[str, str], ...]) -> dict[str, Any]:
     )
     with urllib.request.urlopen(request, timeout=60) as response:  # noqa: S310
         payload = json.loads(response.read().decode("utf-8"))
-    findings = []
     results = payload.get("results", [])
-    for package, result in zip(packages, results, strict=False):
+    return {"status": "QUERIED", "findings": osv_findings(packages, results)}
+
+
+def osv_findings(
+    packages: tuple[dict[str, str], ...],
+    results: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Pair each locked package with one OSV result. A short response is an error."""
+    if len(results) != len(packages):
+        raise ValueError(
+            f"OSV returned {len(results)} results for {len(packages)} packages"
+        )
+    findings: list[dict[str, Any]] = []
+    for package, result in zip(packages, results, strict=True):
         vulns = result.get("vulns") or []
         if vulns:
             findings.append(
                 {
                     "name": package["name"],
                     "version": package["version"],
-                    "ids": [item.get("id", "") for item in vulns],
+                    "ids": [str(item.get("id", "")) for item in vulns],
                 }
             )
-    return {"status": "QUERIED", "findings": findings}
+    return findings
 
 
 def write_vulnerability_report(
