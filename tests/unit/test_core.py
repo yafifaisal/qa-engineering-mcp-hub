@@ -41,6 +41,9 @@ def test_catalog_distinguishes_future_work() -> None:
     assert "prepare_pipeline_trigger" in catalog.implemented
     assert "search_test_cases" in catalog.implemented
     assert "prepare_result_publication" in catalog.implemented
+    assert "generate_evidence" in catalog.implemented
+    assert "assess_release_readiness" in catalog.implemented
+    assert "community_release" in catalog.planned
     assert "postgresql_mysql_kafka" not in catalog.planned
     assert "bitbucket_pipelines_github_actions_jenkins" not in catalog.planned
     assert "xray_testrail_spreadsheet" not in catalog.planned

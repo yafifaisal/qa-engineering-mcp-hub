@@ -89,9 +89,11 @@ were not contacted, so this exit is not LIVE_VERIFIED.
 ## 10 — evidence and release intelligence
 
 Owns policies, redacted collection, completeness, manifests, rendering, publishing,
-coverage, risk, and release reports. Exit: deterministic evidence hashes, no secret
-leaks, explicit missing-check behavior, authorized publication, and no automatic
-release sign-off.
+coverage, risk, and release reports. Exit status: OFFLINE_VERIFIED with stored
+executions and mocked publication HTTP. A missing mandatory check cannot become
+PASS. Publication requires an explicit review and a single-use approval.
+A release recommendation does not approve the release. No live Jira, Xray, or
+TestRail publication was made, so this exit is not LIVE_VERIFIED.
 
 ## 11 — community release
 

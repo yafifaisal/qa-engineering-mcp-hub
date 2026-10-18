@@ -45,6 +45,19 @@ CREATE TABLE IF NOT EXISTS ci_observations (
     pipeline_status TEXT NOT NULL,
     record_json TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS evidence_manifests (
+    execution_id TEXT NOT NULL,
+    profile_id TEXT NOT NULL,
+    review_state TEXT NOT NULL,
+    manifest_json TEXT NOT NULL,
+    PRIMARY KEY (execution_id, profile_id)
+);
+CREATE TABLE IF NOT EXISTS evidence_publications (
+    digest TEXT PRIMARY KEY,
+    execution_id TEXT NOT NULL,
+    profile_id TEXT NOT NULL,
+    state TEXT NOT NULL
+);
 """
 
 
@@ -185,6 +198,89 @@ class ExecutionStore:
                 (profile_id, job_id),
             ).fetchall()
         return tuple(str(row[0]) for row in rows)
+
+    def save_manifest(
+        self, profile_id: str, execution_id: str, manifest_json: str
+    ) -> None:
+        """Store a manifest. An existing review state is left unchanged."""
+        with self._lock, self._connect() as connection:
+            current = connection.execute(
+                """
+                SELECT review_state FROM evidence_manifests
+                WHERE execution_id = ? AND profile_id = ?
+                """,
+                (execution_id, profile_id),
+            ).fetchone()
+            review = "UNREVIEWED" if current is None else str(current["review_state"])
+            connection.execute(
+                """
+                INSERT INTO evidence_manifests (
+                    execution_id, profile_id, review_state, manifest_json
+                ) VALUES (?, ?, ?, ?)
+                ON CONFLICT(execution_id, profile_id) DO UPDATE SET
+                    manifest_json = excluded.manifest_json
+                """,
+                (execution_id, profile_id, review, manifest_json),
+            )
+            connection.commit()
+
+    def manifest_row(self, profile_id: str, execution_id: str) -> tuple[str, str]:
+        """Return the stored review state and manifest JSON."""
+        with self._lock, self._connect() as connection:
+            row = connection.execute(
+                """
+                SELECT review_state, manifest_json FROM evidence_manifests
+                WHERE execution_id = ? AND profile_id = ?
+                """,
+                (execution_id, profile_id),
+            ).fetchone()
+        if row is None:
+            raise HubError("unknown_execution", "evidence manifest was not found")
+        return str(row["review_state"]), str(row["manifest_json"])
+
+    def set_review_state(self, profile_id: str, execution_id: str, state: str) -> None:
+        """Record an explicit QA review. Execution status is not an input."""
+        if state not in {"UNREVIEWED", "APPROVED", "REJECTED"}:
+            raise HubError("approval_rejected", "review state is not recognized")
+        with self._lock, self._connect() as connection:
+            updated = connection.execute(
+                """
+                UPDATE evidence_manifests
+                SET review_state = ?
+                WHERE execution_id = ? AND profile_id = ?
+                """,
+                (state, execution_id, profile_id),
+            )
+            if updated.rowcount != 1:
+                raise HubError("unknown_execution", "evidence manifest was not found")
+            connection.commit()
+
+    def publication_state(self, digest: str) -> str | None:
+        """Return a prior publication state for this evidence digest."""
+        with self._lock, self._connect() as connection:
+            row = connection.execute(
+                "SELECT state FROM evidence_publications WHERE digest = ?",
+                (digest,),
+            ).fetchone()
+        if row is None:
+            return None
+        return str(row["state"])
+
+    def record_publication(
+        self, *, digest: str, execution_id: str, profile_id: str, state: str
+    ) -> None:
+        """Remember one publication attempt. A later call does not send again."""
+        with self._lock, self._connect() as connection:
+            connection.execute(
+                """
+                INSERT INTO evidence_publications (
+                    digest, execution_id, profile_id, state
+                ) VALUES (?, ?, ?, ?)
+                ON CONFLICT(digest) DO UPDATE SET state = excluded.state
+                """,
+                (digest, execution_id, profile_id, state),
+            )
+            connection.commit()
 
     def status_of(self, profile_id: str, execution_id: str) -> ExecutionStatus:
         """Read the current status without leaving the profile scope."""

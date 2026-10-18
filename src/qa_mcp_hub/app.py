@@ -1,7 +1,7 @@
 """FastMCP application factory.
 
-Purpose: construct a fresh server with the Milestone 00 through 09 registries.
-Milestone: 09
+Purpose: construct a fresh server with the Milestone 00 through 10 registries.
+Milestone: 10
 Status: IMPLEMENTED
 Ownership: app.fastmcp_factory
 Dependencies: standalone FastMCP and the local registry.
@@ -21,6 +21,7 @@ from qa_mcp_hub.mcp.registry import (
     register_milestone_07,
     register_milestone_08,
     register_milestone_09,
+    register_milestone_10,
 )
 
 
@@ -36,6 +37,7 @@ def create_app(settings: HubSettings | None = None) -> FastMCP:
     register_milestone_07(server)
     register_milestone_08(server)
     register_milestone_09(server)
+    register_milestone_10(server)
     return server
 
 

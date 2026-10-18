@@ -8,9 +8,8 @@
 - Google Docs can refresh an access token from a stored refresh token. The
   refresh token is not returned by MCP tools. Interactive browser login is not
   implemented.
-- Evidence and release adapters remain `NOT_IMPLEMENTED`. The generic
-  `read_case` port stays unavailable even though the Milestone 09 tools read
-  through reviewed mappings.
+- The generic `read_case` port stays unavailable even though the Milestone 09
+  tools read through reviewed mappings. Community release remains Milestone 11.
 - Milestone 01 implements local configuration, profiles, credential references,
   redaction, offline OAuth/PKCE state, and the setup/config CLI. It does not
   perform a provider OAuth exchange, token refresh, or network connectivity test.
@@ -37,7 +36,15 @@
   columns are preserved. Result publication is not an MCP tool. The example
   mapping keeps `allow_publish` false. No live Xray, TestRail, or Google
   Sheets call was made.
-- Evidence publication and release intelligence remain Milestone 10.
+- Evidence collection is OFFLINE_VERIFIED from stored executions. API-only
+  evidence does not claim database or Kafka validation. Missing mandatory
+  evidence cannot be an overall PASS. External publication stays denied unless
+  a policy sets `external_publication: approval_required` and a single-use
+  approval is consumed. A failed POST is not retried. No live Jira, Xray, or
+  TestRail publication was made.
+- A release recommendation does not change the QA review state and cannot
+  set release approval. Coverage counts only mapped cases that executed and
+  passed. A missing defect register or requirement map stays incomplete.
 - CI reads are OFFLINE_VERIFIED with mocked HTTP. Remote triggering is not an
   MCP tool. No live CI system was contacted.
 - Ticket analysis does not call a language model.

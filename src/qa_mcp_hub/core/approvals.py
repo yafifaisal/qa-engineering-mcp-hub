@@ -36,7 +36,11 @@ class ApprovalLedger:
 
     def issue(self, grant: ApprovalGrant) -> ApprovalGrant:
         """Record a grant. The same token cannot be issued twice."""
-        if grant.action not in {"pipeline_trigger", "result_publication"}:
+        if grant.action not in {
+            "pipeline_trigger",
+            "result_publication",
+            "evidence_publication",
+        }:
             raise HubError("approval_rejected", "approval action is not recognized")
         if grant.token in self._issued:
             raise HubError("approval_rejected", "approval token is already issued")
@@ -50,11 +54,14 @@ class ApprovalLedger:
         job_id: str,
         parameter_digest: str,
         now: datetime,
+        expected_action: str | None = None,
     ) -> None:
         """Spend a matching grant. Expiry and reuse both fail closed."""
         grant = self._issued.get(token)
         if grant is None or token in self._used:
             raise HubError("approval_rejected", "approval is missing or already used")
+        if expected_action is not None and grant.action != expected_action:
+            raise HubError("approval_rejected", "approval action does not match")
         if grant.job_id != job_id or grant.parameter_digest != parameter_digest:
             raise HubError("approval_rejected", "approval does not match this trigger")
         if grant.expires_at <= now:

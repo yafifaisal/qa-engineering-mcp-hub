@@ -65,6 +65,12 @@ def list_capabilities() -> CapabilityCatalog:
             "preview_test_case_import",
             "export_test_cases",
             "prepare_result_publication",
+            "generate_evidence",
+            "validate_evidence_completeness",
+            "prepare_evidence_publication",
+            "publish_approved_evidence",
+            "assess_release_readiness",
+            "generate_release_report",
         ),
-        planned=("qa_evidence_and_release",),
+        planned=("community_release",),
     )

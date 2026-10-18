@@ -356,8 +356,46 @@ local files. No Xray, TestRail, Google Sheets, Bitbucket, GitHub Actions,
 Jenkins, PostgreSQL, MySQL, Kafka, Bruno CLI, Newman CLI, Confluence, or Git
 host was called. Windows and Linux execution remains `BLOCKED`.
 
-## Milestones 10–11
+## Milestone 10 — implemented and offline verified
 
-Evidence publication and release intelligence remain `SCAFFOLDED` or
-`NOT_IMPLEMENTED`. Native Windows/Linux execution and Python 3.13 hosted-runner
-evidence remain `BLOCKED`. Interactive browser OAuth is not implemented.
+- [x] Evidence is collected from a stored execution. API-only reports omit
+  database and Kafka claims. A missing mandatory check cannot be an overall
+  PASS.
+- [x] Secrets, email addresses, and HTML are sanitized. Artifact digests are
+  checked. A changed report file fails validation. Paths outside the artifact
+  directory are rejected.
+- [x] `prepare_evidence_publication` does not call a provider.
+  `publish_approved_evidence` requires an explicit review value and a
+  single-use approval. A failed POST is not retried. Checked-in policies deny
+  external publication.
+- [x] Coverage counts mapped cases that executed and passed. An unresolved
+  critical defect blocks the recommendation. The recommendation does not
+  change the QA review state or approve the release.
+- [ ] Live Jira, Xray, and TestRail publication was not attempted, so this is
+  not `LIVE_VERIFIED`.
+
+## Executed verification — Milestone 10
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | audited 85 packages |
+| `uv lock --check` | 0 | resolved 91 packages |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 305 files already formatted |
+| `uv run mypy src` | 0 | no issues in 183 source files |
+| `uv run pytest -q` | 0 | 174 passed, 1 skipped |
+| `uv build` | 0 | sdist and wheel built |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 369 files, 101 directories, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py` because live
+provider calls are not enabled. `QA_MCP_LIVE_PROVIDERS` was not set. Evidence
+tests used stored executions and local files. The publication failure test
+used mocked HTTP. No Jira, Xray, TestRail, Google Sheets, Bitbucket, GitHub
+Actions, Jenkins, PostgreSQL, MySQL, Kafka, Bruno CLI, Newman CLI, Confluence,
+or Git host was called. Windows and Linux execution remains `BLOCKED`.
+
+## Milestone 11
+
+Community release remains `SCAFFOLDED`. Native Windows/Linux execution and
+Python 3.13 hosted-runner evidence remain `BLOCKED`. Interactive browser OAuth
+is not implemented.

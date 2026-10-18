@@ -18,6 +18,12 @@ from qa_mcp_hub.mcp.tools.cicd import (
     list_pipeline_runs_tool,
     prepare_pipeline_trigger_tool,
 )
+from qa_mcp_hub.mcp.tools.evidence import (
+    generate_evidence_tool,
+    prepare_evidence_publication_tool,
+    publish_approved_evidence_tool,
+    validate_evidence_completeness_tool,
+)
 from qa_mcp_hub.mcp.tools.execution import (
     explain_workflow_tool,
     get_test_run_tool,
@@ -39,6 +45,10 @@ from qa_mcp_hub.mcp.tools.planning import (
     analyze_jira_ticket_tool,
     find_related_implementation_tool,
     generate_test_scenario_draft_tool,
+)
+from qa_mcp_hub.mcp.tools.release import (
+    assess_release_readiness_tool,
+    generate_release_report_tool,
 )
 from qa_mcp_hub.mcp.tools.system import hub_capabilities, hub_health
 from qa_mcp_hub.mcp.tools.test_management import (
@@ -128,3 +138,15 @@ def register_milestone_09(server: FastMCP) -> None:
     server.tool(preview_test_case_import_tool, name="preview_test_case_import")
     server.tool(export_test_cases_tool, name="export_test_cases")
     server.tool(prepare_result_publication_tool, name="prepare_result_publication")
+
+
+def register_milestone_10(server: FastMCP) -> None:
+    """Register evidence and release tools. They do not approve a release."""
+    server.tool(generate_evidence_tool, name="generate_evidence")
+    server.tool(
+        validate_evidence_completeness_tool, name="validate_evidence_completeness"
+    )
+    server.tool(prepare_evidence_publication_tool, name="prepare_evidence_publication")
+    server.tool(publish_approved_evidence_tool, name="publish_approved_evidence")
+    server.tool(assess_release_readiness_tool, name="assess_release_readiness")
+    server.tool(generate_release_report_tool, name="generate_release_report")

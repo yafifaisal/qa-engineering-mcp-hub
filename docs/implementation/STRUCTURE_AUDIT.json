@@ -1,8 +1,8 @@
 {
   "counts": {
-    "existing_expected_files": 366,
+    "existing_expected_files": 369,
     "expected_directories": 101,
-    "expected_files": 366,
+    "expected_files": 369,
     "findings": 0,
     "missing_directories": 0,
     "missing_files": 0,
@@ -23,12 +23,15 @@
     "tools": [
       "analyze_change_impact",
       "analyze_jira_ticket",
+      "assess_release_readiness",
       "compare_test_cases",
       "explain_workflow",
       "export_test_cases",
       "find_implementation",
       "find_kafka_event",
       "find_related_implementation",
+      "generate_evidence",
+      "generate_release_report",
       "generate_test_scenario_draft",
       "get_pipeline_artifacts",
       "get_pipeline_status",
@@ -40,9 +43,11 @@
       "list_registered_assertions",
       "list_registered_suites",
       "list_workflows",
+      "prepare_evidence_publication",
       "prepare_pipeline_trigger",
       "prepare_result_publication",
       "preview_test_case_import",
+      "publish_approved_evidence",
       "read_document",
       "run_database_assertion",
       "search_documents",
@@ -51,6 +56,7 @@
       "search_test_cases",
       "submit_test_run",
       "trace_cross_repo_flow",
+      "validate_evidence_completeness",
       "verify_e2e_workflow"
     ]
   },

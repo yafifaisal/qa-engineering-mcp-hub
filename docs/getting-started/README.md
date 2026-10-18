@@ -12,8 +12,10 @@ registered database, Kafka, and business checks. Milestone 08 reads registered
 Bitbucket Pipelines, GitHub Actions, and Jenkins metadata. A pipeline status
 is not a QA assertion result. Milestone 09 maps Xray, TestRail, CSV, XLSX, and
 Google Sheets into one canonical case. `prepare_result_publication` does not
-call a provider. Live provider calls, live runner CLIs, live database or Kafka
-systems, live CI systems, and live test-management systems are not claimed.
+call a provider. Milestone 10 collects evidence from stored executions and
+can recommend release review without approving a release. Live provider calls,
+live runner CLIs, live database or Kafka systems, live CI systems, live
+test-management systems, and live evidence publication are not claimed.
 
 ## Choose your platform
 

@@ -7,6 +7,11 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 10 collects sanitized evidence from checks that actually ran,
+  rejects an overall PASS when mandatory evidence is missing, and publishes
+  only after an explicit review and a single-use approval. Release
+  recommendations stay unapproved. No live Jira, Xray, or TestRail
+  publication was made, so this is not LIVE_VERIFIED.
 - Milestone 09 maps Xray Cloud, Xray Data Center, TestRail, CSV, XLSX, and
   Google Sheets into one canonical case. Multiline steps, extra columns, and
   formula neutralization are OFFLINE_VERIFIED. `prepare_result_publication`

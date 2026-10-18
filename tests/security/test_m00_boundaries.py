@@ -28,11 +28,7 @@ import json
 import sys
 import qa_mcp_hub.server
 
-future_domains = (
-    "qa_mcp_hub.evidence",
-    "qa_mcp_hub.release",
-    "qa_mcp_hub.storage.artifact_store",
-)
+future_domains = ()
 loaded = set(sys.modules)
 forbidden = sorted(
     module

@@ -1,7 +1,7 @@
 schema_version: 1
 id: api-database
 name: API and database evidence
-implementation_status: SCAFFOLDED
+implementation_status: IMPLEMENTED
 required_checks: [api, database, security_redaction]
 optional_checks: []
 missing_required_result: INCONCLUSIVE

@@ -56,11 +56,11 @@ Verification date: 2026-10-18. Status values are limited to `NOT_IMPLEMENTED`,
 | R09-02 | TestRail adapter | 09 | `adapters/test_management/testrail.py` | `tests/contracts/test_testrail.py` | IMPLEMENTED | OFFLINE_VERIFIED | separated steps, suite and plan ids, run ids, permission failure | No live TestRail call |
 | R09-03 | CSV/XLSX spreadsheet mapping | 09 | `adapters/test_management/spreadsheet.py` | `tests/contracts/test_spreadsheet.py` | IMPLEMENTED | OFFLINE_VERIFIED | UTF-8, formula neutralization, multiline steps, dry-run export | No cloud spreadsheet |
 | R09-04 | Google Sheets adapter | 09 | `adapters/test_management/google_sheets.py` | `tests/contracts/test_google_sheets.py` | IMPLEMENTED | OFFLINE_VERIFIED | mocked values range and read-only scope rejection | No live Google call |
-| R10-01 | Evidence policies, redaction, collection, completeness, manifest | 10 | `evidence/` | `tests/unit/test_evidence.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | four policy templates and renderer templates | No persistence or generated evidence |
-| R10-02 | Authorized evidence publishing | 10 | `evidence/publisher.py` | `tests/security/test_publication.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | deny-by-default policy | No destination or approval flow |
-| R10-03 | Coverage, risk, and release reporting | 10 | `release/` | `tests/unit/test_release.py` (planned) | SCAFFOLDED | NOT_IMPLEMENTED | complete module ownership | No automatic sign-off or report generation |
+| R10-01 | Evidence policies, redaction, collection, completeness, manifest | 10 | `evidence/` | `tests/unit/test_evidence.py` | IMPLEMENTED | OFFLINE_VERIFIED | API-only omission, missing E2E evidence, hashes, escaping | No live provider call |
+| R10-02 | Authorized evidence publishing | 10 | `evidence/publisher.py` | `tests/security/test_publication.py` | IMPLEMENTED | OFFLINE_VERIFIED | denied external publish, one POST, no automatic retry | No live Jira, Xray, or TestRail call |
+| R10-03 | Coverage, risk, and release reporting | 10 | `release/` | `tests/unit/test_release.py` | IMPLEMENTED | OFFLINE_VERIFIED | mapped coverage, critical defects, recommendation leaves review unchanged | No automatic release approval |
 | R11-01 | Community release and live compatibility evidence | 11 | `.github/workflows/release.yml`, release documentation | hosted release tests (planned) | SCAFFOLDED | BLOCKED | local artifact build only | No hosted CI, signing, or public release performed |
 
-No requirement row is `LIVE_VERIFIED`. Milestones 10–11 remain `SCAFFOLDED`.
+No requirement row is `LIVE_VERIFIED`. Milestone 11 remains `SCAFFOLDED`.
 Provider pages document intended contracts and official references; they do not
 replace an executed live check.

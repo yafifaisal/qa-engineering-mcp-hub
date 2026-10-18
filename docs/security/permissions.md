@@ -83,6 +83,11 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
   spends a single-use approval before one POST and does not retry that POST.
   A local CSV or XLSX mapping cannot use that path. The example mapping keeps
   `allow_publish` false.
+- Evidence artifacts stay inside the workspace evidence directory. Paths that
+  escape that directory are rejected. `prepare_evidence_publication` does not
+  call a provider. `publish_approved_evidence` requires an explicit review
+  value, mutation permission, and a single-use approval. Checked-in policies
+  deny external publication. A release recommendation cannot approve a release.
 
 An API token with broad permissions does not broaden the Hub's authorized scope.
 The Hub must still deny any operation not enabled by its policy.

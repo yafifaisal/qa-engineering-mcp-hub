@@ -252,7 +252,8 @@ not create provider clients, make network requests, execute suites, query databa
 consume Kafka, or mutate an external system. Later milestones add read-only
 providers, local knowledge, registered API execution, registered database
 and Kafka observation, registered CI inspection, and canonical test-case
-import. Evidence publication and release approval remain `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
+import, and evidence collected from checks that ran. A release recommendation
+does not approve a release. Community release remains `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
 `IMPLEMENTED` only when its requirements, tests, security policy, and progress
 records change together.
 

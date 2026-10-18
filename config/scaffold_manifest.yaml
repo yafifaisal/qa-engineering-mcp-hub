@@ -15,34 +15,16 @@ files:
     - "src/qa_mcp_hub/core/__init__.py"
     - "src/qa_mcp_hub/core/audit.py"
     - "src/qa_mcp_hub/evidence/__init__.py"
-    - "src/qa_mcp_hub/evidence/collector.py"
-    - "src/qa_mcp_hub/evidence/completeness.py"
-    - "src/qa_mcp_hub/evidence/manifest.py"
-    - "src/qa_mcp_hub/evidence/models.py"
-    - "src/qa_mcp_hub/evidence/policy_registry.py"
-    - "src/qa_mcp_hub/evidence/policy_validator.py"
-    - "src/qa_mcp_hub/evidence/publisher.py"
-    - "src/qa_mcp_hub/evidence/redactor.py"
-    - "src/qa_mcp_hub/evidence/renderer.py"
-    - "src/qa_mcp_hub/evidence/service.py"
     - "src/qa_mcp_hub/knowledge/__init__.py"
     - "src/qa_mcp_hub/mcp/tools/__init__.py"
-    - "src/qa_mcp_hub/mcp/tools/evidence.py"
-    - "src/qa_mcp_hub/mcp/tools/release.py"
     - "src/qa_mcp_hub/planning/__init__.py"
     - "src/qa_mcp_hub/release/__init__.py"
-    - "src/qa_mcp_hub/release/coverage_engine.py"
-    - "src/qa_mcp_hub/release/models.py"
-    - "src/qa_mcp_hub/release/report_builder.py"
-    - "src/qa_mcp_hub/release/risk_engine.py"
-    - "src/qa_mcp_hub/release/service.py"
     - "src/qa_mcp_hub/runners/__init__.py"
     - "src/qa_mcp_hub/security/__init__.py"
     - "src/qa_mcp_hub/security/audit_policy.py"
     - "src/qa_mcp_hub/security/secret_scanner.py"
     - "src/qa_mcp_hub/security/url_allowlist.py"
     - "src/qa_mcp_hub/storage/__init__.py"
-    - "src/qa_mcp_hub/storage/artifact_store.py"
     - "src/qa_mcp_hub/storage/migrations.py"
     - "src/qa_mcp_hub/storage/paths.py"
     - "src/qa_mcp_hub/suites/__init__.py"
@@ -219,6 +201,16 @@ files:
     - "src/qa_mcp_hub/core/policies.py"
     - "src/qa_mcp_hub/core/results.py"
     - "src/qa_mcp_hub/core/retry.py"
+    - "src/qa_mcp_hub/evidence/collector.py"
+    - "src/qa_mcp_hub/evidence/completeness.py"
+    - "src/qa_mcp_hub/evidence/manifest.py"
+    - "src/qa_mcp_hub/evidence/models.py"
+    - "src/qa_mcp_hub/evidence/policy_registry.py"
+    - "src/qa_mcp_hub/evidence/policy_validator.py"
+    - "src/qa_mcp_hub/evidence/publisher.py"
+    - "src/qa_mcp_hub/evidence/redactor.py"
+    - "src/qa_mcp_hub/evidence/renderer.py"
+    - "src/qa_mcp_hub/evidence/service.py"
     - "src/qa_mcp_hub/knowledge/chunker.py"
     - "src/qa_mcp_hub/knowledge/code_parser.py"
     - "src/qa_mcp_hub/knowledge/dependency_graph.py"
@@ -234,9 +226,11 @@ files:
     - "src/qa_mcp_hub/mcp/registry.py"
     - "src/qa_mcp_hub/mcp/resources.py"
     - "src/qa_mcp_hub/mcp/tools/cicd.py"
+    - "src/qa_mcp_hub/mcp/tools/evidence.py"
     - "src/qa_mcp_hub/mcp/tools/execution.py"
     - "src/qa_mcp_hub/mcp/tools/knowledge.py"
     - "src/qa_mcp_hub/mcp/tools/planning.py"
+    - "src/qa_mcp_hub/mcp/tools/release.py"
     - "src/qa_mcp_hub/mcp/tools/system.py"
     - "src/qa_mcp_hub/mcp/tools/test_management.py"
     - "src/qa_mcp_hub/mcp/tools/verification.py"
@@ -258,6 +252,11 @@ files:
     - "src/qa_mcp_hub/repositories/models.py"
     - "src/qa_mcp_hub/repositories/registry.py"
     - "src/qa_mcp_hub/repositories/validator.py"
+    - "src/qa_mcp_hub/release/coverage_engine.py"
+    - "src/qa_mcp_hub/release/models.py"
+    - "src/qa_mcp_hub/release/report_builder.py"
+    - "src/qa_mcp_hub/release/risk_engine.py"
+    - "src/qa_mcp_hub/release/service.py"
     - "src/qa_mcp_hub/runners/execution_context.py"
     - "src/qa_mcp_hub/runners/job_manager.py"
     - "src/qa_mcp_hub/runners/polling.py"
@@ -269,6 +268,7 @@ files:
     - "src/qa_mcp_hub/security/process_policy.py"
     - "src/qa_mcp_hub/security/sql_policy.py"
     - "src/qa_mcp_hub/server.py"
+    - "src/qa_mcp_hub/storage/artifact_store.py"
     - "src/qa_mcp_hub/storage/execution_store.py"
     - "src/qa_mcp_hub/storage/index_store.py"
     - "src/qa_mcp_hub/storage/sqlite_store.py"
@@ -360,11 +360,14 @@ files:
     - "tests/packaging/test_package.py"
     - "tests/security/test_credentials_m01.py"
     - "tests/security/test_m00_boundaries.py"
+    - "tests/security/test_publication.py"
     - "tests/security/test_repository_paths.py"
     - "tests/unit/test_config_m01.py"
     - "tests/unit/test_core.py"
+    - "tests/unit/test_evidence.py"
     - "tests/unit/test_execution_m06.py"
     - "tests/unit/test_knowledge_m05.py"
+    - "tests/unit/test_release.py"
     - "tests/unit/test_repositories_m02.py"
     - "tests/unit/test_verification_m07.py"
     - "uv.lock"
@@ -374,12 +377,15 @@ expected_mcp:
   tools:
     - analyze_change_impact
     - analyze_jira_ticket
+    - assess_release_readiness
     - compare_test_cases
     - explain_workflow
     - export_test_cases
     - find_implementation
     - find_kafka_event
     - find_related_implementation
+    - generate_evidence
+    - generate_release_report
     - generate_test_scenario_draft
     - get_pipeline_artifacts
     - get_pipeline_status
@@ -391,9 +397,11 @@ expected_mcp:
     - list_registered_assertions
     - list_registered_suites
     - list_workflows
+    - prepare_evidence_publication
     - prepare_pipeline_trigger
     - prepare_result_publication
     - preview_test_case_import
+    - publish_approved_evidence
     - read_document
     - run_database_assertion
     - search_documents
@@ -402,6 +410,7 @@ expected_mcp:
     - search_test_cases
     - submit_test_run
     - trace_cross_repo_flow
+    - validate_evidence_completeness
     - verify_e2e_workflow
   resources: ["qa-hub://status"]
   prompts: ["qa_hub_orientation"]

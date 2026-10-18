@@ -12,11 +12,13 @@ bounded Kafka observation, and E2E workflow verification. Milestone 08 reads
 registered Bitbucket Pipelines, GitHub Actions, and Jenkins metadata. A
 pipeline status is not a QA assertion result. Remote triggering is not an MCP
 tool. Milestone 09 maps Xray, TestRail, CSV, XLSX, and Google Sheets into one
-canonical case. Result publication is not an MCP tool. Evidence publication
-and release approval remain `NOT_IMPLEMENTED` or `SCAFFOLDED`. Live CI,
+canonical case. Result publication is not an MCP tool. Milestone 10 collects
+evidence from checks that ran and can recommend release review. That
+recommendation does not approve a release. Community release remains
+`NOT_IMPLEMENTED`. Live CI,
 database, Kafka, Xray, TestRail, and Google Sheets systems were not contacted.
 
-## What works through Milestone 09
+## What works through Milestone 10
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -73,10 +75,17 @@ database, Kafka, Xray, TestRail, and Google Sheets systems were not contacted.
   `prepare_result_publication` does not call a provider. Mocked and local-file
   tests are `OFFLINE_VERIFIED`. Live Xray, TestRail, and Google Sheets were
   not contacted.
+- `generate_evidence`, `validate_evidence_completeness`,
+  `prepare_evidence_publication`, and `publish_approved_evidence` use a stored
+  execution and a reviewed policy. API-only evidence does not claim database
+  or Kafka results. `prepare_evidence_publication` does not call a provider.
+  Checked-in policies deny external publication.
+- `assess_release_readiness` and `generate_release_report` use mapped cases
+  that executed. The recommendation does not approve the release.
 
-Interactive browser OAuth, Git and Jira writes, remote CI triggering,
-unapproved result publication, evidence publication, and release approval are not
-implemented. Google
+Interactive browser OAuth, Git and Jira writes, remote CI triggering, and
+unapproved result publication are not implemented. A release recommendation
+does not sign off a release. Google
 Docs can refresh an access token from a stored refresh token. Suite execution
 stays inside an approved workflow and a dry-run profile does not start a runner.
 

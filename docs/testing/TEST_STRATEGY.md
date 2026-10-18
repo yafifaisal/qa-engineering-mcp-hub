@@ -148,6 +148,17 @@ module.
 | Google Sheets | read-only scope and mocked values range |
 | Publication | prepare does not call a provider; publishing is not an MCP tool |
 
+## Milestone 10 matrix
+
+| Area | Required evidence |
+|---|---|
+| API-only | database and Kafka sections are absent |
+| E2E | a missing mandatory check is not PASS |
+| Artifacts | SHA-256 mismatch and path escape are rejected |
+| Redaction | tokens, email, and HTML are sanitized |
+| Publication | denied by default, one POST, no automatic retry |
+| Release | coverage uses executed mappings; a recommendation does not approve |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

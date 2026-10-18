@@ -256,6 +256,23 @@ structural changes must be added here before code is moved or ownership changes.
   system of record or hide a case field.
 - **Consequence:** Contract tests are OFFLINE_VERIFIED. No live Xray, TestRail,
   or Google Sheets call was made. The generic `read_case` port stays
-  unavailable. Evidence publication and release approval remain later
-  milestones.
+  unavailable.
+
+## ADR-022 — Evidence from executed checks, release stays unapproved
+
+- **Status:** Accepted
+- **Decision:** Milestone 10 builds an evidence manifest from one stored
+  execution. Only checks that ran contribute detail. API-only policies omit
+  database and Kafka claims. A required check that did not run keeps the
+  overall result from being PASS. Reports are escaped HTML and JSON with
+  SHA-256 artifact digests. External publication requires an explicit QA
+  review value, mutation permission, confirmation, and a single-use approval.
+  A second call with the same digest does not send another request. Release
+  assessment reads that manifest and mapped records. Its recommendation cannot
+  change the review state or approve the release.
+- **Reason:** A report that fills in checks that did not run, or a recommendation
+  that signs off a release, would overstate what was observed.
+- **Consequence:** Local execution fixtures and mocked HTTP are OFFLINE_VERIFIED.
+  The checked-in policies keep external publication denied. No live Jira, Xray,
+  or TestRail system was contacted.
 
