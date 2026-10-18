@@ -1,0 +1,27 @@
+schema_version: 1
+implementation_status: SCAFFOLDED
+connections:
+  - id: github-cloud-readonly
+    provider: github
+    deployment: cloud
+    base_url: https://api.github.com
+    credential:
+      store: environment
+      reference: QA_MCP_GITHUB_TOKEN
+    enabled: false
+  - id: jira-cloud-primary
+    provider: jira
+    deployment: cloud
+    base_url: https://example.atlassian.net
+    credential:
+      store: keyring
+      reference: local-development/jira-cloud-primary
+    enabled: false
+  - id: jira-self-managed-lab
+    provider: jira
+    deployment: self_managed
+    base_url: https://jira.example.invalid
+    credential:
+      store: environment
+      reference: QA_MCP_JIRA_LAB_TOKEN
+    enabled: false

@@ -1,0 +1,13 @@
+schema_version: 1
+id: api-only-example
+name: API-only verification example
+description: Disabled scaffold for a registered API suite and API evidence.
+implementation_status: NOT_IMPLEMENTED
+enabled: false
+required_capabilities: [api_automation]
+evidence_policy: api-only
+steps:
+  - id: execute-api-suite
+    kind: api_suite
+    target: example-api-smoke
+    depends_on: []

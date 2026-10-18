@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-mcp-hub.example/schemas/config.schema.json",
+  "title": "QA MCP Hub configuration index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "implementation_status",
+    "active_profile",
+    "workspace_path",
+    "registries",
+    "default_policies"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "implementation_status": {"enum": ["SCAFFOLDED", "IMPLEMENTED"]},
+    "active_profile": {"type": "string", "minLength": 1},
+    "workspace_path": {"type": "string", "minLength": 1},
+    "registries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["repositories", "connections", "profiles"],
+      "properties": {
+        "repositories": {"type": "string", "minLength": 1},
+        "connections": {"type": "string", "minLength": 1},
+        "profiles": {"type": "string", "minLength": 1}
+      }
+    },
+    "default_policies": {"type": "string", "minLength": 1}
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "counts": {
+    "existing_expected_files": 326,
+    "expected_directories": 99,
+    "expected_files": 326,
+    "findings": 0,
+    "missing_directories": 0,
+    "missing_files": 0,
+    "unlisted_files": 0,
+    "zero_byte_files": 0
+  },
+  "findings": [],
+  "machine_manifest": "config/scaffold_manifest.yaml",
+  "manifest_version": 1,
+  "mcp_discovery": {
+    "prompts": [
+      "qa_hub_orientation"
+    ],
+    "resources": [
+      "qa-hub://status"
+    ],
+    "tools": [
+      "hub_capabilities",
+      "hub_health"
+    ]
+  },
+  "status": "PASS"
+}

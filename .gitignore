@@ -11,3 +11,13 @@
 .env.*
 !.env.example
 .uv-cache/
+.coverage
+.coverage.*
+/htmlcov/
+/.idea/
+/.vscode/
+.DS_Store
+*.log
+*.sqlite3
+/qa-workspace.local/
+/evidence.local/

@@ -1,0 +1,21 @@
+<section class="evidence-summary" aria-labelledby="evidence-summary-heading">
+  <h2 id="evidence-summary-heading">{{ summary.title | e }}</h2>
+  <dl>
+    <dt>Overall result</dt>
+    <dd>{{ summary.status | e }}</dd>
+    <dt>Passed checks</dt>
+    <dd>{{ summary.passed_count }}</dd>
+    <dt>Failed checks</dt>
+    <dd>{{ summary.failed_count }}</dd>
+    <dt>Inconclusive checks</dt>
+    <dd>{{ summary.inconclusive_count }}</dd>
+  </dl>
+  {% if summary.limitations %}
+  <h3>Limitations</h3>
+  <ul>
+    {% for limitation in summary.limitations %}
+    <li>{{ limitation | e }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>

@@ -1279,7 +1279,6 @@ source = { editable = "." }
 dependencies = [
     { name = "fastmcp" },
     { name = "httpx" },
-    { name = "keyring" },
     { name = "platformdirs" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -1288,8 +1287,15 @@ dependencies = [
     { name = "typer" },
 ]
 
+[package.optional-dependencies]
+credentials = [
+    { name = "keyring" },
+]
+
 [package.dev-dependencies]
 dev = [
+    { name = "jsonschema" },
+    { name = "keyring" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -1299,24 +1305,27 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fastmcp", specifier = ">=4,<5" },
-    { name = "httpx", specifier = ">=0.28.1" },
-    { name = "keyring", specifier = ">=25.7.0" },
-    { name = "platformdirs", specifier = ">=4.13.3" },
-    { name = "pydantic", specifier = ">=2,<3" },
-    { name = "pydantic-settings", specifier = ">=2,<3" },
-    { name = "pyyaml", specifier = ">=6.0.3" },
-    { name = "rich", specifier = ">=13,<15" },
-    { name = "typer", specifier = ">=0.15,<1" },
+    { name = "fastmcp", specifier = "==4.1.0" },
+    { name = "httpx", specifier = "==0.28.1" },
+    { name = "keyring", marker = "extra == 'credentials'", specifier = "==25.7.0" },
+    { name = "platformdirs", specifier = "==4.13.3" },
+    { name = "pydantic", specifier = "==2.14.1" },
+    { name = "pydantic-settings", specifier = "==2.16.0" },
+    { name = "pyyaml", specifier = "==6.0.3" },
+    { name = "rich", specifier = "==14.3.4" },
+    { name = "typer", specifier = "==0.27.3" },
 ]
+provides-extras = ["credentials"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "mypy", specifier = ">=1.15,<2" },
-    { name = "pytest", specifier = ">=8,<10" },
-    { name = "pytest-asyncio", specifier = ">=1,<2" },
-    { name = "respx", specifier = ">=0.23.1" },
-    { name = "ruff", specifier = ">=0.12,<1" },
+    { name = "jsonschema", specifier = "==4.26.0" },
+    { name = "keyring", specifier = "==25.7.0" },
+    { name = "mypy", specifier = "==1.20.2" },
+    { name = "pytest", specifier = "==9.1.1" },
+    { name = "pytest-asyncio", specifier = "==1.4.0" },
+    { name = "respx", specifier = "==0.23.1" },
+    { name = "ruff", specifier = "==0.17.1" },
 ]
 
 [[package]]

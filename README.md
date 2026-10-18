@@ -1,75 +1,94 @@
-# QA Engineering MCP Hub — Milestone 00
+# QA Engineering MCP Hub
 
-Cross-platform Python/FastMCP foundation. No external integrations yet.
+QA Engineering MCP Hub is a local-first, cross-platform FastMCP foundation for
+governed QA workflows. Milestone 00 is implemented; all external providers and QA
+execution features remain explicitly `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 
-## Prerequisites
+## What works in Milestone 00
 
-Install `uv` from https://docs.astral.sh/uv/. On macOS use `brew install uv`;
-on Windows use `winget install --id astral-sh.uv -e`.
+- `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
+- `hub_health` reports local process readiness.
+- `hub_capabilities` separates callable features from future work.
+- `qa-hub://status` is a read-only JSON MCP resource.
+- `qa_hub_orientation` is a reusable MCP prompt.
+- `qa-mcp doctor`, `qa-mcp capabilities`, `qa-mcp --help`, and
+  `qa-mcp --version` provide local CLI diagnostics.
+- Pydantic Settings validates non-secret `QA_MCP_` environment configuration.
+- Portable configuration paths and simulated Windows/macOS/Linux behavior are
+  tested.
 
-## Setup
+No provider authentication, repository access, ticket access, test execution,
+database query, Kafka operation, CI/CD action, test-management action, evidence
+publication, or release approval is implemented.
+
+## Prerequisites and setup
+
+Install Python 3.12 or newer and [uv](https://docs.astral.sh/uv/), then run:
 
 ```sh
-uv sync
+uv sync --locked
 uv run qa-mcp --help
 uv run qa-mcp doctor
 uv run qa-mcp capabilities
 ```
 
-## Start MCP (stdio)
+Start the server:
 
 ```sh
 uv run qa-mcp serve
 ```
 
-Stdio MCP servers wait for a client and may appear silent. Do not send ordinary text to stdin.
+A stdio MCP server waits for a client and normally appears silent. stdout is
+reserved for MCP protocol messages.
 
-## Codex integration
+## Codex registration
 
-Get the absolute path to `uv` and the project directory.
-On macOS/Linux: `command -v uv` and `pwd`.
-On PowerShell: `(Get-Command uv).Source` and `(Get-Location).Path`.
+Use absolute paths for both uv and this repository:
 
-Then (replace placeholders):
-
-```
-codex mcp add qa-hub -- /ABSOLUTE/UV/PATH run --project /ABSOLUTE/PROJECT/PATH qa-mcp serve
+```sh
+codex mcp add qa-hub -- /ABSOLUTE/PATH/TO/uv run --project /ABSOLUTE/PATH/TO/qa-engineering-mcp-hub qa-mcp serve
 codex mcp list
 ```
 
-In Windows, use native Windows paths and `uv.exe` returned by PowerShell.
+Codex uses `.codex/config.toml`; native VS Code/Copilot MCP JSON is a separate
+configuration dialect. See the [Codex setup guide](docs/getting-started/codex-vscode.md)
+and [platform guides](docs/getting-started/README.md).
 
-## Validate
+## Architecture
+
+The project deliberately separates:
+
+1. the reusable framework in `src/qa_mcp_hub/`;
+2. company-specific assets created from `templates/qa-workspace/`;
+3. per-machine user configuration and credential references.
+
+Read the [canonical architecture](docs/architecture/CANONICAL_ARCHITECTURE.md),
+[decisions](docs/architecture/ARCHITECTURE_DECISIONS.md), and
+[scaffold manifest](docs/implementation/SCAFFOLD_MANIFEST.md) before structural
+changes. Provider status and documentation are indexed in
+[`docs/providers/README.md`](docs/providers/README.md).
+
+## Validation
 
 ```sh
-uv sync --frozen
+uv lock --check
 uv run ruff check .
 uv run ruff format --check .
 uv run mypy src
 uv run pytest -v
+uv run python scripts/structure_audit.py
 uv build
 ```
 
-A lockfile is created by the first successful `uv lock` or `uv sync` with network access.
-Do not run `uv sync --frozen` before it exists.
+The [progress report](docs/implementation/PROGRESS.md) records actual executed
+evidence. Simulated path tests do not constitute live Windows or Linux verification.
 
-## What exists?
+## Contributing and security
 
-- `hub_health` and `hub_capabilities` MCP tools.
-- `qa-mcp doctor` and `qa-mcp capabilities` local CLI.
-- Pydantic settings and cross-platform configuration directory resolution.
+See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), and
+[AGENTS.md](AGENTS.md). Never commit credentials, customer data, local workspace
+content, or fabricated integration results.
 
-## What does not exist?
+## License
 
-Jira, Git providers, tests, Kafka, databases, tokens, remote hosting, OAuth,
-evidence, real integration diagnostics. These belong to later milestones.
-
-## Beginner explanation
-
-`pyproject.toml` describes the installable package and tools.
-`uv.lock` freezes dependency resolution once created.
-`src/qa_mcp_hub/server.py` exposes functions to MCP clients.
-`src/qa_mcp_hub/cli.py` handles human terminal commands.
-`src/qa_mcp_hub/config.py` validates non-secret settings.
-`tests/` verifies local behavior and protocol calls.
-`docs/` keeps agent and human decisions traceable.
+QA Engineering MCP Hub is available under the [MIT License](LICENSE).

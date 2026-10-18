@@ -1,0 +1,21 @@
+schema_version: 1
+id: full-e2e-example
+name: API, database, and event verification example
+description: Disabled scaffold; every target must be registered before execution.
+implementation_status: NOT_IMPLEMENTED
+enabled: false
+required_capabilities: [api_automation, database_verification, kafka_verification]
+evidence_policy: full-e2e
+steps:
+  - id: execute-api-suite
+    kind: api_suite
+    target: example-api-smoke
+    depends_on: []
+  - id: verify-database-state
+    kind: database_assertion
+    target: example-order-state
+    depends_on: [execute-api-suite]
+  - id: verify-domain-event
+    kind: kafka_assertion
+    target: example-order-created
+    depends_on: [execute-api-suite]

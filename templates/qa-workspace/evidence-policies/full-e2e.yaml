@@ -1,0 +1,10 @@
+schema_version: 1
+id: full-e2e
+name: Full end-to-end evidence
+implementation_status: SCAFFOLDED
+required_checks: [api, database, kafka, business, security_redaction]
+optional_checks: []
+missing_required_result: INCONCLUSIVE
+redaction:
+  profile: strict
+  block_on_secret_detection: true

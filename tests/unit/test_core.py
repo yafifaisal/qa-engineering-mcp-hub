@@ -3,8 +3,8 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
-from qa_mcp_hub.capabilities import list_capabilities
 from qa_mcp_hub.config import HubSettings, default_config_dir
+from qa_mcp_hub.core.capabilities import list_capabilities
 from qa_mcp_hub.server import hub_health
 
 
@@ -12,6 +12,7 @@ def test_health_result() -> None:
     result = hub_health()
     assert result.status == "healthy"
     assert result.version == "0.1.0"
+    assert result.transport == "stdio"
 
 
 def test_catalog_distinguishes_future_work() -> None:
@@ -40,21 +41,31 @@ def test_typed_environment_settings(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_cross_platform_config_paths(
     monkeypatch: pytest.MonkeyPatch, platform: str, suffix: Path
 ) -> None:
-    monkeypatch.delenv("APPDATA", raising=False)
-    monkeypatch.delenv("XDG_CONFIG_HOME", raising=False)
     home = Path("/mock-home")
-    assert default_config_dir(home=home, platform=platform) == home / suffix
+    assert default_config_dir(home=home, platform=platform, environ={}) == home / suffix
 
 
 def test_windows_appdata_override(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("APPDATA", "/custom/roaming")
-    assert default_config_dir(home=Path("/home"), platform="win32") == Path(
-        "/custom/roaming/qa-mcp-hub"
-    )
+    del monkeypatch
+    assert default_config_dir(
+        home=Path("/home"),
+        platform="win32",
+        environ={"APPDATA": "/custom/roaming"},
+    ) == Path("/custom/roaming/qa-mcp-hub")
 
 
 def test_linux_xdg_override(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("XDG_CONFIG_HOME", "/custom/config")
-    assert default_config_dir(home=Path("/home"), platform="linux") == Path(
-        "/custom/config/qa-mcp-hub"
-    )
+    del monkeypatch
+    assert default_config_dir(
+        home=Path("/home"),
+        platform="linux",
+        environ={"XDG_CONFIG_HOME": "/custom/config"},
+    ) == Path("/custom/config/qa-mcp-hub")
+
+
+def test_transport_cannot_enable_remote_listener(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("QA_MCP_TRANSPORT", "http")
+    with pytest.raises(ValidationError):
+        HubSettings()

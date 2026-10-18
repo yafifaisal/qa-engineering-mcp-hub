@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ report.title | e }}</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">QA Engineering MCP Hub evidence</p>
+        <h1>{{ report.title | e }}</h1>
+        <p>Status: <strong class="status">{{ report.status | e }}</strong></p>
+        <p>Execution: {{ report.execution_id | e }}</p>
+      </header>
+
+      <section aria-labelledby="summary-heading">
+        <h2 id="summary-heading">Summary</h2>
+        <p>{{ report.summary | e }}</p>
+      </section>
+
+      <section aria-labelledby="checks-heading">
+        <h2 id="checks-heading">Deterministic checks</h2>
+        <table>
+          <thead>
+            <tr><th>Check</th><th>Result</th><th>Evidence</th></tr>
+          </thead>
+          <tbody>
+            {% for check in report.checks %}
+            <tr>
+              <td>{{ check.name | e }}</td>
+              <td>{{ check.result | e }}</td>
+              <td>{{ check.evidence_reference | e }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </section>
+
+      <footer>
+        <p>Generated from redacted evidence. Review the manifest before publication.</p>
+      </footer>
+    </main>
+  </body>
+</html>

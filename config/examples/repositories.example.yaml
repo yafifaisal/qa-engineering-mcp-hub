@@ -1,0 +1,9 @@
+schema_version: 1
+implementation_status: SCAFFOLDED
+repositories:
+  - id: sample-service
+    display_name: Sample service
+    path_env: QA_MCP_SAMPLE_REPOSITORY_PATH
+    connection_id: github-cloud-readonly
+    default_branch: main
+    enabled: false

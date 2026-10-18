@@ -1,0 +1,9 @@
+schema_version: 1
+implementation_status: SCAFFOLDED
+active_profile: local-development
+workspace_path: ./templates/qa-workspace
+registries:
+  repositories: ./repositories.example.yaml
+  connections: ./connections.example.yaml
+  profiles: ./profiles.example.yaml
+default_policies: ../default_policies.yaml

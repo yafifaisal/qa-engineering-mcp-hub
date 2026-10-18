@@ -1,0 +1,11 @@
+# Illustrative Codex MCP registration for local stdio.
+# Replace both absolute-path placeholders. Do not add credentials here.
+[mcp_servers.qa-engineering-hub]
+command = "/absolute/path/to/uv"
+args = [
+  "run",
+  "--project",
+  "/absolute/path/to/qa-engineering-mcp-hub",
+  "qa-mcp",
+  "serve",
+]

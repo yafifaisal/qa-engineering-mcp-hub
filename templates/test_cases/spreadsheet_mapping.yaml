@@ -1,0 +1,18 @@
+schema_version: 1
+implementation_status: SCAFFOLDED
+format: xlsx
+worksheet: Test Cases
+header_row: 1
+columns:
+  external_id: External ID
+  title: Title
+  priority: Priority
+  preconditions: Preconditions
+  steps: Steps
+  expected_result: Expected Result
+  notes: Notes
+safety:
+  trim_whitespace: true
+  reject_duplicate_external_ids: true
+  neutralize_formula_prefixes: ["=", "+", "-", "@"]
+  overwrite_existing: false

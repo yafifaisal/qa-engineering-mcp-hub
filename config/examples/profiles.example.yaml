@@ -1,0 +1,11 @@
+schema_version: 1
+implementation_status: SCAFFOLDED
+profiles:
+  local-development:
+    workspace_id: example-workspace
+    repository_ids: [sample-service]
+    connection_ids: [github-cloud-readonly, jira-cloud-primary]
+  isolated-lab:
+    workspace_id: example-workspace
+    repository_ids: []
+    connection_ids: [jira-self-managed-lab]

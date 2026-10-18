@@ -1,0 +1,4 @@
+schema_version: 1
+implementation_status: SCAFFOLDED
+authorization: read_only
+jobs: []

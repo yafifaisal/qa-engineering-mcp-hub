@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-mcp-hub.example/schemas/profile.schema.json",
+  "title": "Profile registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "implementation_status", "profiles"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "implementation_status": {"enum": ["SCAFFOLDED", "IMPLEMENTED"]},
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["workspace_id", "repository_ids", "connection_ids"],
+        "properties": {
+          "workspace_id": {"type": "string", "minLength": 1},
+          "repository_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "connection_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-mcp-hub.example/schemas/connection.schema.json",
+  "title": "Provider connection registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "implementation_status", "connections"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "implementation_status": {"enum": ["SCAFFOLDED", "IMPLEMENTED"]},
+    "connections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "provider", "deployment", "credential", "enabled"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+          "provider": {
+            "enum": [
+              "github", "gitlab", "bitbucket", "jira", "confluence",
+              "google_docs", "bruno", "postman", "postgresql", "mysql",
+              "kafka", "bitbucket_pipelines", "github_actions", "jenkins",
+              "xray", "testrail", "spreadsheet", "google_sheets"
+            ]
+          },
+          "deployment": {"enum": ["cloud", "self_managed", "local", "file"]},
+          "base_url": {"type": "string", "format": "uri", "pattern": "^https://"},
+          "credential": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["store", "reference"],
+            "properties": {
+              "store": {"enum": ["environment", "keyring", "oauth_reference"]},
+              "reference": {"type": "string", "minLength": 1}
+            }
+          },
+          "enabled": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

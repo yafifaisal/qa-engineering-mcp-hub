@@ -1,3 +1,5 @@
-"""QA Engineering MCP Hub community package."""
+"""Public package interface for QA Engineering MCP Hub."""
 
-__version__ = "0.1.0"
+from qa_mcp_hub.version import __version__
+
+__all__ = ["__version__"]
