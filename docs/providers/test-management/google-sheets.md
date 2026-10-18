@@ -1,12 +1,12 @@
 # Google Sheets provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **09**  
-> Verification: documentation scaffold only; no provider request or file operation has occurred.
+> Verification: mocked Google Sheets values tests. No live Google call was made, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-Google Sheets is the supported hosted spreadsheet provider. The future adapter will map explicitly authorized ranges to canonical test cases and keep it distinct from local CSV/XLSX handling.
+Google Sheets reads one bounded range, `Cases!A1:L50`, with the scope `https://www.googleapis.com/auth/spreadsheets.readonly`. A token that lacks that scope is rejected. Values use the same column mapping as a local sheet. The write scope is not requested.
 
 ## 2. Supported editions
 
@@ -106,23 +106,22 @@ Minimize OAuth scopes, store refresh tokens securely, allowlist spreadsheet/rang
 
 Check OAuth consent, Workspace policy, sharing, spreadsheet ID, range notation, protected ranges, quota, mapping headers, proxy, and clock skew. Requires verification.
 
-Because the provider is not implemented, current inability to connect or operate is expected.
+A read can preview cases. Result publication is not an MCP tool, and the read-only scope cannot append values.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/test_management/google_sheets.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/test_management/google_sheets.py` — IMPLEMENTED read-only values fetch.
+- `src/qa_mcp_hub/auth/oauth.py` — refresh can require the Sheets read scope without changing the Docs default.
 
 ## 19. Related tests
 
-Planned OAuth boundary, range mapping, batch/quota, protected range, formula safety, duplicate ID, write-denial/idempotency, and opt-in authorized live-read tests.
+`tests/contracts/test_google_sheets.py` covers Unicode values, a missing read scope, and a mocked values response.
 
-No test currently validates a real provider integration.
+No live Google call was made.
 
 ## 20. Current implementation status
 
-**NOT_IMPLEMENTED.** The adapter file is **SCAFFOLDED** and contains no client, connection, file, query, parsing, publication, or registration logic. It is not exposed through FastMCP.
+**OFFLINE_VERIFIED.** Mocked values tests require the spreadsheets read-only scope. This is not LIVE_VERIFIED.
 
 ## 21. Official documentation references
 

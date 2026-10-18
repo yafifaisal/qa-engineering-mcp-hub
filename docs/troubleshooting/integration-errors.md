@@ -1,12 +1,13 @@
 # MCP and integration errors
 
-## Server is absent from Codex
+## Server is absent from Cursor or Codex
 
 Verify absolute paths with `command -v uv`/`pwd` on macOS or Linux, or
 `(Get-Command uv).Source`/`(Get-Location).Path` in PowerShell. Run
-`uv run qa-mcp --help`, inspect `codex mcp list`, then restart the Codex extension.
-Use [Codex registration syntax](../getting-started/codex-vscode.md), not native VS
-Code MCP JSON.
+`uv run qa-mcp --help`. In Cursor, confirm `.cursor/mcp.json` and restart Cursor.
+In Codex, inspect `codex mcp list`, then restart the Codex extension.
+Use the matching contract in
+[Cursor, Codex, and VS Code registration](../getting-started/codex-vscode.md).
 
 ## Server starts and appears silent
 
@@ -17,9 +18,10 @@ configuration.
 
 ## Unexpected tools are visible
 
-M00 must expose exactly `hub_health` and `hub_capabilities`. Restart the client to
-clear old processes, then run `uv run python scripts/structure_audit.py`. A future
-tool appearing in discovery is a mandatory architecture violation.
+Compare the client's tool list with `qa_mcp_hub.mcp.registry.REGISTERED_TOOL_NAMES`.
+Restart the client to clear an old process, then run
+`uv run python scripts/structure_audit.py`. A tool outside that set is an
+architecture violation.
 
 ## Local integration test cannot reach a provider
 

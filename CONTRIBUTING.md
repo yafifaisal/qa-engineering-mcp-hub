@@ -33,9 +33,11 @@ uv run ruff format --check .
 uv run mypy src
 uv run pytest -v
 uv run python scripts/structure_audit.py
-uv build
+uv run python scripts/build_package.py
 ```
 
-Update requirements traceability, progress, known limitations, and any affected
-architecture decision in the same pull request. Never commit credentials, customer
-content, local workspace data, or fabricated verification evidence.
+`build_package.py` writes a wheel, a source distribution, an SBOM, and a local
+provenance file. It does not publish. Add `--query-osv` only when you intend to
+contact the OSV API. Never commit credentials, customer content, local workspace
+data, or fabricated verification evidence. Do not push a release tag or publish
+to PyPI without an explicit maintainer approval.

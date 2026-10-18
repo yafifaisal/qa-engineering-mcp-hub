@@ -1,5 +1,6 @@
 # Database assertions
 
-Future Milestone 07 ownership. Register parameterized read-only assertions and
-an approved connection ID here. Do not place credentials or generated SQL in
-workspace files. Database verification is NOT_IMPLEMENTED in Milestone 00.
+Register parameterized read-only assertions and an approved connection id here.
+Do not place credentials or generated SQL in these files. Only an enabled
+assertion whose implementation status is IMPLEMENTED can run. The example file
+is a template, and the example workflow stays disabled.

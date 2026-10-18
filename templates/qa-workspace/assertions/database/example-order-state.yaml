@@ -1,0 +1,18 @@
+schema_version: 1
+id: example-order-state
+kind: database
+implementation_status: IMPLEMENTED
+enabled: true
+connection_id: example-postgresql
+definition:
+  dialect: postgresql
+  read_only: true
+  sql: "SELECT order_id, status FROM billing.orders WHERE order_id = :order_id"
+  parameters: [order_id]
+  allow_tables: [billing.orders]
+  expect_column: status
+  expect_equals: paid
+  min_rows: 1
+  max_rows: 20
+  timeout_ms: 1000
+  poll_attempts: 3

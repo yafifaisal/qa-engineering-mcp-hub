@@ -162,12 +162,132 @@ structural changes must be added here before code is moved or ownership changes.
 ## ADR-016 — Client-specific local stdio configuration
 
 - **Status:** Accepted
-- **Decision:** Generate Codex TOML under `mcp_servers.qa_hub` and native VS Code
-  JSON under `servers.qa_hub` with `type: stdio`. Provider credentials are never
-  embedded. Installing generated content is a distinct, explicit merge that
-  preserves unrelated settings and backs up before replacement.
-- **Reason:** Codex and native VS Code use different configuration contracts, and
-  treating them as interchangeable produces invalid or unsafe files.
-- **Consequence:** Both formats are parsed in tests. Other client dialects require
-  an explicit contract before support is claimed.
+- **Decision:** Generate Codex TOML under `mcp_servers.qa_hub`, Cursor JSON under
+  `mcpServers.qa_hub`, and native VS Code JSON under `servers.qa_hub`. Local
+  servers declare `type: stdio`. Provider credentials are never embedded.
+  Installing generated content is a distinct, explicit merge that preserves
+  unrelated settings and backs up before replacement.
+- **Reason:** Cursor, Codex, and native VS Code use different configuration
+  contracts, and treating them as interchangeable produces invalid or unsafe
+  files.
+- **Consequence:** All three formats are parsed in tests. Cursor's default launch
+  command is `uv run --project ${workspaceFolder} qa-mcp serve`. Other client
+  dialects require an explicit contract before support is claimed.
+
+## ADR-017 — Local knowledge index and partial traces
+
+- **Status:** Accepted
+- **Decision:** Milestone 05 indexes only git-tracked files in a profile-approved
+  checkout, plus documents the caller has already retrieved. Keyword search is
+  the Community Edition baseline. Embeddings are an injected interface.
+  Dependency traces record source references and never claim a complete runtime
+  call graph. Scenario drafts are not executable tests and do not write
+  workflows.
+- **Reason:** A source match can be cited. It cannot prove production behavior,
+  and a hosted embedding service would make the community build depend on a
+  network the project does not operate.
+- **Consequence:** Unsupported parsers stay UNKNOWN. Secret paths and untracked
+  files are not indexed. `plan_index` remains a non-executing plan record.
+
+## ADR-018 — Registered API runners and API-only workflows
+
+- **Status:** Accepted
+- **Decision:** Milestone 06 executes only suites listed in the QA Workspace
+  registry. Bruno uses the documented `bru run` flags from CLI 3, including
+  `--sandbox safe` and `--reporter-json`. Postman collections use Newman 6.2.2
+  `run --reporters json --reporter-json-export`. Secrets go in a temporary
+  environment file, not `--env-var`. Database and Kafka workflow steps are
+  visible and unavailable until Milestone 07. A run cannot be PASSED without
+  itemized assertions and a zero exit code.
+- **Reason:** A caller-supplied shell command would bypass the suite registry.
+  Newman is the local runner that does not require Postman cloud login.
+  Collection v3 and the Postman CLI are outside this milestone.
+- **Consequence:** Preview is the default. Dry-run profiles do not start a
+  process. API-only evidence does not claim database or Kafka verification.
+  Installed CLIs stay unverified until a gated run executes them.
+
+## ADR-019 — Registered read-only verification
+
+- **Status:** Accepted
+- **Decision:** Milestone 07 executes database and Kafka checks only from
+  registered assertion files. SQL is a single bound SELECT or CTE. Session
+  settings request a read-only transaction and a statement timeout. The
+  configured database login must already be read-only; the hub does not grant
+  that privilege. Kafka observation disables auto-commit, uses an observer
+  group prefix, and refuses offset commits. A message on a topic is publication,
+  not confirmed consumer completion. An overall PASS requires every mandatory
+  step to have run and passed. Flags such as `database_verified` are true only
+  for checks that ran and passed.
+- **Reason:** Model-authored SQL and production consumer-group commits can
+  change systems the hub is only allowed to observe.
+- **Consequence:** Live PostgreSQL, MySQL, and Kafka drivers are not bundled.
+  Fixture sessions and an in-memory observer are OFFLINE_VERIFIED. Setting
+  `QA_MCP_LIVE_DATABASES` or `QA_MCP_LIVE_KAFKA` does not invent a successful
+  connection.
+
+## ADR-020 — Registered CI inspection, trigger denied by default
+
+- **Status:** Accepted
+- **Decision:** Milestone 08 reads Bitbucket Pipelines, GitHub Actions, and
+  Jenkins only for jobs in the workspace registry. Pipeline status is stored
+  separately from QA assertion status. Logs are redacted and truncated.
+  Expired artifacts are not downloaded. `prepare_pipeline_trigger` never calls
+  a provider. A remote trigger is not an MCP tool. The guarded dispatch path
+  requires an enabled job, mutation permission, confirmation, and a single-use
+  approval bound to the parameter digest. That POST is not retried.
+- **Reason:** A green pipeline is not evidence that a QA assertion passed, and
+  Jenkins parameters or workflow inputs can change a remote system.
+- **Consequence:** Mocked HTTP tests are OFFLINE_VERIFIED. No live CI system
+  was contacted. The generic `read_pipeline` port stays unavailable.
+
+## ADR-021 — Canonical test cases, publication denied by default
+
+- **Status:** Accepted
+- **Decision:** Milestone 09 maps Xray Cloud, Xray Data Center, TestRail, local
+  CSV, local XLSX, and Google Sheets into one case model. Extra source fields
+  are preserved. Unknown priority and result values fail the mapping. CSV and
+  XLSX export prefixes formula-like cells. Google Sheets reads require
+  `https://www.googleapis.com/auth/spreadsheets.readonly`.
+  `prepare_result_publication` does not call a provider. Result publication is
+  not an MCP tool. The guarded dispatch path requires `allow_publish`, mutation
+  permission, confirmation, and a single-use approval. A repeated digest does
+  not send a second POST. A local spreadsheet mapping cannot take that path.
+- **Reason:** Silent truncation and an unapproved result write would change a
+  system of record or hide a case field.
+- **Consequence:** Contract tests are OFFLINE_VERIFIED. No live Xray, TestRail,
+  or Google Sheets call was made. The generic `read_case` port stays
+  unavailable.
+
+## ADR-022 — Evidence from executed checks, release stays unapproved
+
+- **Status:** Accepted
+- **Decision:** Milestone 10 builds an evidence manifest from one stored
+  execution. Only checks that ran contribute detail. API-only policies omit
+  database and Kafka claims. A required check that did not run keeps the
+  overall result from being PASS. Reports are escaped HTML and JSON with
+  SHA-256 artifact digests. External publication requires an explicit QA
+  review value, mutation permission, confirmation, and a single-use approval.
+  A second call with the same digest does not send another request. Release
+  assessment reads that manifest and mapped records. Its recommendation cannot
+  change the review state or approve the release.
+- **Reason:** A report that fills in checks that did not run, or a recommendation
+  that signs off a release, would overstate what was observed.
+- **Consequence:** Local execution fixtures and mocked HTTP are OFFLINE_VERIFIED.
+  The checked-in policies keep external publication denied. No live Jira, Xray,
+  or TestRail system was contacted.
+
+## ADR-023 — Community package stays unpublished until approved
+
+- **Status:** Accepted
+- **Decision:** Milestone 11 builds a pinned wheel and source distribution,
+  writes a CycloneDX SBOM, scans those artifacts for known token shapes, and
+  documents a trusted-publishing workflow. The publish job runs only after a
+  maintainer types `APPROVE_PUBLIC_RELEASE` on a protected environment. Tests
+  install the local wheel. They do not upload it. A release recommendation
+  from Milestone 10 still does not approve the product release.
+- **Reason:** An external engineer needs a reproducible install path, and a
+  workflow file must not publish because it exists.
+- **Consequence:** Local macOS installation is OFFLINE_VERIFIED for the package
+  itself. Hosted Windows, macOS, and Linux runners were not observed, so that
+  matrix remains BLOCKED. No provider in this package is LIVE_VERIFIED.
 

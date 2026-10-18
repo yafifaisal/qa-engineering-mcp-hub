@@ -14,7 +14,8 @@ qa-mcp integrations test --help
 ```
 
 `integrations test` checks local connection validity and credential presence. A
-`NOT_IMPLEMENTED` network result is expected until that provider's adapter exists.
+`NOT_IMPLEMENTED` network result means the command did not call the provider.
+That remains true after an adapter exists: this command does not open a socket.
 
 For a keyring failure, capture only the backend name and sanitized exception. Check
 that the OS keyring session is unlocked and usable and that profile, connection,

@@ -5,6 +5,13 @@ provider enum remains in ``core`` because authentication and configuration both
 depend on it. Legacy ``Connection``, ``Profile``, and ``HubConfig`` imports are
 resolved lazily so existing callers receive the canonical models without
 creating a ``config.models -> core.models -> config.models`` import cycle.
+
+Purpose: publish the supported provider allowlist and legacy model aliases.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: core.models
+Dependencies: enum and lazy configuration-model imports.
+Expected tests: provider identity and deprecated alias resolution.
 """
 
 from enum import StrEnum

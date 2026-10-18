@@ -1,6 +1,6 @@
 """Generate and explicitly install credential-free MCP client configuration.
 
-Purpose: render current Codex TOML and native VS Code JSON stdio contracts.
+Purpose: render Codex TOML, Cursor JSON, and native VS Code JSON stdio contracts.
 Milestone: 01
 Status: IMPLEMENTED
 Ownership: cli.client_config_commands
@@ -30,6 +30,7 @@ class ClientKind(StrEnum):
     """Client dialects implemented and parser-verified in Milestone 01."""
 
     codex = "codex"
+    cursor = "cursor"
     vscode = "vscode"
 
 
@@ -71,13 +72,48 @@ def render_vscode_json(*, command: str = "qa-mcp") -> str:
     return json.dumps(document, indent=2, sort_keys=False) + "\n"
 
 
-def render_client_config(client: ClientKind, *, command: str = "qa-mcp") -> str:
+def render_cursor_json(*, command: str | None = None) -> str:
+    """Render Cursor mcp.json using mcpServers and stdio, without credentials.
+
+    The default uses ``uv`` and ``${workspaceFolder}`` so one project file works
+    on any checkout. An explicit executable keeps the direct ``serve`` arguments
+    used by Codex and VS Code.
+    """
+    executable = "uv" if command is None else command
+    args = (
+        ["run", "--project", "${workspaceFolder}", "qa-mcp", "serve"]
+        if executable == "uv"
+        else ["serve"]
+    )
+    document = {
+        "mcpServers": {
+            "qa_hub": {
+                "type": "stdio",
+                "command": executable,
+                "args": args,
+            }
+        }
+    }
+    rendered = json.dumps(document, indent=2, sort_keys=False) + "\n"
+    parsed = json.loads(rendered)["mcpServers"]["qa_hub"]
+    if parsed["type"] != "stdio" or "env" in parsed:
+        raise ValueError("generated Cursor configuration failed validation")
+    return rendered
+
+
+def render_client_config(
+    client: ClientKind,
+    *,
+    command: str | None = None,
+) -> str:
     """Render one supported client contract from non-secret launch values only."""
-    if not command.strip():
+    if command is not None and not command.strip():
         raise ValueError("launch command cannot be empty")
     if client is ClientKind.codex:
-        return render_codex_toml(command=command)
-    return render_vscode_json(command=command)
+        return render_codex_toml(command=command or "qa-mcp")
+    if client is ClientKind.cursor:
+        return render_cursor_json(command=command)
+    return render_vscode_json(command=command or "qa-mcp")
 
 
 def default_client_path(
@@ -89,30 +125,62 @@ def default_client_path(
     """Return the conventional user/project destination for a client dialect."""
     if client is ClientKind.codex:
         return (home or Path.home()) / ".codex" / "config.toml"
+    if client is ClientKind.cursor:
+        return (cwd or Path.cwd()) / ".cursor" / "mcp.json"
     return (cwd or Path.cwd()) / ".vscode" / "mcp.json"
 
 
-def _merge_vscode(previous: str, generated: str, *, force: bool) -> str:
-    """Merge only ``servers.qa_hub`` while preserving unrelated JSON settings."""
+def _merge_json_entry(
+    previous: str,
+    generated: str,
+    *,
+    root_key: str,
+    invalid_message: str,
+    force: bool,
+) -> str:
+    """Merge only ``qa_hub`` under one JSON object, preserving other keys."""
     try:
         current = json.loads(previous)
-        desired = json.loads(generated)["servers"]["qa_hub"]
+        desired = json.loads(generated)[root_key]["qa_hub"]
     except (json.JSONDecodeError, KeyError, TypeError) as exc:
-        raise ConfigWriteError("existing VS Code client config is invalid") from exc
+        raise ConfigWriteError(invalid_message) from exc
     if not isinstance(current, dict):
-        raise ConfigWriteError("existing VS Code client config must be a JSON object")
-    servers = current.setdefault("servers", {})
+        raise ConfigWriteError(invalid_message)
+    servers = current.setdefault(root_key, {})
     if not isinstance(servers, dict):
-        raise ConfigWriteError("existing VS Code servers value must be an object")
+        raise ConfigWriteError(f"existing {root_key} value must be an object")
     existing = servers.get("qa_hub")
     if existing == desired:
         return previous
     if existing is not None and not force:
         raise ConfigWriteError(
-            "qa_hub already exists with different settings; pass --force to replace only that entry"
+            "qa_hub already exists with different settings; "
+            "pass --force to replace only that entry"
         )
     servers["qa_hub"] = desired
     return json.dumps(current, indent=2, sort_keys=False) + "\n"
+
+
+def _merge_vscode(previous: str, generated: str, *, force: bool) -> str:
+    """Merge only ``servers.qa_hub`` while preserving unrelated JSON settings."""
+    return _merge_json_entry(
+        previous,
+        generated,
+        root_key="servers",
+        invalid_message="existing VS Code client config is invalid",
+        force=force,
+    )
+
+
+def _merge_cursor(previous: str, generated: str, *, force: bool) -> str:
+    """Merge only ``mcpServers.qa_hub`` while preserving unrelated JSON settings."""
+    return _merge_json_entry(
+        previous,
+        generated,
+        root_key="mcpServers",
+        invalid_message="existing Cursor client config is invalid",
+        force=force,
+    )
 
 
 _TOML_HEADER = re.compile(r"^\s*\[([^\[\]]+)]\s*(?:#.*)?$")
@@ -162,7 +230,8 @@ def _merge_codex(previous: str, generated: str, *, force: bool) -> str:
         return previous.rstrip() + separator + generated
     if not force:
         raise ConfigWriteError(
-            "qa_hub already exists with different settings; pass --force to replace only that table"
+            "qa_hub already exists with different settings; "
+            "pass --force to replace only that table"
         )
     return _replace_codex_table(previous, generated)
 
@@ -180,12 +249,15 @@ def install_client_config(
         try:
             previous = target.read_text(encoding="utf-8")
         except OSError as exc:
-            raise ConfigWriteError(f"cannot read existing client config: {target}") from exc
-        merged = (
-            _merge_codex(previous, content, force=force)
-            if client is ClientKind.codex
-            else _merge_vscode(previous, content, force=force)
-        )
+            raise ConfigWriteError(
+                f"cannot read existing client config: {target}"
+            ) from exc
+        if client is ClientKind.codex:
+            merged = _merge_codex(previous, content, force=force)
+        elif client is ClientKind.cursor:
+            merged = _merge_cursor(previous, content, force=force)
+        else:
+            merged = _merge_vscode(previous, content, force=force)
         if merged == previous:
             return target, False
         backup = target.with_name(f"{target.name}.bak")
@@ -202,11 +274,14 @@ def install_client_config(
 
 @app.command("generate")
 def generate_client(
-    client: ClientKind = typer.Argument(..., help="Client dialect: codex or vscode."),
-    command: str = typer.Option(
-        "qa-mcp",
+    client: ClientKind = typer.Argument(
+        ...,
+        help="Client dialect: codex, cursor, or vscode.",
+    ),
+    command: str | None = typer.Option(
+        None,
         "--command",
-        help="Executable available to the MCP client.",
+        help="Executable. Defaults to qa-mcp, or uv for Cursor.",
     ),
 ) -> None:
     """Print parser-validated client configuration without writing a file."""
@@ -219,16 +294,19 @@ def generate_client(
 
 @app.command("install")
 def install_client(
-    client: ClientKind = typer.Argument(..., help="Client dialect: codex or vscode."),
+    client: ClientKind = typer.Argument(
+        ...,
+        help="Client dialect: codex, cursor, or vscode.",
+    ),
     destination: Path | None = typer.Option(
         None,
         "--path",
         help="Destination; defaults to the client's conventional location.",
     ),
-    command: str = typer.Option(
-        "qa-mcp",
+    command: str | None = typer.Option(
+        None,
         "--command",
-        help="Executable available to the MCP client.",
+        help="Executable. Defaults to qa-mcp, or uv for Cursor.",
     ),
     force: bool = typer.Option(
         False,

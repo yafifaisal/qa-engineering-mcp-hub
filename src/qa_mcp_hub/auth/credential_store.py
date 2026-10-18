@@ -1,4 +1,12 @@
-"""Credential-store contracts and deliberately sanitized domain errors."""
+"""Credential-store contracts and deliberately sanitized domain errors.
+
+Purpose: define the approved credential-backend interface and safe errors.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.credential_store
+Dependencies: typing protocols.
+Expected tests: missing, expired, scope, and unavailable-backend errors.
+"""
 
 from __future__ import annotations
 

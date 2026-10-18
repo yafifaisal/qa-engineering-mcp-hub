@@ -1,4 +1,12 @@
-"""Offline OAuth state and PKCE infrastructure without provider integration."""
+"""Offline OAuth state and PKCE infrastructure without provider integration.
+
+Purpose: create local PKCE and single-use state that never calls a provider.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.oauth
+Dependencies: hashlib and Pydantic.
+Expected tests: challenge derivation, scope binding, and replay rejection.
+"""
 
 from __future__ import annotations
 
@@ -142,3 +150,116 @@ class OAuthStateManager:
                 "OAuth state does not match the active connection scope."
             )
         del self._pending[digest]
+
+
+_GOOGLE_OAUTH_ENDPOINT = "https://oauth2.googleapis.com/token"
+_DOCS_SCOPE = "https://www.googleapis.com/auth/documents.readonly"
+_DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.metadata.readonly"
+
+
+class GoogleAccessToken(BaseModel):
+    """A short-lived access token. The refresh token is not retained here."""
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+    access_token: SecretStr
+    expires_at: datetime
+    scopes: tuple[str, ...] = ()
+
+
+def refresh_google_access_token(
+    *,
+    refresh_token: SecretStr,
+    client_id: str,
+    client_secret: SecretStr,
+    http_client: object,
+    clock: Callable[[], datetime] | None = None,
+    expected_scope: str = _DOCS_SCOPE,
+) -> GoogleAccessToken:
+    """Exchange a refresh token at Google's token endpoint.
+
+    The returned model and any error message omit the refresh token.
+    """
+    import httpx
+
+    from qa_mcp_hub.core.errors import ProviderRequestError
+
+    if not isinstance(http_client, httpx.Client):
+        raise ProviderRequestError(
+            "provider_unreachable",
+            "google token request failed",
+            status_code=0,
+        )
+    now = (clock or (lambda: datetime.now(UTC)))()
+    if now.tzinfo is None:
+        raise ValueError("OAuth clock must return an aware datetime")
+    try:
+        response = http_client.post(
+            _GOOGLE_OAUTH_ENDPOINT,
+            data={
+                "grant_type": "refresh_token",
+                "refresh_token": refresh_token.get_secret_value(),
+                "client_id": client_id,
+                "client_secret": client_secret.get_secret_value(),
+            },
+            headers={"Accept": "application/json"},
+            follow_redirects=False,
+        )
+    except httpx.HTTPError as exc:
+        raise ProviderRequestError(
+            "provider_unreachable",
+            "google token request failed",
+            status_code=0,
+        ) from exc
+    if response.status_code in {400, 401}:
+        raise ProviderRequestError(
+            "oauth_expired",
+            "google oauth token is expired or revoked",
+            status_code=response.status_code,
+        )
+    if response.status_code >= 400:
+        raise ProviderRequestError(
+            "provider_http",
+            "google token request failed",
+            status_code=response.status_code,
+        )
+    try:
+        payload = response.json()
+    except ValueError as exc:
+        raise ProviderRequestError(
+            "invalid_response",
+            "google token response was not valid JSON",
+            status_code=response.status_code,
+        ) from exc
+    access_token = payload.get("access_token") if isinstance(payload, dict) else None
+    if not isinstance(access_token, str):
+        raise ProviderRequestError(
+            "invalid_response",
+            "google token response had an unexpected shape",
+            status_code=response.status_code,
+        )
+    expires_in = payload.get("expires_in")
+    if not isinstance(expires_in, int) or expires_in < 1:
+        raise ProviderRequestError(
+            "invalid_response",
+            "google token response had an unexpected shape",
+            status_code=response.status_code,
+        )
+    scope_text = payload.get("scope")
+    scopes = tuple(scope_text.split()) if isinstance(scope_text, str) else ()
+    if scopes and expected_scope not in scopes:
+        raise ProviderRequestError(
+            "insufficient_scope",
+            "google oauth token is missing the required read scope",
+            status_code=0,
+        )
+    return GoogleAccessToken(
+        access_token=SecretStr(access_token),
+        expires_at=now + timedelta(seconds=expires_in),
+        scopes=scopes,
+    )
+
+
+def google_drive_scope_present(token: GoogleAccessToken) -> bool:
+    """Return whether a refresh response included the Drive metadata scope."""
+    return not token.scopes or _DRIVE_SCOPE in token.scopes

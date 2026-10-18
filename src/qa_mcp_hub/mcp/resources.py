@@ -16,10 +16,12 @@ STATUS_RESOURCE_URI = "qa-hub://status"
 
 
 def hub_status_resource() -> str:
-    """Render local M00 status as stable JSON with no machine secrets."""
+    """Render local hub status as stable JSON with no machine secrets."""
     payload = {
         "health": hub_health().model_dump(mode="json"),
         "capabilities": hub_capabilities().model_dump(mode="json"),
-        "external_integrations": "not_implemented",
+        "external_integrations": (
+            "git_jira_docs_read_only_local_knowledge_registered_e2e_ci_read_test_cases_evidence"
+        ),
     }
     return json.dumps(payload, sort_keys=True)

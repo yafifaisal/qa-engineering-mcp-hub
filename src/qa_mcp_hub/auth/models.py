@@ -3,6 +3,13 @@
 Milestone 01 deliberately models where a credential lives without ever placing its
 value in configuration. A reference is immutable and bound to the complete
 profile/connection scope that is allowed to resolve it.
+
+Purpose: describe credential references and authentication capability contracts.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.models
+Dependencies: Pydantic and the provider identity enum.
+Expected tests: scope binding, expiry metadata, and no secret fields.
 """
 
 from __future__ import annotations

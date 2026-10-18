@@ -1,36 +1,36 @@
 # Workflow engine architecture
 
-Status: **SCAFFOLDED for future milestones.** Milestone 00 cannot discover, plan,
-or execute a QA Workspace workflow.
+Status: **IMPLEMENTED for registered API and E2E workflows. OFFLINE_VERIFIED with local fixtures.**
+Unregistered database, Kafka, and business steps stay unavailable and are not
+reported as verified.
 
-## Intended responsibility
+## Responsibility
 
-A workflow is approved company data that references registered suites,
-deterministic assertions, evidence policies, and dependency ordering. It belongs
-in a QA Workspace, not package code. The generic
-[workspace template](../../templates/qa-workspace/README.md) illustrates the
-boundary but is disabled by default.
+A workflow is approved QA Workspace data. It references registered suites and
+assertion ids. The engine:
 
-The future engine will:
+1. loads schema version 1 YAML from `workflows/api` and `workflows/e2e`;
+2. rejects duplicate ids, missing dependencies, missing assertion ids, and cycles;
+3. previews an immutable plan before any process starts;
+4. runs `api_suite` steps through the registered Bruno or Newman argument list;
+5. runs registered `database_assertion`, `kafka_assertion`, and
+   `business_assertion` steps after their dependencies pass;
+6. normalizes runner exit and assertion results separately;
+7. stores evidence. `database_verified` and `kafka_verified` are true only when
+   those checks ran and passed.
 
-1. discover an explicitly selected, schema-valid workflow;
-2. confirm profile, repository, environment, and capability authorization;
-3. resolve only registered suites and assertions;
-4. validate dependencies and produce an immutable plan;
-5. execute bounded jobs through the runner service;
-6. normalize results without equating process success with test PASS;
-7. collect evidence according to the selected policy.
+Suggestions built from a Jira key or changed paths are not approved and cannot
+be submitted.
 
 ## Safety invariants
 
-- No caller-provided shell command, working directory, SQL string, or Kafka topic
-  may bypass a registry and allowlist.
-- Provider writes, CI/CD triggers, and publication require preview and explicit
-  approval in their owning milestones.
-- Timeouts, cancellation, concurrency, output limits, and sanitized environments
-  are mandatory for process execution.
-- A dependency failure or missing required check cannot become PASSED.
-- Resuming a job must be idempotent and profile-isolated.
+- No caller-provided shell command, working directory, or extra CLI flag is accepted.
+- `shell=True` is not available. Arguments are a list.
+- Timeouts, cancellation, concurrency, output limits, and a sanitized environment
+  are mandatory.
+- A dependency failure or a run with no itemized assertions cannot become PASSED.
+- A dry-run execution preference returns the preview and does not start a process.
 
-The YAML files under [`templates/workflows/`](../../templates/workflows/) are
-schemas/examples, not executable M00 functionality.
+The examples under `templates/qa-workspace/workflows/` are disabled. They are not
+an approved company registry. The files under `templates/workflows/` are schema
+examples.

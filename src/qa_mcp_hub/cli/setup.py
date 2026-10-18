@@ -91,12 +91,17 @@ def setup_command(
                 if existing.workspace_id is None:
                     workspace_id = f"{profile_name}-workspace"
                     known = next(
-                        (item for item in updated.workspaces if item.id == workspace_id),
+                        (
+                            item
+                            for item in updated.workspaces
+                            if item.id == workspace_id
+                        ),
                         None,
                     )
                     if known is not None and known.path != normalized:
                         raise CLIConfigError(
-                            f"workspace id already refers to a different path: {workspace_id}"
+                            "workspace id already refers to a different path: "
+                            f"{workspace_id}"
                         )
                     workspaces = list(updated.workspaces)
                     if known is None:

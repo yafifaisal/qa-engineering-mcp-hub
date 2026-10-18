@@ -1,8 +1,8 @@
 # Google Docs provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED** read-only Docs adapter  
 > Owning milestone: **04**  
-> Verification: documentation scaffold only; no provider request has been executed.
+> Verification: mocked HTTP tests. No live Google request has been executed.
 
 ## 1. Provider overview
 
@@ -20,7 +20,10 @@ Cloud/self-hosted separation is not applicable. Consumer and managed Workspace a
 
 Planned reads include document metadata and structured content for known document IDs. Narrow Google Drive discovery may be added only to locate Docs when explicitly authorized; general Drive integration is out of scope.
 
-These are planned capabilities, not current support.
+The adapter reads the Docs API and uses Drive only to find Docs by name in the
+user corpus. Minimal scopes are `documents.readonly` and
+`drive.metadata.readonly`. A refresh token is exchanged for an access token and
+is not returned. Mocked tests are OFFLINE_VERIFIED. Live calls are not claimed.
 
 ## 5. Authentication methods
 

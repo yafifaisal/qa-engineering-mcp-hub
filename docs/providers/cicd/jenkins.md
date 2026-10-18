@@ -1,12 +1,12 @@
 # Jenkins provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **08**  
-> Verification: documentation scaffold only; no provider request or file operation has occurred.
+> Verification: mocked Jenkins HTTP tests. No live Jenkins controller was contacted, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-Jenkins is a supported CI/CD provider. The future adapter will translate authorized controller job, queue, build, bounded console, and artifact data into normalized records.
+Jenkins reads are implemented for one registered job name on an HTTPS controller. The adapter lists builds, reads one build, bounds console text, and returns artifact names. UNSTABLE is a pipeline failure, not a QA assertion failure.
 
 ## 2. Supported editions
 
@@ -18,9 +18,7 @@ Jenkins is normally self-hosted; managed distributions and installations vary by
 
 ## 4. Supported API capabilities
 
-Planned reads include configured job identity, queue/build state, parameters with secret filtering, revision metadata where available, bounded console text, and artifact metadata/download.
-
-These are planned capabilities, not current support.
+Reads use `GET /job/{name}/api/json` with a bounded tree, `GET /job/{name}/{number}/api/json`, and `GET /job/{name}/{number}/consoleText`. Artifact bytes are not downloaded. A build trigger uses one form POST to `buildWithParameters` after a crumb read, and only when policy allows it. That trigger is not an MCP tool. Job names with path traversal are rejected.
 
 ## 5. Authentication methods
 
@@ -80,11 +78,11 @@ The HTTP API is portable, while enterprise CAs/proxies, keyrings, path separator
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Jenkins through Milestone 01. Future CI/CD tools may list/read approved jobs, builds, console excerpts, and artifacts through normalized services.
+`list_pipeline_runs`, `get_pipeline_status`, `get_pipeline_artifacts`, and `prepare_pipeline_trigger` accept a registered job id. The prepare tool does not call Jenkins.
 
 ## 12. Read/write authorization behavior
 
-Read-only first. Scheduling, rebuilding, cancelling, input approval, configuration, credentials, scripts, and plugin actions require distinct authorization and explicit confirmation.
+Parameters must be names and values listed on the registered job. A remote build is not registered as an MCP tool. When a guarded dispatch is used, the crumb request may be retried as a read, and the build POST is not retried.
 
 ## 13. Pagination and rate limiting
 
@@ -106,23 +104,21 @@ Allowlist origin/folders/jobs, prevent SSRF through artifact links, redact crede
 
 Check context path, reverse proxy, TLS chain, authentication realm/token, folder-encoded job path, permissions, CSRF configuration, plugins, controller version, and artifact retention.
 
-Because the provider is not implemented, current inability to connect or operate is expected.
+A 403 is a permission error. Console text is redacted and truncated. An artifact marked expired is not downloaded.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/cicd/jenkins.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/cicd/jenkins.py` — IMPLEMENTED read adapter.
+- `src/qa_mcp_hub/mcp/tools/cicd.py` — IMPLEMENTED inspection tools.
+- `templates/qa-workspace/ci/registered-jobs.yaml` — approved job registry.
 
 ## 19. Related tests
 
-Planned folder/job routing, queue/build states, permission, crumb policy, schema variance, log cap, artifact redirect/expiry, trigger-denial, and gated live-read tests.
-
-No test currently validates a real provider integration.
+`tests/contracts/test_jenkins.py` covers success, failure, cancellation, unstable, exact revision, permission, timeout, invalid job names, invalid parameters, expired artifacts, redacted logs, and a single approved POST.
 
 ## 20. Current implementation status
 
-**NOT_IMPLEMENTED.** The adapter file is **SCAFFOLDED** and contains no client, connection, file, query, parsing, publication, or registration logic. It is not exposed through FastMCP.
+**OFFLINE_VERIFIED** with mocked HTTP. Live Jenkins is not claimed. Plugin-specific controllers still need a separate live check.
 
 ## 21. Official documentation references
 

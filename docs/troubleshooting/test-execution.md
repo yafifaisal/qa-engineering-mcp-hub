@@ -1,8 +1,28 @@
 # Test execution troubleshooting
 
-API suite, database, Kafka, CI/CD, workflow, and end-to-end execution are not
-implemented through Milestone 01. Only the repository's local unit, configuration,
-credential-contract, protocol, CLI, security, and package tests can run.
+Registered Bruno and Newman suites can run when the profile is not in dry-run
+mode and the workflow is approved. Registered database and Kafka steps run only
+when their assertion files are implemented and enabled. A missing assertion does
+not count as verified. A missing `bru` or `newman` binary is an ERROR, not a
+PASS. A database connection failure is an ERROR, not a failed assertion. A Kafka
+retention gap or missing event is INCONCLUSIVE.
+
+The repository tests use a local stand-in process, a fixture database session,
+and an in-memory Kafka observer. They do not prove that PostgreSQL, MySQL, or
+Kafka is reachable. `QA_MCP_LIVE_DATABASES` and `QA_MCP_LIVE_KAFKA` do not
+bundle a driver. Set `QA_MCP_BRUNO_BIN` and `QA_MCP_NEWMAN_BIN` only to the
+approved executables. Do not pass a shell string.
+
+Registered CI jobs can be inspected when the job is enabled and the profile
+owns the connection. A pipeline success is not a QA pass. An expired artifact
+is reported and not downloaded. `prepare_pipeline_trigger` does not start a
+pipeline. The tests mock HTTP. They do not prove that Bitbucket, GitHub
+Actions, or Jenkins is reachable.
+
+Evidence is generated from a stored execution id. An API-only policy does not
+add database or Kafka sections. A missing mandatory check cannot be an overall
+PASS. `prepare_evidence_publication` does not send a request. A release report
+keeps release approval false.
 
 Use the locked environment and preserve the first real diagnostic:
 

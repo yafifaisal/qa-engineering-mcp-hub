@@ -1,5 +1,5 @@
 # Test-management import templates
 
-Future Milestone 09 ownership. Place sanitized CSV/XLSX templates here. Never
-include customer data or formulas from untrusted input. No import or publication
-capability is implemented in Milestone 00.
+`example-cases.csv` is a UTF-8 template with the canonical columns. Multiline
+steps stay inside one quoted cell. Generated exports prefix formula-like cells
+so a spreadsheet does not execute them.

@@ -1,5 +1,5 @@
 # Test-management mappings
 
-Future Milestone 09 ownership. Store reviewed mappings between local stable IDs
-and Xray, TestRail, spreadsheet, or Google Sheets IDs. Imports and writes require
-preview, loss reporting, and explicit approval.
+Reviewed column maps for Xray, TestRail, CSV, XLSX, and Google Sheets live here.
+`example-billing.yaml` keeps `allow_publish` false. Result publication is not an
+MCP tool. A preview does not write a file or call a provider.

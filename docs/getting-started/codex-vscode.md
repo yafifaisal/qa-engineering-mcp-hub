@@ -1,7 +1,9 @@
-# Register the local MCP server with Codex or native VS Code
+# Register the local MCP server with Cursor, Codex, or native VS Code
 
 The hub uses local stdio and does not expose an HTTP endpoint. M01 can generate or
 install client launch configuration, but it never embeds provider credentials.
+Cursor, Codex, and native VS Code use different files. Do not paste one client's
+configuration into another.
 
 ## Codex CLI and Codex IDE extension
 
@@ -70,11 +72,40 @@ VS Code schemas and supported locations can change independently. Check the
 [official VS Code MCP documentation](https://code.visualstudio.com/docs/agent-customization/mcp-servers)
 for the installed version. Do not paste this JSON into Codex `config.toml`.
 
+## Cursor
+
+Cursor reads [`.cursor/mcp.json`](../../.cursor/mcp.json) in this project and
+`~/.cursor/mcp.json` for every project. The project file wins when both define
+`qa_hub`. The checked-in file uses Cursor's `mcpServers` object and starts the
+server with `uv` from the open workspace:
+
+```json
+{
+  "mcpServers": {
+    "qa_hub": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--project", "${workspaceFolder}", "qa-mcp", "serve"]
+    }
+  }
+}
+```
+
+`${workspaceFolder}` is Cursor interpolation. It is not a secret and it is not
+valid Codex TOML. Restart Cursor after changing the file. A direct executable is
+available with `qa-mcp clients generate cursor --command /absolute/path/to/qa-mcp`.
+The same contract is saved at
+[`config/examples/cursor.example.json`](../../config/examples/cursor.example.json).
+
+The authoritative syntax is the [official Cursor MCP
+documentation](https://cursor.com/docs/mcp).
+
 ## Generate or install with qa-mcp
 
-M01 provides parser-checked generation for both formats:
+M01 provides parser-checked generation for each client contract:
 
 ```sh
+qa-mcp clients generate cursor
 qa-mcp clients generate codex
 qa-mcp clients generate vscode
 qa-mcp clients install --help

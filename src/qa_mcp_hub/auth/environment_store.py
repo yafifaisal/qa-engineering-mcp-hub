@@ -1,4 +1,12 @@
-"""Read-only backend for explicitly approved environment credential references."""
+"""Read-only backend for explicitly approved environment credential references.
+
+Purpose: read named environment variables without copying them into files.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: auth.environment_store
+Dependencies: process environment mapping.
+Expected tests: allowlist enforcement and rejected writes.
+"""
 
 from __future__ import annotations
 

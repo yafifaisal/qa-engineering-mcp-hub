@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-mcp-hub.example/schemas/ci-mapping.schema.json",
+  "title": "CI pipeline correlation mappings",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "implementation_status", "triggering", "mappings"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "implementation_status": {"enum": ["SCAFFOLDED", "IMPLEMENTED"]},
+    "triggering": {"const": "deny"},
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["job_id"],
+        "properties": {
+          "job_id": {"type": "string", "minLength": 1},
+          "suite_ids": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}
+          },
+          "issue_pattern": {"type": "string", "minLength": 1, "maxLength": 80}
+        }
+      }
+    }
+  }
+}

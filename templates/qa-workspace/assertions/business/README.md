@@ -1,5 +1,5 @@
 # Business assertions
 
-Future planning and verification milestone ownership. Each assertion must state
-an invariant and cite approved business documentation. Human or AI judgment
-alone must not be recorded as deterministic PASS/FAIL evidence.
+Register a deterministic comparison of two observation paths produced by
+executed database or Kafka checks. A missing input is inconclusive. Human or
+model prose is not a PASS or FAIL result.

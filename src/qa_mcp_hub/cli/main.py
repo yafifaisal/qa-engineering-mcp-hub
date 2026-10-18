@@ -1,11 +1,11 @@
-"""Typer command application for the implemented Milestone 00 surface.
+"""Typer command application for local setup and community onboarding.
 
-Purpose: expose serve, doctor, capabilities, help, and version behavior to humans.
-Milestone: 00
+Purpose: expose serve, doctor, capabilities, and local setup/configuration commands.
+Milestone: 11
 Status: IMPLEMENTED
 Ownership: cli.root_application
-Dependencies: Typer, Rich, and local M00 services.
-Expected tests: all commands, standalone version, help, and exit codes.
+Dependencies: Typer, Rich, and local command modules.
+Expected tests: help, version, doctor, capabilities, and workflow listing.
 """
 
 from typing import Annotated
@@ -14,7 +14,14 @@ import typer
 from rich.console import Console
 
 from qa_mcp_hub import __version__
-from qa_mcp_hub.config import SettingsLoadError, default_config_dir, load_settings
+from qa_mcp_hub.cli.clients import app as clients_app
+from qa_mcp_hub.cli.config import app as config_app
+from qa_mcp_hub.cli.doctor import doctor_command
+from qa_mcp_hub.cli.integrations import app as integrations_app
+from qa_mcp_hub.cli.profiles import app as profiles_app
+from qa_mcp_hub.cli.repositories import app as repositories_app
+from qa_mcp_hub.cli.setup import setup_command
+from qa_mcp_hub.cli.workflows import app as workflows_app
 from qa_mcp_hub.core.capabilities import list_capabilities
 
 app = typer.Typer(
@@ -23,6 +30,14 @@ app = typer.Typer(
     invoke_without_command=True,
 )
 console = Console(stderr=True)
+app.command("setup")(setup_command)
+app.command("doctor")(doctor_command)
+app.add_typer(profiles_app, name="profiles")
+app.add_typer(integrations_app, name="integrations")
+app.add_typer(config_app, name="config")
+app.add_typer(clients_app, name="clients")
+app.add_typer(repositories_app, name="repositories")
+app.add_typer(workflows_app, name="workflows")
 
 
 @app.command("serve")
@@ -31,21 +46,6 @@ def serve_command() -> None:
     from qa_mcp_hub.server import serve
 
     serve()
-
-
-@app.command("doctor")
-def doctor() -> None:
-    """Check local package readiness, not third-party integrations."""
-    try:
-        settings = load_settings()
-    except SettingsLoadError as exc:
-        console.print(f"Configuration error: {exc}")
-        raise typer.Exit(code=2) from exc
-    console.print(f"QA MCP Hub {__version__}: ready (local only)")
-    console.print(f"Server: {settings.server_name}")
-    console.print(f"Transport: {settings.transport}")
-    console.print(f"Config directory: {default_config_dir()}")
-    console.print("External integrations: not implemented in Milestone 00")
 
 
 @app.command("capabilities")

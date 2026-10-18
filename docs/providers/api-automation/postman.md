@@ -1,8 +1,8 @@
 # Postman provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **06**  
-> Verification: documentation scaffold only; no provider request or runner execution has occurred.
+> Verification: Newman 6.2.2 flags were checked against the Newman README and the Postman command reference. Tests use a local stand-in process. Installed `newman` was not executed. Postman CLI and collection v3 are not implemented.
 
 ## 1. Provider overview
 
@@ -18,9 +18,9 @@ Local collection execution and Postman cloud APIs have different authentication,
 
 ## 4. Supported API capabilities
 
-Planned capabilities are registered collection discovery, fixed runner invocation, approved environment selection, bounded output, supported result parsing, and normalized assertions.
+Registered collection v2 JSON files run through Newman 6.2.2 with `run`, `--reporters json`, `--reporter-json-export`, and `-e` for a generated environment file. `--env-var` is not used. Postman CLI and collection v3 are not implemented.
 
-These are planned capabilities, not current support.
+These checks are OFFLINE_VERIFIED with a stand-in process. Installed Newman was not executed.
 
 ## 5. Authentication methods
 
@@ -68,7 +68,7 @@ Node/runtime availability, executable names, path quoting, certificate stores, a
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Postman through Milestone 01. Future execution tools may list allowlisted suites, submit a policy-approved run, and retrieve normalized results.
+`list_registered_suites`, `list_workflows`, `explain_workflow`, `submit_test_run`, and `get_test_run` use the registered collection. They do not accept a shell command.
 
 ## 12. Read/write authorization behavior
 

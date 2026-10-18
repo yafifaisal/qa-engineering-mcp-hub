@@ -9,15 +9,17 @@ explainable and testable.
 
 ## Status meaning
 
-- `IMPLEMENTED` describes a complete Milestone 00 artifact: working M00 source,
-  tests, scripts, documentation, schemas, safe examples, or templates.
+- `IMPLEMENTED` describes a complete Milestone 00 through 11 artifact.
+  Milestone 11 builds the Community Edition package and does not publish it.
+  Milestone 10 collects evidence from stored executions. It does
+  not approve a release and it does not contact a live publication target.
 - `SCAFFOLDED` describes a future Python ownership boundary. Its module docstring
   declares purpose, milestone, ownership, dependencies, and expected tests, but it
   exposes no provider or domain behavior.
 
-Provider documentation is implemented documentation about a `NOT_IMPLEMENTED`
-integration. Likewise, a complete disabled template does not make its future runner
-or workflow engine implemented.
+Provider documentation records the current adapter boundary. An
+`OFFLINE_VERIFIED` page is not a live provider call. A complete disabled
+template does not make its future runner or workflow engine implemented.
 
 ## Completeness policy
 
@@ -29,7 +31,15 @@ outputs, caches, and other generated paths explicitly ignored by the auditor.
 `src/qa_mcp_hub/py.typed` is the only intentionally zero-byte file. Package
 initializers are documented even where they expose no public initialization logic.
 Future module placeholders are allowed only when their manifest and AST metadata say
-`SCAFFOLDED`.
+`SCAFFOLDED`. Milestone 03 moved the Git adapters, Jira adapter, planning service,
+and the knowledge/planning MCP tools to `IMPLEMENTED`. Milestone 04 moved the
+Confluence adapter, Google Docs adapter, and knowledge document models to
+`IMPLEMENTED`. Milestone 05 moved the knowledge engine, index store, and
+planning drafts to `IMPLEMENTED`. Milestone 06 moved the suite registry,
+workflow engine, process runner, and execution store to `IMPLEMENTED`.
+Milestone 07 moved the SQL policy, database and Kafka adapters, and
+verification package to `IMPLEMENTED`. Milestone 08 moved the CI adapters, approval ledger, and CI tools to
+`IMPLEMENTED`. Remote triggering is not registered as an MCP tool.
 
 Meaningful README files preserve otherwise-empty QA Workspace and test directories.
 The extra machine manifest and `STRUCTURE_AUDIT.json` provide deterministic input
@@ -50,9 +60,10 @@ were reconciled rather than deleted because they serve users without owning code
 | generic `services/` | owning domain packages | empty duplicate ownership removed |
 | `release/coverage.py`, `risk.py` | `coverage_engine.py`, `risk_engine.py` | empty obsolete names removed |
 
-The pre-existing credential protocol, keyring wrapper, and profile data models were
-moved into canonical ownership and isolated from the M00 runtime. They remain
-scaffolded and are not evidence that Milestone 01 works.
+Milestone 01 owns the implemented configuration, authentication, and local CLI
+modules. Those modules store credential references and can use an OS keyring or an
+approved environment variable. They do not call provider APIs. Provider adapters
+remain scaffolded.
 
 ## Audit command
 

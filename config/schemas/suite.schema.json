@@ -19,7 +19,25 @@
           "runner": {"enum": ["bruno", "postman"]},
           "path": {"type": "string", "minLength": 1},
           "environment": {"type": "string"},
-          "enabled": {"type": "boolean"}
+          "enabled": {"type": "boolean"},
+          "version": {"type": "string", "minLength": 1, "maxLength": 64},
+          "allowed_operation": {"enum": ["read", "mutate"]},
+          "assertion_ids": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"}
+          },
+          "credential_env": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "reference"],
+              "properties": {
+                "name": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]{0,63}$"},
+                "reference": {"type": "string", "minLength": 1, "maxLength": 128}
+              }
+            }
+          }
         }
       }
     }

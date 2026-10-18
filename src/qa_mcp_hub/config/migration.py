@@ -1,4 +1,12 @@
-"""Versioned, backed-up configuration migration with rollback."""
+"""Versioned, backed-up configuration migration with rollback.
+
+Purpose: migrate user configuration without losing the previous bytes.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: config.migration
+Dependencies: configuration loader, validator, and atomic writer.
+Expected tests: backup creation, idempotent reruns, and failed-write rollback.
+"""
 
 from collections.abc import Callable, Mapping
 from copy import deepcopy

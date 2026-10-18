@@ -11,8 +11,9 @@ QA Engineering MCP Hub is an open-source, local-first framework that lets an MCP
 client invoke governed QA capabilities. The architecture reserves boundaries for
 the supported providers and Milestones 02–11. Milestone 00 implements local MCP
 introspection; Milestone 01 adds the local configuration, profile, credential, and
-setup control plane. A file in the scaffold is not evidence that its capability
-works, and Milestone 01 does not call provider APIs.
+setup control plane. Milestone 02 adds provider contracts, capability discovery,
+and local repository registration. A file in the scaffold is not evidence that
+its capability works. Milestone 02 does not call provider APIs.
 
 Only these provider families belong in the framework: GitHub, GitLab, Bitbucket,
 Jira, Confluence, Google Docs, Bruno, Postman, PostgreSQL, MySQL, Kafka, Bitbucket
@@ -76,7 +77,7 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 
 ## Canonical package ownership
 
-| Package | Sole responsibility | State through Milestone 01 |
+| Package | Sole responsibility | State through Milestone 11 |
 |---|---|---|
 | `app.py` | Construct the FastMCP application and register M00 components | IMPLEMENTED |
 | `server.py` | Start the approved stdio transport | IMPLEMENTED |
@@ -84,23 +85,23 @@ results. MCP tools may not execute unrestricted shell commands or SQL.
 | `mcp/tools/system.py` | `hub_health` and `hub_capabilities` thin tools | IMPLEMENTED |
 | `mcp/resources.py` | Read-only hub status resource | IMPLEMENTED |
 | `mcp/prompts.py` | Reusable M00 orientation prompt | IMPLEMENTED |
-| `cli/` | Typer commands and Rich presentation | M00 system and M01 local setup/configuration commands implemented |
-| `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for M01 local configuration |
-| `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for M01 local credential handling; provider OAuth is not implemented |
-| `core/` | Stable types, results, capability declarations, policy boundaries | minimal M00 subset implemented |
-| `providers/` | Provider-neutral contracts, descriptors, and registry | SCAFFOLDED |
-| `adapters/` | One implementation boundary per supported provider | SCAFFOLDED |
-| `repositories/` | Local/remote repository registration and discovery | SCAFFOLDED |
-| `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | SCAFFOLDED |
-| `planning/` | Ticket analysis, impact, scenarios, and coverage plans | SCAFFOLDED |
-| `suites/` | Approved executable-suite registry | SCAFFOLDED |
-| `workflows/` | Approved workflow discovery, validation, planning, and state | SCAFFOLDED |
-| `runners/` | Bounded approved-process execution and normalized results | SCAFFOLDED |
-| `verification/` | Registered deterministic assertions and correlation | SCAFFOLDED |
-| `evidence/` | Redacted evidence collection, manifests, rendering, publishing | SCAFFOLDED |
-| `release/` | Deterministic coverage and risk facts; never automatic sign-off | SCAFFOLDED |
-| `storage/` | Local persistence abstractions and migrations | SCAFFOLDED |
-| `security/` | Path/URL/process/SQL policy and secret detection | SCAFFOLDED |
+| `cli/` | Typer commands and Rich presentation | setup, doctor, profiles, integrations, repositories, workflows list, and client install are IMPLEMENTED |
+| `config/` | Versioned non-secret settings, profiles, validation, migration, and persistence | IMPLEMENTED for local configuration and repository fields |
+| `auth/` | Scoped credential references, approved stores, lifecycle metadata, and redaction | IMPLEMENTED for keyring and environment references; interactive provider OAuth is not implemented |
+| `core/` | Stable types, results, capability declarations, policy boundaries | contracts, results, errors, context, policies, and approvals are IMPLEMENTED |
+| `providers/` | Provider-neutral contracts, descriptors, and registry | IMPLEMENTED as contracts. Vendor I/O lives in adapters |
+| `adapters/` | One implementation boundary per supported provider | Git, Jira, Confluence, Google Docs, Bruno/Newman, PostgreSQL, MySQL, Kafka observation, CI/CD, and test management are IMPLEMENTED and OFFLINE_VERIFIED |
+| `repositories/` | Local/remote repository registration and discovery | IMPLEMENTED for registration, discovery, validation, and local Git metadata; `plan_index` does not read files; `execute_index` does |
+| `knowledge/` | Indexing, grounded retrieval, symbols, dependencies, freshness | IMPLEMENTED for local checkouts and supplied documents; OFFLINE_VERIFIED |
+| `planning/` | Ticket analysis, impact, scenarios, and coverage plans | IMPLEMENTED for read-only ticket analysis and non-executable drafts |
+| `suites/` | Approved executable-suite registry | IMPLEMENTED for registered Bruno and Postman suites; OFFLINE_VERIFIED |
+| `workflows/` | Approved workflow discovery, validation, planning, and state | IMPLEMENTED for registered API and E2E workflows; OFFLINE_VERIFIED |
+| `runners/` | Bounded approved-process execution and normalized results | IMPLEMENTED for registered argument lists; OFFLINE_VERIFIED with fixtures |
+| `verification/` | Registered deterministic assertions and correlation | IMPLEMENTED; OFFLINE_VERIFIED with fixture sessions and an in-memory Kafka observer |
+| `evidence/` | Redacted evidence collection, manifests, rendering, publishing | IMPLEMENTED; OFFLINE_VERIFIED from stored executions |
+| `release/` | Deterministic coverage and risk facts; never automatic sign-off | IMPLEMENTED; a recommendation cannot approve a release |
+| `storage/` | Local persistence abstractions and migrations | index, execution, and artifact stores are IMPLEMENTED; generic migration module remains scaffolded |
+| `security/` | Path/URL/process/SQL policy and secret detection | path allowlist, process policy, SQL policy, and distribution secret scanning are IMPLEMENTED |
 
 The exact file inventory and ownership metadata are recorded in
 [`../implementation/SCAFFOLD_MANIFEST.md`](../implementation/SCAFFOLD_MANIFEST.md).
@@ -120,9 +121,12 @@ message templates requested by a client. Tools are explicitly invoked operations
 with typed inputs and outputs. None of these M00 primitives diagnose external
 providers.
 
-No module under `adapters/` or future domain services is imported during server
-construction. The registry owns the allowlist so merely creating a future file
-cannot expose a tool.
+Milestone 00 registers only `hub_health`, `hub_capabilities`, `qa-hub://status`,
+and `qa_hub_orientation`. Later milestones add read-only providers, knowledge
+tools, registered API execution, registered database, Kafka, and E2E
+verification, registered CI inspection, test-management mapping, and evidence
+and release tools. The registry owns the allowlist. Milestone 11 packages that
+server. It does not add a provider and it does not publish the package.
 
 ## Configuration and profile model
 
@@ -161,8 +165,11 @@ configuration of an already-running execution.
 The interactive `qa-mcp setup` wizard and the `profiles`, `integrations`, `config`,
 and `clients` CLI groups operate on local configuration. Integration diagnostics
 validate connection configuration and credential presence only. They report
-provider network connectivity as `NOT_IMPLEMENTED` until the owning adapter
-milestone supplies a real, authorized diagnostic.
+provider network connectivity as `NOT_IMPLEMENTED`. Milestone 03 read tools call
+Git and Jira only when a profile credential is configured. Milestone 04 read
+tools call Confluence and Google Docs the same way, and Google Docs can refresh
+an access token. `qa-mcp doctor` and `integrations test` still do not make those
+calls.
 
 Credential values may be stored in an available OS keyring backend or supplied by
 an explicitly named environment variable. YAML contains only the store kind and
@@ -170,9 +177,10 @@ opaque reference. Keyring failures are actionable errors and never trigger a
 plaintext fallback. OAuth models, state/PKCE helpers, and lifecycle metadata are
 local infrastructure only; no provider OAuth flow is claimed in M01.
 
-Client generation emits either Codex TOML (`mcp_servers.qa_hub`) or native VS Code
-JSON (`servers.qa_hub`, type `stdio`). Generated launch configuration contains no
-provider credential values. Installation preserves unrelated client settings,
+Client generation emits Codex TOML (`mcp_servers.qa_hub`), Cursor JSON
+(`mcpServers.qa_hub`, type `stdio`), or native VS Code JSON (`servers.qa_hub`,
+type `stdio`). Generated launch configuration contains no provider credential
+values. Installation preserves unrelated client settings,
 backs up before replacement, and requires `--force` for a conflicting `qa_hub`
 entry; generation itself is side-effect free.
 
@@ -233,16 +241,19 @@ tested through injected paths is `OFFLINE_VERIFIED (simulated)`, never
 
 M01 adds deterministic schema/round-trip/precedence tests, profile and credential
 isolation tests, migration rollback and atomic-write tests, redaction and unavailable
-keyring tests, parsed Codex TOML/native VS Code JSON tests, and mocked-terminal CLI
-wizard tests. Mocked keyring tests and simulated platform paths are offline evidence;
+keyring tests, parsed Codex TOML, Cursor JSON, and native VS Code JSON tests, and
+mocked-terminal CLI wizard tests. Mocked keyring tests and simulated platform paths are offline evidence;
 they do not establish a live OS credential backend or provider connection.
 
 ## Milestone boundary
 
 Milestone 01 ends at secure local configuration and credential readiness. It does
 not create provider clients, make network requests, execute suites, query databases,
-consume Kafka, or mutate an external system. Milestones 02–11 remain scaffolded or
-`NOT_IMPLEMENTED`. A future milestone may move a file from `SCAFFOLDED` to
+consume Kafka, or mutate an external system. Later milestones add read-only
+providers, local knowledge, registered API execution, registered database
+and Kafka observation, registered CI inspection, and canonical test-case
+import, and evidence collected from checks that ran. A release recommendation
+does not approve a release. Community release remains `NOT_IMPLEMENTED`. A milestone may move a file from `SCAFFOLDED` to
 `IMPLEMENTED` only when its requirements, tests, security policy, and progress
 records change together.
 

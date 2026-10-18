@@ -1,11 +1,16 @@
 # Provider documentation index
 
 The QA Engineering MCP Hub recognizes only the provider families listed here.
-Through Milestone 01 every provider integration is **NOT_IMPLEMENTED**. M01 can
-validate connection identities and credential references locally, but the Python
-adapter files remain ownership scaffolds: they contain no network clients,
-provider OAuth flows, subprocess runners, database sessions, Kafka consumers, or
-publication logic.
+Milestone 02 publishes typed contracts and a registry for every family below.
+GitHub, GitLab, Bitbucket, Jira, Confluence, and Google Docs have read-only
+adapters marked **OFFLINE_VERIFIED**. Bruno and Postman registered-suite execution
+is **OFFLINE_VERIFIED** with local fixtures. PostgreSQL, MySQL, and Kafka
+registered checks are **OFFLINE_VERIFIED** with fixture sessions and an in-memory
+observer. Bitbucket Pipelines, GitHub Actions, and Jenkins reads are
+**OFFLINE_VERIFIED** with mocked HTTP. Xray, TestRail, CSV/XLSX, and Google
+Sheets mapping is **OFFLINE_VERIFIED**. Their generic `read_case` port still
+returns a contract stub. No live database, Kafka, CI, or test-management system
+was contacted. Evidence publication to those systems was not performed.
 
 Documentation examples use the versioned M01 configuration shape, contain only
 credential references, and remain disabled. A schema-valid local connection is not
@@ -20,31 +25,31 @@ evidence of provider connectivity.
 - **LIVE_VERIFIED**: a separately authorized sandbox check has passed.
 - **BLOCKED**: validation could not proceed and the reason is recorded.
 
-No provider on this page is currently OFFLINE_VERIFIED or LIVE_VERIFIED. A local
-credential-presence check does not advance provider verification status.
+The table above is the status source. No provider on this page is
+`LIVE_VERIFIED`.
 
 ## Supported provider scope
 
 | Category | Provider | Owning milestone | Status | Documentation |
 |---|---|---:|---|---|
-| Git | GitHub | 03 | NOT_IMPLEMENTED | [GitHub](git/github.md) |
-| Git | GitLab | 03 | NOT_IMPLEMENTED | [GitLab](git/gitlab.md) |
-| Git | Bitbucket | 03 | NOT_IMPLEMENTED | [Bitbucket](git/bitbucket.md) |
-| Tickets | Jira | 03 | NOT_IMPLEMENTED | [Jira](tickets/jira.md) |
-| Documentation | Confluence | 04 | NOT_IMPLEMENTED | [Confluence](documentation/confluence.md) |
-| Documentation | Google Docs | 04 | NOT_IMPLEMENTED | [Google Docs](documentation/google-docs.md) |
-| API automation | Bruno | 06 | NOT_IMPLEMENTED | [Bruno](api-automation/bruno.md) |
-| API automation | Postman | 06 | NOT_IMPLEMENTED | [Postman](api-automation/postman.md) |
-| Database | PostgreSQL | 07 | NOT_IMPLEMENTED | [PostgreSQL](database/postgresql.md) |
-| Database | MySQL | 07 | NOT_IMPLEMENTED | [MySQL](database/mysql.md) |
-| Streaming | Kafka | 07 | NOT_IMPLEMENTED | [Kafka](streaming/kafka.md) |
-| CI/CD | Bitbucket Pipelines | 08 | NOT_IMPLEMENTED | [Bitbucket Pipelines](cicd/bitbucket-pipelines.md) |
-| CI/CD | GitHub Actions | 08 | NOT_IMPLEMENTED | [GitHub Actions](cicd/github-actions.md) |
-| CI/CD | Jenkins | 08 | NOT_IMPLEMENTED | [Jenkins](cicd/jenkins.md) |
-| Test management | Xray | 09 | NOT_IMPLEMENTED | [Xray](test-management/xray.md) |
-| Test management | TestRail | 09 | NOT_IMPLEMENTED | [TestRail](test-management/testrail.md) |
-| Test management | CSV/XLSX spreadsheet | 09 | NOT_IMPLEMENTED | [Spreadsheet](test-management/spreadsheet.md) |
-| Test management | Google Sheets | 09 | NOT_IMPLEMENTED | [Google Sheets](test-management/google-sheets.md) |
+| Git | GitHub | 03 | OFFLINE_VERIFIED | [GitHub](git/github.md) |
+| Git | GitLab | 03 | OFFLINE_VERIFIED | [GitLab](git/gitlab.md) |
+| Git | Bitbucket | 03 | OFFLINE_VERIFIED | [Bitbucket](git/bitbucket.md) |
+| Tickets | Jira | 03 | OFFLINE_VERIFIED | [Jira](tickets/jira.md) |
+| Documentation | Confluence | 04 | OFFLINE_VERIFIED | [Confluence](documentation/confluence.md) |
+| Documentation | Google Docs | 04 | OFFLINE_VERIFIED | [Google Docs](documentation/google-docs.md) |
+| API automation | Bruno | 06 | OFFLINE_VERIFIED | [Bruno](api-automation/bruno.md) |
+| API automation | Postman | 06 | OFFLINE_VERIFIED | [Postman](api-automation/postman.md) |
+| Database | PostgreSQL | 07 | OFFLINE_VERIFIED | [PostgreSQL](database/postgresql.md) |
+| Database | MySQL | 07 | OFFLINE_VERIFIED | [MySQL](database/mysql.md) |
+| Streaming | Kafka | 07 | OFFLINE_VERIFIED | [Kafka](streaming/kafka.md) |
+| CI/CD | Bitbucket Pipelines | 08 | OFFLINE_VERIFIED | [Bitbucket Pipelines](cicd/bitbucket-pipelines.md) |
+| CI/CD | GitHub Actions | 08 | OFFLINE_VERIFIED | [GitHub Actions](cicd/github-actions.md) |
+| CI/CD | Jenkins | 08 | OFFLINE_VERIFIED | [Jenkins](cicd/jenkins.md) |
+| Test management | Xray | 09 | OFFLINE_VERIFIED | [Xray](test-management/xray.md) |
+| Test management | TestRail | 09 | OFFLINE_VERIFIED | [TestRail](test-management/testrail.md) |
+| Test management | CSV/XLSX spreadsheet | 09 | OFFLINE_VERIFIED | [Spreadsheet](test-management/spreadsheet.md) |
+| Test management | Google Sheets | 09 | OFFLINE_VERIFIED | [Google Sheets](test-management/google-sheets.md) |
 
 ## Documentation and verification policy
 

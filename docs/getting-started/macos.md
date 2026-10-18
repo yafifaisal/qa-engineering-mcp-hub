@@ -1,8 +1,9 @@
 # macOS setup
 
-Milestones 00 and 01 are developed locally on macOS. A statement that either is
-`OFFLINE_VERIFIED` still requires recorded passing commands in the
-[progress document](../implementation/PROGRESS.md); file existence is not proof.
+Local quality gates for Milestone 11 were executed on macOS. That verifies the
+package, tests, and wheel install on this machine. It does not verify a hosted
+macOS runner, and it does not make any provider LIVE_VERIFIED. Consult the
+[progress record](../implementation/PROGRESS.md).
 
 ## Prerequisites
 
@@ -26,7 +27,8 @@ uv run qa-mcp doctor
 uv run qa-mcp capabilities
 uv run qa-mcp setup
 uv run qa-mcp config validate
-uv run pytest -q
+uv run qa-mcp workflows list
+uv run python scripts/build_package.py
 ```
 
 The native user configuration directory is

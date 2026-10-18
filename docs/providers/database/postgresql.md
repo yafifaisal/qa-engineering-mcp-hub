@@ -1,12 +1,12 @@
 # PostgreSQL provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **07**  
-> Verification: documentation scaffold only; no provider request or runner execution has occurred.
+> Verification: registered read-only assertions are tested with fixture sessions. No live PostgreSQL server was contacted, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-PostgreSQL is a supported database verification target. The future adapter will execute only registered, parameterized, read-only assertions using a database account that is read-only at the server.
+PostgreSQL checks run only from a registered assertion. The adapter applies `default_transaction_read_only`, a read-only transaction, and `statement_timeout`. A live driver is not bundled. `QA_MCP_LIVE_DATABASES=1` still refuses to invent a successful connection.
 
 ## 2. Supported editions
 
@@ -18,9 +18,7 @@ Self-managed and cloud-managed services can differ in TLS, identity authenticati
 
 ## 4. Supported API capabilities
 
-Planned capability is bounded execution of pre-reviewed SELECT-style assertions with bound parameters, row caps, statement timeouts, and normalized values. Arbitrary SQL is out of scope.
-
-These are planned capabilities, not current support.
+Registered SELECT statements use bound parameters, an allowlisted table, a row cap, and a statement timeout. The configured login must already be read-only. The hub does not grant that role.
 
 ## 5. Authentication methods
 
@@ -99,19 +97,19 @@ Use parameter binding, reviewed query files, read-only accounts, network allowli
 
 Check DNS/port, TLS root and hostname, credential expiry, database/schema grants, replica state, statement timeout, connection cap, and driver compatibility. Requires environment verification.
 
-Because the provider is not implemented, current inability to connect or execute is expected.
+A live server was not contacted. Connection failures in fixture tests are reported separately from assertion mismatches.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/database/postgresql.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/database/postgresql.py` — IMPLEMENTED session protections. No live driver is bundled.
+- `src/qa_mcp_hub/security/sql_policy.py` — IMPLEMENTED SELECT-only policy.
+- `src/qa_mcp_hub/providers/registry.py` — catalog status OFFLINE_VERIFIED. The generic `read_schema` port stays unavailable.
 
 ## 19. Related tests
 
-Planned policy rejection, parameter binding, read-only transaction, row cap, timeout, type normalization, redaction, and opt-in read-only UAT tests.
+`tests/unit/test_verification_m07.py` covers parameter binding, injection rejection, read-only session statements, timeout, and connection failure with a fixture session.
 
-No test currently validates a real provider integration.
+No test opens a live PostgreSQL connection.
 
 ## 20. Current implementation status
 

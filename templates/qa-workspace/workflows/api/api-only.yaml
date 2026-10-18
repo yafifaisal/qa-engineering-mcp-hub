@@ -1,0 +1,15 @@
+schema_version: 1
+id: example-api-workflow
+name: Example API workflow
+description: Disabled example. Database and Kafka checks are not part of this workflow.
+implementation_status: SCAFFOLDED
+enabled: false
+approved: false
+required_capabilities: [api_automation]
+evidence_policy: api-only
+steps:
+  - id: execute-api-suite
+    kind: api_suite
+    target: example-api-smoke
+    depends_on: []
+    assertion_ids: [status-ok]

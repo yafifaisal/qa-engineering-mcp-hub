@@ -1,5 +1,6 @@
 # Postman suites
 
-Future Milestone 06 ownership. Store reviewed Postman collections here or
-reference an approved path from `suites.yaml`. Do not store environment secrets.
-The Postman adapter is NOT_IMPLEMENTED in Milestone 00.
+Store reviewed Postman collection v2 JSON here or reference an approved path
+from `suites.yaml`. Newman 6.2.2 runs only that registered file. Do not store
+environment secrets in the collection. Postman CLI and collection v3 are not
+implemented.

@@ -1,0 +1,4 @@
+ID,Version,Scenario,Priority,Test Case,Precondition,Steps,Expected Result,Result,Notes,Evidence,Automation Suite
+BILL-1,1,Checkout,High,Pay an order,Card on file,"Open the page
+Enter the amount","Payment accepted
+Receipt shown",Untested,café,screenshot,billing-bruno

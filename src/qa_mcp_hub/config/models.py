@@ -4,10 +4,18 @@ Milestone 01 configuration stores identities, paths, preferences, and opaque
 credential references. It cannot represent a plaintext credential. Provider
 connections are global records referenced by profiles so duplicate provider kinds
 remain valid while connection identity stays unambiguous.
+
+Purpose: define the versioned user-configuration contract.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: config.models
+Dependencies: Pydantic and the authentication reference models.
+Expected tests: schema validation, isolation, and unknown-provider rejection.
 """
 
 import re
 from enum import StrEnum
+from pathlib import PurePosixPath
 from typing import Annotated, Literal, Self
 from urllib.parse import urlsplit
 
@@ -15,9 +23,10 @@ from pydantic import BaseModel, ConfigDict, Field, StringConstraints, model_vali
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from qa_mcp_hub.auth.models import AuthKind, CredentialReference
+from qa_mcp_hub.core.enums import IndexingPermission
 from qa_mcp_hub.core.models import ProviderKind
 
-CURRENT_SCHEMA_VERSION = 1
+CURRENT_SCHEMA_VERSION: Literal[1] = 1
 IDENTIFIER_PATTERN = r"^[a-z0-9][a-z0-9._-]*$"
 ENVIRONMENT_NAME_PATTERN = r"^[A-Z][A-Z0-9_]*$"
 
@@ -91,6 +100,52 @@ class ExecutionOverrides(BaseModel):
     allow_mutations: bool | None = None
 
 
+_GIT_TICKET_PROVIDERS = frozenset(
+    {
+        ProviderKind.github,
+        ProviderKind.gitlab,
+        ProviderKind.bitbucket,
+        ProviderKind.jira,
+        ProviderKind.confluence,
+    }
+)
+
+
+def _validate_provider_deployment(connection: "ConnectionConfig") -> None:
+    """Require an explicit API host for self-managed Git and Jira connections."""
+    if connection.provider is ProviderKind.google_docs:
+        if connection.base_url is None:
+            return
+        host = urlsplit(connection.base_url).hostname
+        normalized = (host or "").lower().rstrip(".")
+        if normalized != "docs.googleapis.com":
+            raise ValueError("google docs base_url must use docs.googleapis.com")
+        return
+    if connection.provider is ProviderKind.confluence and connection.base_url is None:
+        raise ValueError("confluence connection requires base_url")
+    if connection.provider not in _GIT_TICKET_PROVIDERS:
+        return
+    if (
+        connection.deployment is DeploymentKind.SELF_MANAGED
+        and connection.base_url is None
+    ):
+        raise ValueError("self-managed connection requires base_url")
+    if connection.base_url is None:
+        return
+    host = urlsplit(connection.base_url).hostname
+    if host is None:
+        return
+    normalized = host.lower().rstrip(".")
+    if connection.provider is ProviderKind.bitbucket:
+        cloud_host = normalized == "api.bitbucket.org"
+        if connection.deployment is DeploymentKind.CLOUD and not cloud_host:
+            raise ValueError("bitbucket cloud base_url must use api.bitbucket.org")
+        if connection.deployment is DeploymentKind.SELF_MANAGED and cloud_host:
+            raise ValueError(
+                "bitbucket self-managed base_url must not use the cloud host"
+            )
+
+
 class ConnectionConfig(BaseModel):
     """A provider endpoint and opaque credential reference, never a secret."""
 
@@ -114,6 +169,7 @@ class ConnectionConfig(BaseModel):
         if self.credential is not None and self.credential.kind is not self.auth_kind:
             raise ValueError("credential authentication kind does not match connection")
         if self.base_url is None:
+            _validate_provider_deployment(self)
             return self
         endpoint = urlsplit(self.base_url)
         try:
@@ -130,6 +186,7 @@ class ConnectionConfig(BaseModel):
             raise ValueError(
                 "base_url must be an HTTPS URL without credentials or fragment"
             )
+        _validate_provider_deployment(self)
         return self
 
     @property
@@ -147,8 +204,27 @@ class ConnectionConfig(BaseModel):
         return f"{normalized}:{endpoint.port}"
 
 
+def _reject_unsafe_pattern(value: str) -> None:
+    normalized = value.replace("\\", "/")
+    pure = PurePosixPath(normalized)
+    if (
+        pure.is_absolute()
+        or ".." in pure.parts
+        or "\x00" in value
+        or re.match(r"^[A-Za-z]:", value)
+    ):
+        raise ValueError("repository pattern must be a relative path")
+
+
+def _reject_unsafe_remote(value: str) -> None:
+    if any(character in value for character in ("@", " ", "\\", "\x00")):
+        raise ValueError("remote repository reference is invalid")
+    if ".." in value.split("/"):
+        raise ValueError("remote repository reference is invalid")
+
+
 class RepositoryReference(BaseModel):
-    """A registered local repository reference; it performs no repository access."""
+    """A local checkout, a remote definition, or both. Registration does not index."""
 
     model_config = ConfigDict(extra="forbid", frozen=True, str_strip_whitespace=True)
 
@@ -156,14 +232,29 @@ class RepositoryReference(BaseModel):
     display_name: NonEmptyString
     path: NonEmptyString | None = None
     path_env: EnvironmentName | None = None
+    remote: NonEmptyString | None = None
     connection_id: Identifier | None = None
     default_branch: NonEmptyString = "main"
+    include: tuple[NonEmptyString, ...] = ()
+    exclude: tuple[NonEmptyString, ...] = ()
+    indexing: IndexingPermission = IndexingPermission.none
     enabled: bool = True
 
     @model_validator(mode="after")
-    def exactly_one_path_source(self) -> Self:
-        if (self.path is None) == (self.path_env is None):
-            raise ValueError("repository requires exactly one of path or path_env")
+    def one_unambiguous_source(self) -> Self:
+        has_path = self.path is not None
+        has_env = self.path_env is not None
+        has_remote = self.remote is not None
+        if has_path and has_env:
+            raise ValueError("repository source is ambiguous")
+        if not has_path and not has_env and not has_remote:
+            raise ValueError("repository requires a local path or a remote definition")
+        if has_remote and self.connection_id is None:
+            raise ValueError("remote repository requires a connection reference")
+        for pattern in (*self.include, *self.exclude):
+            _reject_unsafe_pattern(pattern)
+        if self.remote is not None:
+            _reject_unsafe_remote(self.remote)
         return self
 
 
@@ -221,6 +312,7 @@ class HubConfig(BaseModel):
         workspace_by_id = _unique_by_id(self.workspaces, "workspace")
 
         assigned_connection: dict[str, str] = {}
+        assigned_repository: dict[str, str] = {}
         for profile_name, profile in self.profiles.items():
             if not re.fullmatch(IDENTIFIER_PATTERN, profile_name):
                 raise ValueError("profile name is invalid")
@@ -241,6 +333,12 @@ class HubConfig(BaseModel):
                 )
                 if previous_profile != profile_name:
                     raise ValueError("connection cannot be shared across profiles")
+            for repository_id in profile.repository_ids:
+                previous_repository = assigned_repository.setdefault(
+                    repository_id, profile_name
+                )
+                if previous_repository != profile_name:
+                    raise ValueError("repository cannot be shared across profiles")
 
         for repository in self.repositories:
             if (
@@ -248,6 +346,11 @@ class HubConfig(BaseModel):
                 and repository.connection_id not in connection_by_id
             ):
                 raise ValueError("repository references an unknown connection")
+            if repository.connection_id is not None:
+                owner = assigned_repository.get(repository.id)
+                connection_owner = assigned_connection.get(repository.connection_id)
+                if owner is None or owner != connection_owner:
+                    raise ValueError("repository connection crosses profiles")
 
         for connection in self.connections:
             credential = connection.credential

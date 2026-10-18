@@ -2,6 +2,12 @@ name: Release build
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Type APPROVE_PUBLIC_RELEASE to publish. Any other value only builds.
+        required: true
+        default: build-only
+        type: string
   push:
     tags: ["v*"]
 
@@ -17,8 +23,38 @@ jobs:
         with:
           python-version: "3.12"
       - run: uv sync --frozen
-      - run: uv run python scripts/validate.py
+      - run: uv lock --check
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy src
+      - run: uv run pytest -q
+      - run: uv run python scripts/structure_audit.py
+      - run: uv run python scripts/build_package.py --query-osv
       - uses: actions/upload-artifact@v6
         with:
           name: distributions
-          path: dist/*
+          path: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/sbom.cdx.json
+            dist/vulnerability-report.json
+            dist/provenance.json
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.publish == 'APPROVE_PUBLIC_RELEASE'
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: distributions
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
+          attestations: true

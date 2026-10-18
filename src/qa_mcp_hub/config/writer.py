@@ -1,4 +1,12 @@
-"""Atomic, permission-restricted persistence for non-secret configuration."""
+"""Atomic, permission-restricted persistence for non-secret configuration.
+
+Purpose: replace configuration files atomically with owner-only permissions.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: config.writer
+Dependencies: pathlib, os, and PyYAML.
+Expected tests: round-trip persistence, permissions, and temporary-file cleanup.
+"""
 
 import os
 import tempfile

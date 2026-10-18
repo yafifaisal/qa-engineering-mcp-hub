@@ -1,3 +1,19 @@
 schema_version: 1
 implementation_status: SCAFFOLDED
-suites: []
+suites:
+  - id: example-api-smoke
+    runner: bruno
+    path: suites/bruno/example
+    environment: local
+    enabled: false
+    version: "1"
+    allowed_operation: read
+    assertion_ids: [status-ok]
+  - id: example-postman-smoke
+    runner: postman
+    path: suites/postman/example.postman_collection.json
+    environment: local
+    enabled: false
+    version: "1"
+    allowed_operation: read
+    assertion_ids: [status-ok]

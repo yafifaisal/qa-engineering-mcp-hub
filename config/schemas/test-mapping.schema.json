@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-mcp-hub.example/schemas/test-mapping.schema.json",
+  "title": "Test-management field mapping",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "provider",
+    "edition",
+    "format",
+    "allow_publish",
+    "step_format",
+    "columns",
+    "priorities",
+    "results"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"},
+    "provider": {"type": "string", "minLength": 1},
+    "edition": {"type": "string", "minLength": 1},
+    "format": {"enum": ["api", "csv", "xlsx"]},
+    "source": {"type": "string"},
+    "connection_id": {"type": "string"},
+    "spreadsheet_id": {"type": "string"},
+    "project_id": {"type": "string"},
+    "base_url": {"type": "string"},
+    "allow_publish": {"type": "boolean"},
+    "step_format": {"enum": ["multiline", "delimiter", "blocks"]},
+    "columns": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "test_case", "steps", "expected_result", "priority"],
+      "properties": {
+        "source_id": {"type": "string", "minLength": 1},
+        "test_case": {"type": "string", "minLength": 1},
+        "steps": {"type": "string", "minLength": 1},
+        "expected_result": {"type": "string", "minLength": 1},
+        "priority": {"type": "string", "minLength": 1},
+        "scenario": {"type": "string"},
+        "precondition": {"type": "string"},
+        "result": {"type": "string"},
+        "notes": {"type": "string"},
+        "evidence": {"type": "string"},
+        "version": {"type": "string"},
+        "automation_suite_id": {"type": "string"}
+      }
+    },
+    "priorities": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"enum": ["Critical", "High", "Medium", "Low"]}
+    },
+    "results": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"enum": ["Passed", "Failed", "Blocked", "Untested", "Retest"]}
+    }
+  }
+}

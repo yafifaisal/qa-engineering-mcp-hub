@@ -1,5 +1,7 @@
 """Integration tests for the Typer command surface."""
 
+from pathlib import Path
+
 import pytest
 from typer.testing import CliRunner
 
@@ -13,6 +15,18 @@ def test_help_command() -> None:
     assert result.exit_code == 0
     assert "QA Engineering MCP Hub" in result.output
     assert "serve" in result.output
+    for name in (
+        "setup",
+        "doctor",
+        "profiles",
+        "integrations",
+        "config",
+        "clients",
+        "repositories",
+        "workflows",
+        "capabilities",
+    ):
+        assert name in result.output
 
 
 def test_standalone_version_option() -> None:
@@ -21,11 +35,21 @@ def test_standalone_version_option() -> None:
     assert "0.1.0" in result.output
 
 
-def test_doctor_command() -> None:
+def test_doctor_command(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "qa_mcp_hub.cli.doctor.default_config_path",
+        lambda: tmp_path / "config.yaml",
+    )
+    monkeypatch.setattr(
+        "qa_mcp_hub.cli.doctor.default_config_dir",
+        lambda: tmp_path,
+    )
     result = runner.invoke(app, ["doctor"])
     assert result.exit_code == 0
     assert "not implemented" in result.output
     assert "Transport: stdio" in result.output
+    assert "User configuration: absent" in result.output
+    assert "Provider network connectivity: NOT_IMPLEMENTED" in result.output
 
 
 def test_doctor_reports_invalid_configuration(monkeypatch: pytest.MonkeyPatch) -> None:

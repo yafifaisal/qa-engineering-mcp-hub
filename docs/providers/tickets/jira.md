@@ -1,8 +1,8 @@
 # Jira provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED** read-only Cloud and Data Center adapter  
 > Owning milestone: **03**  
-> Verification: documentation scaffold only; no provider request has been executed.
+> Verification: mocked HTTP tests. No live Jira request has been executed.
 
 ## 1. Provider overview
 
@@ -20,7 +20,10 @@ Cloud and Data Center differ in REST roots, API versions, user identifiers, auth
 
 Planned reads include issue lookup, constrained search, selected fields, comments, and linked issues needed for QA analysis. Field schemas and endpoint coverage require verification.
 
-These are planned capabilities, not current support.
+Cloud search uses POST `/rest/api/3/search/jql`. Self-managed search uses POST
+`/rest/api/2/search`. ADF and wiki markup become plain text. A denied comment
+request is reported while the issue body can still be returned. Mocked tests are
+OFFLINE_VERIFIED. Live calls are not claimed.
 
 ## 5. Authentication methods
 

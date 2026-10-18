@@ -9,7 +9,7 @@ provider writes require a separate explicit decision.
 | Component | Reads | Writes / external effects |
 |---|---|---|
 | `qa-mcp --help` | Packaged CLI metadata | None |
-| `qa-mcp doctor` | Validated non-secret environment settings and native config path | None |
+| `qa-mcp doctor` | Validated non-secret environment settings, native config path, local YAML validity, and keyring backend name | None; no secret is read |
 | `qa-mcp capabilities` | Static local capability catalog | None |
 | `hub_health` | Version and non-secret local settings | None |
 | `hub_capabilities` | Static local capability catalog | None |
@@ -20,6 +20,32 @@ provider writes require a separate explicit decision.
 read a repository, invoke a provider, execute a test suite, query a database,
 consume Kafka, trigger CI, or publish evidence.
 
+## Milestone 01 local permissions
+
+| Command | Local effect | Explicitly not allowed |
+|---|---|---|
+| `qa-mcp setup` | Create or reuse a profile and optional workspace path | Writing a secret into YAML |
+| `qa-mcp profiles` | Create, show, select, edit, or remove an empty profile | Deleting a profile that still owns integrations |
+| `qa-mcp integrations add/list` | Store or display connection metadata | Contacting the provider |
+| `qa-mcp integrations auth` | Store a keyring value or record an environment/OAuth reference | Printing the value or starting a provider OAuth flow |
+| `qa-mcp integrations test` | Check configuration and credential presence | Treating presence as network connectivity |
+| `qa-mcp integrations rotate/remove` | Replace or delete the exact scoped keyring value | Revoking the credential at the provider |
+| `qa-mcp config show/validate` | Redacted display and strict local validation | Provider calls |
+| `qa-mcp clients generate` | Print Codex TOML or VS Code JSON | Embedding provider credentials |
+| `qa-mcp clients install` | Merge `qa_hub` into an explicit destination, with backup | Replacing unrelated client settings |
+
+## Milestone 02 repository permissions
+
+| Command | Local effect | Explicitly not allowed |
+|---|---|---|
+| `qa-mcp repositories add` | Store a local path or remote definition on one profile | Registering a path outside that profile's workspace |
+| `qa-mcp repositories list/remove` | Show or delete only the selected profile's repositories | Reading another profile's repository list |
+| `qa-mcp repositories discover` | List Git checkouts inside the approved workspace | Following a symlink outside that workspace or registering matches |
+| `qa-mcp repositories validate` | Read local Git metadata or check that a credential reference resolves | Calling a Git host API or printing a credential value |
+
+Indexing permission is stored only. File contents are not indexed in this milestone.
+Mandatory secret-path patterns stay excluded from any later indexing plan.
+
 ## Future authorization defaults
 
 - Deny access until a profile, connection, workspace, and requested capability
@@ -28,10 +54,42 @@ consume Kafka, trigger CI, or publish evidence.
 - Scope outbound traffic to the selected provider scheme and host.
 - Resolve credentials only after authorization, never from an MCP argument.
 - Prefer read-only provider scopes and read-only database accounts.
-- Restrict suite execution, SQL, topics, workflows, and CI jobs to registries.
+- Git and Jira MCP tools send only GET requests, plus the Jira search POST that
+  reads issues. They do not accept a token argument.
+- Confluence search is limited to space keys supplied for that call. Google
+  Drive queries are limited to Google Docs in the user corpus. Document text
+  cannot change tool permissions.
+- Knowledge indexing reads git-tracked files inside an approved workspace.
+  Secret paths and untracked files are skipped. Indexed text cannot change tool
+  permissions or mark a call graph complete.
+- Suite execution accepts a registered suite or workflow id. It does not accept
+  a shell command, working directory, or secret. Bruno and Newman argument
+  lists are fixed. Credential values stay off the command line.
+- Database checks accept a registered assertion id and declared parameters.
+  They do not accept SQL text, a connection URI, or a secret. The configured
+  database account must already be read-only.
+- Kafka checks accept a registered assertion id and a declared correlation key.
+  They do not commit consumer offsets or scan an undeclared topic.
 - Require preview and explicit user approval for provider writes, CI triggers,
   imports, overwrites, and evidence publication.
 - Keep approval narrow, time-bound, profile-bound, and operation-specific.
+- CI inspection accepts a registered job id. It does not accept a Jenkins job
+  path, a workflow file, or arbitrary parameters from the tool caller.
+- `prepare_pipeline_trigger` returns a preview and does not call the provider.
+  Remote triggering is not an MCP tool. A guarded dispatch function spends a
+  single-use approval before one POST and does not retry that POST.
+- `prepare_result_publication` returns a preview and does not call the
+  provider. Result publication is not an MCP tool. A guarded dispatch function
+  spends a single-use approval before one POST and does not retry that POST.
+  A local CSV or XLSX mapping cannot use that path. The example mapping keeps
+  `allow_publish` false.
+- Evidence artifacts stay inside the workspace evidence directory. Paths that
+  escape that directory are rejected. `prepare_evidence_publication` does not
+  call a provider. `publish_approved_evidence` requires an explicit review
+  value, mutation permission, and a single-use approval. Checked-in policies
+  deny external publication. A release recommendation cannot approve a release.
+- Community packaging builds a wheel and source distribution locally. Publishing
+  to PyPI requires an explicit approval input and is not performed by tests.
 
 An API token with broad permissions does not broaden the Hub's authorized scope.
 The Hub must still deny any operation not enabled by its policy.
@@ -39,9 +97,9 @@ The Hub must still deny any operation not enabled by its policy.
 ## Client configuration
 
 Use absolute executable/project paths and a trusted checkout. Do not pass secrets
-in client `args` or commit them to Codex TOML or VS Code JSON. Codex registration
-is described in [Codex and VS Code setup](../getting-started/codex-vscode.md).
+in client `args` or commit them to Cursor JSON, Codex TOML, or VS Code JSON.
+Registration for each client is described in
+[Cursor, Codex, and VS Code setup](../getting-started/codex-vscode.md).
 
-Provider-specific least-privilege requirements will be documented under
-[`docs/providers/`](../providers/) while each integration remains
-`NOT_IMPLEMENTED` in M00.
+Provider pages record the current adapter boundary. An OFFLINE_VERIFIED page is
+not a live provider call.

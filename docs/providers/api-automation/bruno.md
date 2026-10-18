@@ -1,8 +1,8 @@
 # Bruno provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **06**  
-> Verification: documentation scaffold only; no provider request or runner execution has occurred.
+> Verification: Bruno CLI 3 flags were checked against the official `bru run` options on 2026-10-18. Tests use a local stand-in process. Installed `bru` was not executed.
 
 ## 1. Provider overview
 
@@ -18,9 +18,9 @@ Execution is primarily local rather than a cloud/self-hosted API split. Any Brun
 
 ## 4. Supported API capabilities
 
-Planned capabilities are discovery of allowlisted suites, execution with a fixed argument vector, bounded output capture, supported reporter parsing, and normalized pass/fail/error records.
+Registered collections can be discovered, executed with the pinned `bru run` argument list, and normalized from the JSON reporter. `--sandbox safe`, `--reporter-json`, `--reporter-skip-all-headers`, `--reporter-skip-body`, `--env`, and `--env-file` are the flags used. `--env-var` is not used.
 
-These are planned capabilities, not current support.
+These checks are OFFLINE_VERIFIED with a stand-in process. An installed Bruno CLI was not executed.
 
 ## 5. Authentication methods
 
@@ -68,7 +68,7 @@ Executable names, installation paths, process termination, quoting, and child-pr
 
 ## 11. MCP tools using this provider
 
-No MCP tool uses Bruno through Milestone 01. Future execution tools may list registered suites, submit an approved run, and retrieve normalized results by generated run ID.
+`list_registered_suites`, `list_workflows`, `explain_workflow`, `submit_test_run`, and `get_test_run` use the registered suite. They do not accept a shell command.
 
 ## 12. Read/write authorization behavior
 

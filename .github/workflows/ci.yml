@@ -26,6 +26,21 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run mypy src
-      - run: uv run pytest -v
+      - run: uv run pytest -q
       - run: uv run python scripts/structure_audit.py
-      - run: uv build --no-sources
+      - run: uv run python scripts/build_package.py
+      - name: Install the built wheel in a clean environment
+        shell: bash
+        run: |
+          set -eu
+          wheel="$(echo dist/*.whl)"
+          uv venv /tmp/qa-mcp-install --python "${{ matrix.python-version }}"
+          uv pip install --python /tmp/qa-mcp-install/bin/python "$wheel" || \
+            uv pip install --python /tmp/qa-mcp-install/Scripts/python.exe "$wheel"
+          if [ -x /tmp/qa-mcp-install/bin/qa-mcp ]; then
+            /tmp/qa-mcp-install/bin/qa-mcp --version
+            uvx --from "$wheel" qa-mcp --version
+          else
+            /tmp/qa-mcp-install/Scripts/qa-mcp.exe --version
+            uvx --from "$wheel" qa-mcp --version
+          fi

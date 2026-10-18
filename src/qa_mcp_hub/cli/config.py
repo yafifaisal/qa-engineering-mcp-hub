@@ -11,7 +11,7 @@ Expected tests: Missing/malformed files, validation, safe output, and exit codes
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, NoReturn
 
 import typer
 import yaml  # type: ignore[import-untyped]
@@ -89,7 +89,7 @@ def safe_yaml(config: HubConfig) -> str:
     )
 
 
-def fail(message: str, *, code: int = 2) -> None:
+def fail(message: str, *, code: int = 2) -> NoReturn:
     """Print one sanitized command error and stop the current Typer command."""
     error_console.print(f"Error: {message}")
     raise typer.Exit(code=code)
@@ -113,7 +113,11 @@ def show_config(
 
 @app.command("validate")
 def validate_config_command(
-    path: Path | None = typer.Option(None, "--config", help="Configuration to validate."),
+    path: Path | None = typer.Option(
+        None,
+        "--config",
+        help="Configuration to validate.",
+    ),
 ) -> None:
     """Strictly parse and validate the current schema without modifying it."""
     selected = selected_config_path(path)

@@ -27,8 +27,28 @@ def test_catalog_distinguishes_future_work() -> None:
     assert "profiles_and_credentials" in catalog.implemented
     assert "interactive_setup" in catalog.implemented
     assert "mcp_client_config_generation" in catalog.implemented
-    assert "github_gitlab_bitbucket" in catalog.planned
-    assert "github_gitlab_bitbucket" not in catalog.implemented
+    assert "search_repository_code" in catalog.implemented
+    assert "analyze_jira_ticket" in catalog.implemented
+    assert "search_documents" in catalog.implemented
+    assert "read_document" in catalog.implemented
+    assert "search_knowledge" in catalog.implemented
+    assert "find_implementation" in catalog.implemented
+    assert "generate_test_scenario_draft" in catalog.implemented
+    assert "list_registered_suites" in catalog.implemented
+    assert "submit_test_run" in catalog.implemented
+    assert "verify_e2e_workflow" in catalog.implemented
+    assert "list_pipeline_runs" in catalog.implemented
+    assert "prepare_pipeline_trigger" in catalog.implemented
+    assert "search_test_cases" in catalog.implemented
+    assert "prepare_result_publication" in catalog.implemented
+    assert "generate_evidence" in catalog.implemented
+    assert "assess_release_readiness" in catalog.implemented
+    assert "community_package" in catalog.implemented
+    assert catalog.planned == ()
+    assert "postgresql_mysql_kafka" not in catalog.planned
+    assert "bitbucket_pipelines_github_actions_jenkins" not in catalog.planned
+    assert "xray_testrail_spreadsheet" not in catalog.planned
+    assert "bruno_postman" not in catalog.planned
 
 
 def test_legacy_core_config_names_resolve_to_canonical_models() -> None:

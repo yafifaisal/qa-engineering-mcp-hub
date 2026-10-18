@@ -1,7 +1,7 @@
 # Threat model
 
-Status: Milestone 00 local stdio scope, with future attack surfaces documented but
-not claimed as implemented.
+Status: Milestone 00 local stdio scope plus Milestone 01 local configuration and
+credential references. Provider calls remain unimplemented.
 
 ## Scope and assets
 
@@ -21,9 +21,10 @@ and Kafka observations, CI/CD controls, test-management records, and evidence.
 MCP client --stdio--> local QA Hub process
                          |
                          +--> process environment / native config path
+                         +--> OS keyring or named environment variable
 
 Future only:
-local process --> credential store --> authorized provider
+local process --> authorized provider
 local process --> allowlisted repository / QA Workspace / evidence storage
 ```
 
@@ -33,20 +34,20 @@ is data, not agent instruction.
 
 ## Threats and control status
 
-| Threat | Required control | M00 status |
+| Threat | Required control | Status |
 |---|---|---|
 | Accidental capability overclaim | Fixed capability catalog and exact registry | Implemented |
 | Future tool exposed by file discovery | Explicit M00 registration allowlist | Implemented |
 | Protocol corruption through stdout logging | Stdio-only entry point; diagnostics use stderr | Implemented boundary |
 | Malicious environment setting | Typed settings and restricted transport/log-level values | Implemented |
-| Plaintext credential disclosure | No credential fields or provider auth in runtime | Implemented by exclusion |
+| Plaintext credential disclosure | Opaque references, redaction, and no plaintext fallback | Implemented for local M01 configuration |
 | Prompt injection from external content | Treat content as untrusted and preserve sources | Future enforcement; no ingestion in M00 |
-| Path traversal or unauthorized repository access | Normalize and enforce configured roots | SCAFFOLDED |
+| Path traversal or unauthorized repository access | Normalize and enforce configured roots | Implemented for repository registration |
 | SSRF or redirect to an unapproved host | Connection scheme/host allowlist and safe redirects | SCAFFOLDED |
 | Shell or process injection | Registered argument arrays, fixed executables, bounded environment | SCAFFOLDED |
 | SQL injection or database mutation | Registered parameterized SELECT-only assertions plus read-only account | SCAFFOLDED |
 | Kafka consumer disruption | Approved topics, bounded reads, no production offset commits | SCAFFOLDED |
-| Cross-profile data leak | Profile-bound adapters, stores, indexes, and evidence | SCAFFOLDED |
+| Cross-profile credential leak | Profile-bound credential scope and one connection owner | Implemented for local credentials and repository registration; provider adapters remain scaffolded |
 | Unauthorized provider write or CI trigger | Deny by default, preview, explicit approval, idempotency | SCAFFOLDED |
 | Evidence tampering or secret leakage | Hash manifests, redaction, secure permissions, retention | SCAFFOLDED |
 | Resource exhaustion | Time, row, byte, concurrency, and pagination limits | SCAFFOLDED |

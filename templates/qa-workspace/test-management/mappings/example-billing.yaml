@@ -1,0 +1,31 @@
+id: example-billing
+provider: spreadsheet
+edition: local
+format: csv
+source: test-management/import-templates/example-cases.csv
+allow_publish: false
+step_format: multiline
+columns:
+  source_id: ID
+  version: Version
+  scenario: Scenario
+  priority: Priority
+  test_case: Test Case
+  precondition: Precondition
+  steps: Steps
+  expected_result: Expected Result
+  result: Result
+  notes: Notes
+  evidence: Evidence
+  automation_suite_id: Automation Suite
+priorities:
+  Critical: Critical
+  High: High
+  Medium: Medium
+  Low: Low
+results:
+  Passed: Passed
+  Failed: Failed
+  Blocked: Blocked
+  Untested: Untested
+  Retest: Retest

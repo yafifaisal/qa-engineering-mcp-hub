@@ -1,0 +1,18 @@
+schema_version: 1
+id: example-order-created
+kind: kafka
+implementation_status: IMPLEMENTED
+enabled: true
+connection_id: example-kafka
+definition:
+  topic: orders
+  dlq_topic: orders.dlq
+  correlation_key: order_id
+  parameters: [order_id]
+  required_fields: [order_id, status]
+  max_messages: 50
+  timeout_seconds: 2
+  group_id: qa-mcp-observer-example
+  protocol: SASL_SSL
+  mechanism: SCRAM-SHA-512
+  mandatory: true

@@ -1,8 +1,8 @@
 # Bitbucket provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED** read-only Cloud and Data Center adapter  
 > Owning milestone: **03**  
-> Verification: documentation scaffold only; no provider request has been executed.
+> Verification: mocked HTTP tests. No live Bitbucket request has been executed.
 
 ## 1. Provider overview
 
@@ -20,7 +20,9 @@ Cloud and Data Center have different hosts, REST paths, authentication choices, 
 
 Planned reads include repository metadata, branches, commits, exact-revision files, pull requests, and diffs. Capability parity between Cloud and Data Center requires verification.
 
-These are planned capabilities, not current support.
+Cloud and Data Center use separate URL roots. Code search that returns HTTP 404
+on Data Center is reported as an unsupported capability. Mocked tests are
+OFFLINE_VERIFIED. Live calls are not claimed.
 
 ## 5. Authentication methods
 

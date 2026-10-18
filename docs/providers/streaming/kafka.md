@@ -1,12 +1,12 @@
 # Kafka provider
 
-> Current status: **NOT_IMPLEMENTED**  
+> Current status: **OFFLINE_VERIFIED**  
 > Owning milestone: **07**  
-> Verification: documentation scaffold only; no provider request or runner execution has occurred.
+> Verification: bounded topic observation is tested in memory. No live Kafka cluster was contacted, so this is not LIVE_VERIFIED.
 
 ## 1. Provider overview
 
-Apache Kafka is the supported streaming verification target. The future adapter will perform approved metadata and diagnostic correlation without disrupting application consumer groups.
+Kafka checks observe a registered topic with `enable.auto.commit` disabled. The observer group id must start with `qa-mcp-observer-`. The observer refuses to commit offsets. Seeing a message is publication, not consumer completion. A live client is not bundled.
 
 ## 2. Supported editions
 
@@ -18,9 +18,7 @@ Self-managed and managed clusters can differ in brokers, TLS, SASL mechanisms, i
 
 ## 4. Supported API capabilities
 
-Planned reads include allowlisted topic metadata and bounded diagnostic event lookup/correlation where policy and retention permit. Missing evidence may be INCONCLUSIVE rather than FAILED.
-
-These are planned capabilities, not current support.
+Approved settings are `SSL` and `SASL_SSL`, with `PLAIN`, `SCRAM-SHA-256`, or `SCRAM-SHA-512`. Reads are capped at 200 messages and 60 seconds. `PLAINTEXT` and production consumer groups are rejected. A topic read does not confirm that a consumer finished.
 
 ## 5. Authentication methods
 
@@ -99,19 +97,19 @@ Allowlist brokers/topics, require encrypted transport where policy demands, prot
 
 Check advertised listeners, DNS/firewall, TLS hostname and CA, SASL mechanism, ACLs, topic spelling, retention window, partition bounds, schema/encoding, and clock alignment.
 
-Because the provider is not implemented, current inability to connect or execute is expected.
+A live cluster was not contacted. Retention gaps and missing events stay INCONCLUSIVE. A configured DLQ hit is a failure. An offset commit report is an error.
 
 ## 18. Related implementation files
 
-- `src/qa_mcp_hub/adapters/streaming/kafka.py` — SCAFFOLDED; docstring only.
-- `src/qa_mcp_hub/providers/contracts.py` — SCAFFOLDED provider-neutral contract owner.
-- `src/qa_mcp_hub/providers/registry.py` — SCAFFOLDED allowlist/factory owner.
+- `src/qa_mcp_hub/adapters/streaming/kafka.py` — IMPLEMENTED bounded observer. No live client is bundled.
+- `src/qa_mcp_hub/verification/kafka_assertions.py` — IMPLEMENTED correlation, schema, and DLQ checks.
+- `src/qa_mcp_hub/providers/registry.py` — catalog status OFFLINE_VERIFIED. The generic lag port stays unavailable.
 
 ## 19. Related tests
 
-Planned ACL, TLS/auth, metadata, bounded polling, no-offset-commit, retention-gap, decode, correlation, timeout, redaction, and authorized sandbox tests.
+`tests/unit/test_verification_m07.py` covers schema mismatch, retention gaps, missing events, DLQ hits, and rejected offset commits.
 
-No test currently validates a real provider integration.
+No test connects to a live broker. Consumer completion is not inferred from a topic read.
 
 ## 20. Current implementation status
 

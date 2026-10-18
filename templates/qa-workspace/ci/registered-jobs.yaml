@@ -1,4 +1,12 @@
 schema_version: 1
-implementation_status: SCAFFOLDED
+implementation_status: IMPLEMENTED
 authorization: read_only
-jobs: []
+jobs:
+  - id: example-pipeline
+    provider: github_actions
+    connection_id: example-github
+    repository: example/billing
+    workflow: ci.yml
+    enabled: false
+    allow_trigger: false
+    parameters: []

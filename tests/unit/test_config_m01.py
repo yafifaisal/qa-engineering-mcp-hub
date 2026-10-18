@@ -344,6 +344,18 @@ def test_cross_platform_config_file_paths(platform: str, expected: Path) -> None
     )
 
 
+def test_checked_in_example_configuration_loads_without_secret_values() -> None:
+    root = Path(__file__).resolve().parents[2]
+    example = root / "config" / "examples" / "config.example.yaml"
+    loaded = load_config(example)
+    text = example.read_text(encoding="utf-8")
+    assert loaded.schema_version == 1
+    assert loaded.active_profile == "local-development"
+    assert [item.provider for item in loaded.connections].count(ProviderKind.jira) == 2
+    assert "ghp_" not in text
+    assert "access_token" not in text
+
+
 def test_native_path_requests_roaming_directory(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

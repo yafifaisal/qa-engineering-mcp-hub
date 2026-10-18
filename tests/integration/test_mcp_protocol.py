@@ -9,9 +9,10 @@ from fastmcp import Client
 from fastmcp.client.transports import StdioTransport
 
 from qa_mcp_hub import __version__
+from qa_mcp_hub.mcp.registry import REGISTERED_TOOL_NAMES
 from qa_mcp_hub.server import mcp
 
-EXPECTED_TOOLS = {"hub_health", "hub_capabilities"}
+EXPECTED_TOOLS = set(REGISTERED_TOOL_NAMES)
 EXPECTED_RESOURCES = {"qa-hub://status"}
 EXPECTED_PROMPTS = {"qa_hub_orientation"}
 
@@ -36,7 +37,19 @@ async def test_mcp_tool_discovery_and_invocation() -> None:
         catalog = await client.call_tool("hub_capabilities", {})
         assert not catalog.is_error
         assert catalog.structured_content is not None
-        assert "profiles_and_credentials" in catalog.structured_content["planned"]
+        implemented = catalog.structured_content["implemented"]
+        planned = catalog.structured_content["planned"]
+        assert "profiles_and_credentials" in implemented
+        assert "interactive_setup" in implemented
+        assert "search_repository_code" in implemented
+        assert "search_documents" in implemented
+        assert "search_knowledge" in implemented
+        assert "generate_test_scenario_draft" in implemented
+        assert "list_registered_suites" in implemented
+        assert "submit_test_run" in implemented
+        assert "verify_e2e_workflow" in implemented
+        assert "postgresql_mysql_kafka" not in planned
+        assert "bruno_postman" not in planned
 
 
 @pytest.mark.asyncio
@@ -47,14 +60,28 @@ async def test_mcp_resource_and_prompt_availability() -> None:
         content = await client.read_resource("qa-hub://status")
         payload = json.loads(content[0].text)
         assert payload["health"]["status"] == "healthy"
-        assert payload["external_integrations"] == "not_implemented"
+        assert payload["external_integrations"] == (
+            "git_jira_docs_read_only_local_knowledge_registered_e2e_ci_read_test_cases_evidence"
+        )
 
         prompts = await client.list_prompts()
         assert {prompt.name for prompt in prompts} == EXPECTED_PROMPTS
         rendered = await client.get_prompt("qa_hub_orientation")
         assert len(rendered.messages) == 1
         prompt_text = rendered.messages[0].content.text
-        assert "Milestones 01–11 are not implemented" in prompt_text
+        assert "credential references are implemented" in prompt_text
+        assert "Milestone 03 read-only GitHub, GitLab, Bitbucket, and Jira" in (
+            prompt_text
+        )
+        assert "Milestone 04 read-only Confluence and Google Docs" in prompt_text
+        assert "Milestone 05 local knowledge" in prompt_text
+        assert "Milestone 06 runs only registered Bruno and Newman" in prompt_text
+        assert "Milestone 07 runs registered read-only database" in prompt_text
+        assert "Milestone 08 reads registered" in prompt_text
+        assert "Milestone 09 maps" in prompt_text
+        assert "Milestone 10 collects evidence" in prompt_text
+        assert "Milestone 11 packages the Community Edition" in prompt_text
+        assert "does not publish" in prompt_text
 
 
 @pytest.mark.asyncio

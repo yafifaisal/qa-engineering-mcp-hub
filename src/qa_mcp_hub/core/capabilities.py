@@ -1,7 +1,13 @@
-"""Truthful local capability catalog through Milestone 01.
+"""Truthful local capability catalog through Milestone 11.
 
-The catalog distinguishes implemented local setup/configuration behavior from
-provider adapters and network verification that remain future work.
+The catalog distinguishes registered tools from work that is not published.
+
+Purpose: separate callable local capabilities from planned provider work.
+Milestone: 06
+Status: IMPLEMENTED
+Ownership: core.capabilities
+Dependencies: Pydantic.
+Expected tests: implemented local setup and planned provider identifiers.
 """
 
 from pydantic import BaseModel, ConfigDict
@@ -27,14 +33,44 @@ def list_capabilities() -> CapabilityCatalog:
             "profiles_and_credentials",
             "interactive_setup",
             "mcp_client_config_generation",
+            "provider_contracts",
+            "repository_registry",
+            "search_repository_code",
+            "get_repository_changes",
+            "analyze_jira_ticket",
+            "find_related_implementation",
+            "search_documents",
+            "read_document",
+            "search_knowledge",
+            "find_implementation",
+            "trace_cross_repo_flow",
+            "analyze_change_impact",
+            "generate_test_scenario_draft",
+            "list_registered_suites",
+            "list_workflows",
+            "explain_workflow",
+            "submit_test_run",
+            "get_test_run",
+            "list_registered_assertions",
+            "run_database_assertion",
+            "find_kafka_event",
+            "verify_e2e_workflow",
+            "list_pipeline_runs",
+            "get_pipeline_status",
+            "get_pipeline_artifacts",
+            "prepare_pipeline_trigger",
+            "search_test_cases",
+            "compare_test_cases",
+            "preview_test_case_import",
+            "export_test_cases",
+            "prepare_result_publication",
+            "generate_evidence",
+            "validate_evidence_completeness",
+            "prepare_evidence_publication",
+            "publish_approved_evidence",
+            "assess_release_readiness",
+            "generate_release_report",
+            "community_package",
         ),
-        planned=(
-            "github_gitlab_bitbucket",
-            "jira_confluence_google_docs",
-            "bruno_postman",
-            "postgresql_mysql_kafka",
-            "bitbucket_pipelines_github_actions_jenkins",
-            "xray_testrail_spreadsheet",
-            "qa_evidence_and_release",
-        ),
+        planned=(),
     )

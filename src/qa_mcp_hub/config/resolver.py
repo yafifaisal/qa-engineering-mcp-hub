@@ -3,6 +3,13 @@
 Precedence is explicit CLI input, environment, selected profile, user config, then
 application defaults. The result is a deep, frozen snapshot so switching the active
 profile on disk cannot alter an execution that has already started.
+
+Purpose: resolve one immutable profile snapshot with provenance.
+Milestone: 01
+Status: IMPLEMENTED
+Ownership: config.resolver
+Dependencies: configuration models and process environment.
+Expected tests: precedence, missing profiles, and detached snapshots.
 """
 
 import os

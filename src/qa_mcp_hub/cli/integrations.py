@@ -5,13 +5,15 @@ Milestone: 01
 Status: IMPLEMENTED
 Ownership: cli.integration_commands
 Dependencies: Configuration models, credential stores/resolver, Typer, and Rich.
-Expected tests: Duplicate providers, profile isolation, missing credentials, and no network.
+Expected tests: Duplicate providers, profile isolation, missing credentials,
+and no network.
 """
 
 from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+from typing import NoReturn
 
 import typer
 from pydantic import SecretStr, ValidationError
@@ -24,6 +26,7 @@ from qa_mcp_hub.auth import (
     CredentialReference,
     CredentialResolver,
     CredentialScope,
+    CredentialStore,
     CredentialStoreKind,
     EnvironmentCredentialStore,
     KeyringCredentialStore,
@@ -50,7 +53,10 @@ console = Console()
 
 
 def _connection(config: HubConfig, connection_id: str) -> ConnectionConfig:
-    match = next((item for item in config.connections if item.id == connection_id), None)
+    match = next(
+        (item for item in config.connections if item.id == connection_id),
+        None,
+    )
     if match is None:
         raise CLIConfigError(f"integration does not exist: {connection_id}")
     return match
@@ -161,7 +167,7 @@ def _scope(
     )
 
 
-def _stores_for(reference: CredentialReference) -> list[object]:
+def _stores_for(reference: CredentialReference) -> list[CredentialStore]:
     if reference.store is CredentialStoreKind.environment:
         return [EnvironmentCredentialStore(allowed_names={reference.reference})]
     if reference.store is CredentialStoreKind.keyring:
@@ -169,7 +175,7 @@ def _stores_for(reference: CredentialReference) -> list[object]:
     return []
 
 
-def _handle_error(exc: Exception) -> None:
+def _handle_error(exc: Exception) -> NoReturn:
     if isinstance(
         exc,
         (CLIConfigError, ConfigLoadError, ConfigWriteError, CredentialError),
@@ -181,7 +187,11 @@ def _handle_error(exc: Exception) -> None:
 @app.command("add")
 def add_integration(
     connection_id: str = typer.Argument(..., help="Unique connection id."),
-    provider: ProviderKind = typer.Option(..., "--provider", help="Supported provider."),
+    provider: ProviderKind = typer.Option(
+        ...,
+        "--provider",
+        help="Supported provider.",
+    ),
     profile: str | None = typer.Option(
         None, "--profile", help="Owning profile; defaults to active."
     ),
@@ -294,17 +304,30 @@ def authenticate_integration(
                 if selected_kind is AuthKind.oauth
                 else CredentialStoreKind.keyring
             )
-        if selected_kind is AuthKind.oauth and selected_store is not CredentialStoreKind.oauth_reference:
+        if (
+            selected_kind is AuthKind.oauth
+            and selected_store is not CredentialStoreKind.oauth_reference
+        ):
             raise CLIConfigError(
-                "OAuth provider flows are NOT_IMPLEMENTED; only local oauth_reference metadata is allowed"
+                "OAuth provider flows are NOT_IMPLEMENTED; "
+                "only local oauth_reference metadata is allowed"
             )
-        if selected_kind is not AuthKind.oauth and selected_store is CredentialStoreKind.oauth_reference:
-            raise CLIConfigError("oauth_reference requires the oauth authentication kind")
+        if (
+            selected_kind is not AuthKind.oauth
+            and selected_store is CredentialStoreKind.oauth_reference
+        ):
+            raise CLIConfigError(
+                "oauth_reference requires the oauth authentication kind"
+            )
         if reference is None:
             if selected_store is CredentialStoreKind.environment:
                 reference = typer.prompt("Environment variable name")
             else:
-                reference = "primary" if selected_store is CredentialStoreKind.keyring else "pending"
+                reference = (
+                    "primary"
+                    if selected_store is CredentialStoreKind.keyring
+                    else "pending"
+                )
         credential = CredentialReference(
             store=selected_store,
             reference=reference,
@@ -372,7 +395,7 @@ def test_integration(
             console.print("Credential readiness: NOT_IMPLEMENTED (OAuth provider flow)")
         else:
             stores = _stores_for(connection.credential)
-            resolver = CredentialResolver(stores)  # type: ignore[arg-type]
+            resolver = CredentialResolver(stores)
             resolver.resolve(
                 connection.credential,
                 expected_scope=_scope(profile_name, connection),
@@ -406,7 +429,8 @@ def rotate_integration(
             raise CLIConfigError("integration has no credential reference")
         if reference.store is CredentialStoreKind.environment:
             raise CLIConfigError(
-                "environment credentials are read-only; rotate the variable outside QA MCP Hub"
+                "environment credentials are read-only; "
+                "rotate the variable outside QA MCP Hub"
             )
         if reference.store is CredentialStoreKind.oauth_reference:
             raise CLIConfigError("OAuth provider token rotation is NOT_IMPLEMENTED")
@@ -479,7 +503,11 @@ def remove_integration(
         try:
             persist_config(updated, path)
         except Exception:
-            if keyring is not None and reference is not None and deleted_secret is not None:
+            if (
+                keyring is not None
+                and reference is not None
+                and deleted_secret is not None
+            ):
                 keyring.set(reference, deleted_secret)
             raise
     except (
