@@ -1,5 +1,4 @@
 # End-to-end workflows
 
-Future Milestones 07–10 ownership. No E2E workflow is implemented in Milestone
-00. Workflows must reference registered assertions, declare dependencies, and
-classify absent DB or Kafka evidence as INCONCLUSIVE rather than PASSED.
+These files may declare database and Kafka steps. Milestone 06 explains them
+and refuses to execute them. Absent database or Kafka evidence is not PASSED.

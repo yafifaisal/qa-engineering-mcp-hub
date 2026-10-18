@@ -1,8 +1,13 @@
 # Test execution troubleshooting
 
-API suite, database, Kafka, CI/CD, workflow, and end-to-end execution are not
-implemented through Milestone 01. Only the repository's local unit, configuration,
-credential-contract, protocol, CLI, security, and package tests can run.
+Registered Bruno and Newman suites can run through Milestone 06 when the profile
+is not in dry-run mode and the workflow is an approved API-only workflow.
+Database and Kafka steps do not run. A missing `bru` or `newman` binary is an
+ERROR, not a PASS.
+
+The repository tests use a local stand-in process. They do not prove that an
+installed Bruno CLI or Newman binary is present. Set `QA_MCP_BRUNO_BIN` and
+`QA_MCP_NEWMAN_BIN` only to the approved executables. Do not pass a shell string.
 
 Use the locked environment and preserve the first real diagnostic:
 

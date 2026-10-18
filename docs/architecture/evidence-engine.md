@@ -1,7 +1,10 @@
 # Evidence engine architecture
 
-Status: **SCAFFOLDED for Future Milestone 10.** M00 does not collect, persist,
-render, sign, or publish QA evidence.
+Status: **SCAFFOLDED for Milestone 10.** Milestone 06 persists a minimal API-only
+evidence record with the execution. It does not render, sign, or publish evidence.
+
+API-only records set `database_verified` and `kafka_verified` to false. A PASS
+record requires a zero runner exit and at least one itemized assertion.
 
 ## Intended responsibility
 

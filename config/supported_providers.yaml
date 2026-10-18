@@ -24,10 +24,10 @@ providers:
     implementation_status: OFFLINE_VERIFIED
   - id: bruno
     category: api_automation
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: postman
     category: api_automation
-    implementation_status: NOT_IMPLEMENTED
+    implementation_status: OFFLINE_VERIFIED
   - id: postgresql
     category: database
     implementation_status: NOT_IMPLEMENTED

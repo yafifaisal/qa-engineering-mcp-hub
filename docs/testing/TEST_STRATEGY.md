@@ -104,6 +104,19 @@ module.
 | Drafts | scenario text is not executable and no workflow file is written |
 | MCP tools | in-memory knowledge and planning tools against a local Git fixture |
 
+## Milestone 06 matrix
+
+| Area | Required evidence |
+|---|---|
+| Bruno | passing and failing reporter fixtures, missing binary, invalid output |
+| Postman | Newman 6.2.2 JSON reporter fixtures for pass and fail |
+| Process | timeout, cancellation, nonzero exit, and no shell execution |
+| Registry | duplicate suite and workflow ids, unsupported environment |
+| Workflow | dependency cycle, missing assertion, unapproved candidate |
+| Evidence | PASS requires assertions; database and Kafka stay unverified |
+| Secrets | credential values stay out of argv and the execution database |
+| MCP tools | list, explain, preview, submit, and get against a local fixture |
+
 Mocked keyring tests and simulated Windows/Linux paths are `OFFLINE_VERIFIED`.
 They do not establish a live Credential Manager, Keychain, or Secret Service round
 trip. `integrations test` must keep provider connectivity at `NOT_IMPLEMENTED`.

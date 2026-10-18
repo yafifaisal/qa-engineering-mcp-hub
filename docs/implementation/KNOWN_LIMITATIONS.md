@@ -22,9 +22,13 @@
   runtime observation, and no trace claims a complete call graph. Community
   Edition does not call a hosted embedding service. Confluence and Google Docs
   enter the index only after an authorized read is passed to the engine.
-- Workflows, suite execution, assertions, CI/CD, test management, evidence, and
-  release intelligence remain Milestones 06–10. Ticket analysis does not call a
-  language model.
+- Milestone 06 runs only registered Bruno and Newman suites. Secrets are
+  injected through a mode-0600 environment file and redacted from stored
+  output. They are not accepted as MCP arguments and are not passed with
+  `--env-var`. A dry-run profile does not start a runner.
+- Database queries, Kafka reads, CI/CD, test management, evidence publication,
+  and release intelligence remain Milestones 07–10. Ticket analysis does not
+  call a language model.
 - Python keyring is a direct development dependency and an optional `credentials`
   extra. A missing or unusable backend fails closed. The application does not fall
   back to a plaintext file.
@@ -64,7 +68,8 @@
 - The QA Workspace root and CI registry YAML files are syntax-checked and
   manifest-audited. Milestone 01 stores a workspace path reference only; dedicated
   workspace and CI semantic schemas remain future work.
-- No live provider, database, Kafka, CLI runner, or CI system was contacted.
+- No live provider, database, Kafka, Bruno CLI, Newman CLI, or CI system was
+  contacted. API execution tests used a local stand-in process.
 
 ## Audit limitations
 

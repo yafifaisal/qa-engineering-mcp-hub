@@ -80,7 +80,16 @@ def test_catalog_matches_architecture_document() -> None:
     document = yaml.safe_load((ROOT / "config/supported_providers.yaml").read_text())
     catalog_matches_document(document)
     assert {item.id for item in CATALOG} == set(ProviderKind)
-    offline = {"github", "gitlab", "bitbucket", "jira", "confluence", "google_docs"}
+    offline = {
+        "github",
+        "gitlab",
+        "bitbucket",
+        "jira",
+        "confluence",
+        "google_docs",
+        "bruno",
+        "postman",
+    }
     assert {
         item.id.value
         for item in CATALOG

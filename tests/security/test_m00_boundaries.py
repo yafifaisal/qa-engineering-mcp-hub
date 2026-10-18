@@ -21,7 +21,7 @@ def test_server_has_no_remote_transport_configuration() -> None:
 
 
 def test_runtime_does_not_import_future_domains() -> None:
-    """A server process may load knowledge indexing, not later execution domains."""
+    """A server process may load registered API execution, not later domains."""
     project_root = Path(__file__).resolve().parents[2]
     probe = """
 import json
@@ -29,19 +29,14 @@ import sys
 import qa_mcp_hub.server
 
 future_domains = (
-    "qa_mcp_hub.adapters.api_automation",
     "qa_mcp_hub.adapters.cicd",
     "qa_mcp_hub.adapters.database",
     "qa_mcp_hub.adapters.streaming",
     "qa_mcp_hub.adapters.test_management",
     "qa_mcp_hub.evidence",
     "qa_mcp_hub.release",
-    "qa_mcp_hub.runners",
     "qa_mcp_hub.storage.artifact_store",
-    "qa_mcp_hub.storage.execution_store",
-    "qa_mcp_hub.suites",
     "qa_mcp_hub.verification",
-    "qa_mcp_hub.workflows",
 )
 loaded = set(sys.modules)
 forbidden = sorted(

@@ -1,0 +1,23 @@
+schema_version: 1
+id: example-e2e-workflow
+name: Example end-to-end workflow
+description: Disabled example. Database and Kafka steps stay unavailable.
+implementation_status: SCAFFOLDED
+enabled: false
+approved: false
+required_capabilities: [api_automation, database_verification, kafka_verification]
+evidence_policy: full-e2e
+steps:
+  - id: execute-api-suite
+    kind: api_suite
+    target: example-api-smoke
+    depends_on: []
+    assertion_ids: [status-ok]
+  - id: verify-database-state
+    kind: database_assertion
+    target: example-order-state
+    depends_on: [execute-api-suite]
+  - id: verify-domain-event
+    kind: kafka_assertion
+    target: example-order-created
+    depends_on: [execute-api-suite]

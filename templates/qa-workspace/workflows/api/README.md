@@ -1,5 +1,5 @@
 # API workflows
 
-Future Milestone 06 ownership. No API workflow is implemented or registered in
-Milestone 00. Add reviewed workflow YAML only after its suites and evidence
-policy are registered; keep it disabled until deterministic tests pass.
+Approved API workflows live here. Each file references registered suites and
+assertion ids. Disabled examples are not executed. Database and Kafka steps
+belong in `workflows/e2e` and stay unavailable until Milestone 07.

@@ -7,6 +7,12 @@ its first public release is tagged.
 
 ### Added
 
+- Milestone 06 registered Bruno and Newman execution for approved API
+  workflows. Passing and failing fixtures, timeouts, cancellation, and
+  redaction are OFFLINE_VERIFIED with a local stand-in runner. The pinned
+  Bruno CLI 3 and Newman 6.2.2 flags were checked against current docs.
+  Those installed CLIs were not executed, so runner support is not
+  LIVE_VERIFIED. Database and Kafka steps stay unavailable.
 - Milestone 05 local knowledge index for permitted Git checkouts, with keyword
   retrieval, partial dependency traces, and non-executable scenario drafts.
   Mocked and local-fixture tests are OFFLINE_VERIFIED. No complete call graph

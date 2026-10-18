@@ -6,10 +6,11 @@ local configuration control plane. Milestone 02 adds provider contracts and loca
 repository registration. Milestone 03 adds read-only GitHub, GitLab, Bitbucket,
 and Jira access. Milestone 04 adds read-only Confluence and Google Docs
 retrieval. Milestone 05 adds a local knowledge index over approved Git
-checkouts. Other provider APIs and QA execution features remain
+checkouts. Milestone 06 runs registered Bruno and Newman suites from approved
+API workflows. Database, Kafka, CI/CD, and release features remain
 `NOT_IMPLEMENTED` or `SCAFFOLDED`.
 
-## What works through Milestone 05
+## What works through Milestone 06
 
 - `qa-mcp serve` starts a standalone FastMCP 4 server over stdio.
 - `hub_health` reports local process readiness.
@@ -43,11 +44,18 @@ checkouts. Other provider APIs and QA execution features remain
   `analyze_change_impact`, and `generate_test_scenario_draft` use the local
   index. Results cite path, lines, and commit SHA. Traces do not claim a
   complete call graph. Scenario drafts are not executable tests.
+- `list_registered_suites`, `list_workflows`, `explain_workflow`,
+  `submit_test_run`, and `get_test_run` use the QA Workspace suite registry.
+  A preview does not start a process. Execution uses a fixed Bruno or Newman
+  argument list, never a caller shell command. API evidence does not claim
+  database or Kafka verification. Local runner fixtures are `OFFLINE_VERIFIED`.
+  The installed Bruno and Newman CLIs were not executed in this session.
 
-Interactive browser OAuth, Git and Jira writes, test execution, database query,
-Kafka operation, CI/CD action, test-management action, evidence publication, and
-release approval are not implemented. Google Docs can refresh an access token
-from a stored refresh token.
+Interactive browser OAuth, Git and Jira writes, database query, Kafka operation,
+CI/CD action, test-management action, evidence publication, and release approval
+are not implemented. Google Docs can refresh an access token from a stored
+refresh token. Suite execution stays inside an approved workflow and a dry-run
+profile does not start a runner.
 
 ## Prerequisites and setup
 

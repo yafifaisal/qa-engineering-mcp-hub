@@ -94,10 +94,15 @@ CATALOG: tuple[ProviderDescriptor, ...] = (
         category=ProviderCategory.documentation,
         implementation_status=_OFFLINE,
     ),
-    ProviderDescriptor(id=ProviderKind.bruno, category=ProviderCategory.api_automation),
+    ProviderDescriptor(
+        id=ProviderKind.bruno,
+        category=ProviderCategory.api_automation,
+        implementation_status=_OFFLINE,
+    ),
     ProviderDescriptor(
         id=ProviderKind.postman,
         category=ProviderCategory.api_automation,
+        implementation_status=_OFFLINE,
     ),
     ProviderDescriptor(id=ProviderKind.postgresql, category=ProviderCategory.database),
     ProviderDescriptor(id=ProviderKind.mysql, category=ProviderCategory.database),
@@ -141,6 +146,7 @@ _READ_PROVIDERS = {
     ProviderKind.confluence,
     ProviderKind.google_docs,
 }
+_OFFLINE_PROVIDERS = _READ_PROVIDERS | {ProviderKind.bruno, ProviderKind.postman}
 _EXPOSED_CAPABILITIES = {
     "search_code",
     "compare_changes",
@@ -242,7 +248,7 @@ def ensure_catalog() -> None:
         raise CatalogMismatchError("provider catalog does not match ProviderKind")
     for item in CATALOG:
         expected = (
-            "OFFLINE_VERIFIED" if item.id in _READ_PROVIDERS else "NOT_IMPLEMENTED"
+            "OFFLINE_VERIFIED" if item.id in _OFFLINE_PROVIDERS else "NOT_IMPLEMENTED"
         )
         if item.implementation_status != expected:
             raise CatalogMismatchError("catalog implementation status is inconsistent")

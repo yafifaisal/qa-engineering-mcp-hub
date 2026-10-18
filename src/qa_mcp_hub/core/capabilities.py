@@ -1,10 +1,10 @@
-"""Truthful local capability catalog through Milestone 05.
+"""Truthful local capability catalog through Milestone 06.
 
-The catalog distinguishes local knowledge tools and read-only provider tools
+The catalog distinguishes registered API execution and read-only provider tools
 from providers that remain future work.
 
 Purpose: separate callable local capabilities from planned provider work.
-Milestone: 05
+Milestone: 06
 Status: IMPLEMENTED
 Ownership: core.capabilities
 Dependencies: Pydantic.
@@ -47,9 +47,13 @@ def list_capabilities() -> CapabilityCatalog:
             "trace_cross_repo_flow",
             "analyze_change_impact",
             "generate_test_scenario_draft",
+            "list_registered_suites",
+            "list_workflows",
+            "explain_workflow",
+            "submit_test_run",
+            "get_test_run",
         ),
         planned=(
-            "bruno_postman",
             "postgresql_mysql_kafka",
             "bitbucket_pipelines_github_actions_jenkins",
             "xray_testrail_spreadsheet",

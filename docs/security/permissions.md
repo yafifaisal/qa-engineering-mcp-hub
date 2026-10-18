@@ -62,7 +62,9 @@ Mandatory secret-path patterns stay excluded from any later indexing plan.
 - Knowledge indexing reads git-tracked files inside an approved workspace.
   Secret paths and untracked files are skipped. Indexed text cannot change tool
   permissions or mark a call graph complete.
-- Restrict suite execution, SQL, topics, workflows, and CI jobs to registries.
+- Suite execution accepts a registered suite or workflow id. It does not accept
+  a shell command, working directory, or secret. Bruno and Newman argument
+  lists are fixed. Credential values stay off the command line.
 - Require preview and explicit user approval for provider writes, CI triggers,
   imports, overwrites, and evidence publication.
 - Keep approval narrow, time-bound, profile-bound, and operation-specific.

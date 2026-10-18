@@ -15,6 +15,7 @@
     "description": {"type": "string"},
     "implementation_status": {"enum": ["NOT_IMPLEMENTED", "SCAFFOLDED", "IMPLEMENTED"]},
     "enabled": {"type": "boolean"},
+    "approved": {"type": "boolean"},
     "required_capabilities": {
       "type": "array",
       "items": {"type": "string"},
@@ -32,7 +33,12 @@
           "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
           "kind": {"enum": ["api_suite", "database_assertion", "kafka_assertion", "business_assertion"]},
           "target": {"type": "string", "minLength": 1},
-          "depends_on": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+          "depends_on": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "assertion_ids": {
+            "type": "array",
+            "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$"},
+            "uniqueItems": true
+          }
         }
       }
     }

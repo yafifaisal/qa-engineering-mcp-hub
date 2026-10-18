@@ -33,9 +33,11 @@ def test_catalog_distinguishes_future_work() -> None:
     assert "read_document" in catalog.implemented
     assert "search_knowledge" in catalog.implemented
     assert "find_implementation" in catalog.implemented
-    assert "analyze_change_impact" in catalog.implemented
-    assert "bruno_postman" in catalog.planned
-    assert "bruno_postman" not in catalog.implemented
+    assert "generate_test_scenario_draft" in catalog.implemented
+    assert "list_registered_suites" in catalog.implemented
+    assert "submit_test_run" in catalog.implemented
+    assert "postgresql_mysql_kafka" in catalog.planned
+    assert "bruno_postman" not in catalog.planned
 
 
 def test_legacy_core_config_names_resolve_to_canonical_models() -> None:

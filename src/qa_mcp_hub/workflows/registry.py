@@ -1,9 +1,30 @@
-"""Scaffold for the approved-workflow registry.
+"""Workspace-scoped lookup of workflow documents.
 
-Purpose: Reserve workspace-scoped lookup of explicitly registered workflows.
-Owning Milestone: 06
-Status: SCAFFOLDED
+Purpose: list files discovered in the approved workflow directories.
+Milestone: 06
+Status: IMPLEMENTED
 Ownership: workflows.registry
-Dependencies: Workflow models, discovery, validator, and workspace configuration.
-Expected tests: Duplicate IDs, deterministic listing, scope isolation, and reloads.
+Dependencies: Workflow discovery.
+Expected tests: duplicate ids and deterministic listing.
 """
+
+from pathlib import Path
+
+from qa_mcp_hub.core.errors import HubError
+from qa_mcp_hub.workflows.discovery import discover_workflows
+from qa_mcp_hub.workflows.models import WorkflowDefinition
+
+
+def load_workflows(workspace: Path) -> tuple[WorkflowDefinition, ...]:
+    """Load every workflow file. Duplicate ids fail the registry."""
+    return discover_workflows(workspace)
+
+
+def workflow_by_id(
+    workflows: tuple[WorkflowDefinition, ...], workflow_id: str
+) -> WorkflowDefinition:
+    """Return one workflow or reject an unknown id."""
+    for workflow in workflows:
+        if workflow.id == workflow_id:
+            return workflow
+    raise HubError("unknown_workflow", f"workflow is not registered: {workflow_id}")

@@ -1,7 +1,7 @@
 """Explicit MCP component registration allowlist.
 
-Purpose: register status tools and read-only Git, document, and knowledge tools.
-Milestone: 05
+Purpose: register status, read-only provider, knowledge, and execution tools.
+Milestone: 06
 Status: IMPLEMENTED
 Ownership: mcp.registration
 Dependencies: standalone FastMCP 4.
@@ -12,6 +12,13 @@ from fastmcp import FastMCP
 
 from qa_mcp_hub.mcp.prompts import qa_hub_orientation
 from qa_mcp_hub.mcp.resources import STATUS_RESOURCE_URI, hub_status_resource
+from qa_mcp_hub.mcp.tools.execution import (
+    explain_workflow_tool,
+    get_test_run_tool,
+    list_registered_suites_tool,
+    list_workflows_tool,
+    submit_test_run_tool,
+)
 from qa_mcp_hub.mcp.tools.knowledge import (
     find_implementation_tool,
     get_repository_changes_tool,
@@ -68,3 +75,12 @@ def register_milestone_05(server: FastMCP) -> None:
     server.tool(trace_cross_repo_flow_tool, name="trace_cross_repo_flow")
     server.tool(analyze_change_impact_tool, name="analyze_change_impact")
     server.tool(generate_test_scenario_draft_tool, name="generate_test_scenario_draft")
+
+
+def register_milestone_06(server: FastMCP) -> None:
+    """Register registered-suite tools. They do not accept a shell command."""
+    server.tool(list_registered_suites_tool, name="list_registered_suites")
+    server.tool(list_workflows_tool, name="list_workflows")
+    server.tool(explain_workflow_tool, name="explain_workflow")
+    server.tool(submit_test_run_tool, name="submit_test_run")
+    server.tool(get_test_run_tool, name="get_test_run")

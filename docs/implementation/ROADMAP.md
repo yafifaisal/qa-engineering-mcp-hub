@@ -58,7 +58,9 @@ complete runtime call graph. Live provider calls are not part of this exit.
 Owns suite registry, Bruno/Postman adapters, approved process runner, jobs,
 normalization, and execution MCP tools. Exit: registered-only execution with timeout,
 cancellation, output limits, sanitized environment, parser fixtures, and gated local
-runner smoke tests. No arbitrary shell.
+runner smoke tests are OFFLINE_VERIFIED. No arbitrary shell. Installed Bruno and
+Newman binaries were not executed, so this exit is not LIVE_VERIFIED. Database and
+Kafka steps remain Milestone 07.
 
 ## 07 — deterministic end-to-end verification
 

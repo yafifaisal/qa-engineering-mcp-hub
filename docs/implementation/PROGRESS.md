@@ -222,9 +222,39 @@ The skipped test is `tests/integration/test_provider_live.py`. `QA_MCP_LIVE_PROV
 was not set. Knowledge tests used local Git fixtures. No Confluence, Google, or
 Git host was called. Windows and Linux execution remains `BLOCKED`.
 
-## Milestones 06–11
+## Milestone 06 — implemented and offline verified
 
-Workflows, suite execution, assertions, evidence, and release intelligence
-remain `SCAFFOLDED` or `NOT_IMPLEMENTED`. Native Windows/Linux execution and
-Python 3.13 execution remain `BLOCKED`. Writes, Google Sheets, and the
-interactive browser OAuth flow are not implemented.
+- [x] Registered Bruno and Newman suites run through a fixed argument list.
+- [x] Passing, failing, missing-binary, invalid-reporter, timeout, and
+  cancellation fixtures are covered.
+- [x] Workflow preview does not start a process. Cycles, duplicate ids, and
+  missing assertions are rejected.
+- [x] Database and Kafka steps stay unavailable and are not reported as verified.
+- [x] Credential values are redacted and are not placed on the command line.
+- [ ] Installed `bru` and `newman` were not executed. That remains not
+  `LIVE_VERIFIED`.
+
+## Executed verification — Milestone 06
+
+| Command | Exit | Result |
+|---|---:|---|
+| `uv sync --frozen` | 0 | lockfile used without dependency resolution changes |
+| `uv lock --check` | 0 | lock matches project metadata |
+| `uv run ruff check .` | 0 | all checks passed |
+| `uv run ruff format --check .` | 0 | 293 files already formatted |
+| `uv run mypy src` | 0 | no issues in 182 source files |
+| `uv run pytest -q` | 0 | 123 passed, 1 skipped |
+| `uv build` | 0 | sdist and wheel built |
+| `uv run python scripts/structure_audit.py` | 0 | PASS, 348 files, 101 directories, 0 findings |
+
+The skipped test is `tests/integration/test_provider_live.py`. `QA_MCP_LIVE_PROVIDERS`
+was not set. API execution tests used a local stand-in process. No Bruno CLI,
+Newman CLI, Confluence, Google, or Git host was called. Windows and Linux
+execution remains `BLOCKED`.
+
+## Milestones 07–11
+
+Database and Kafka verification, CI/CD, test management, evidence publication,
+and release intelligence remain `SCAFFOLDED` or `NOT_IMPLEMENTED`. Native
+Windows/Linux execution and Python 3.13 execution remain `BLOCKED`. Writes,
+Google Sheets, and the interactive browser OAuth flow are not implemented.

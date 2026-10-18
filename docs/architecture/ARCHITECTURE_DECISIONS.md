@@ -189,3 +189,20 @@ structural changes must be added here before code is moved or ownership changes.
 - **Consequence:** Unsupported parsers stay UNKNOWN. Secret paths and untracked
   files are not indexed. `plan_index` remains a non-executing plan record.
 
+## ADR-018 — Registered API runners and API-only workflows
+
+- **Status:** Accepted
+- **Decision:** Milestone 06 executes only suites listed in the QA Workspace
+  registry. Bruno uses the documented `bru run` flags from CLI 3, including
+  `--sandbox safe` and `--reporter-json`. Postman collections use Newman 6.2.2
+  `run --reporters json --reporter-json-export`. Secrets go in a temporary
+  environment file, not `--env-var`. Database and Kafka workflow steps are
+  visible and unavailable until Milestone 07. A run cannot be PASSED without
+  itemized assertions and a zero exit code.
+- **Reason:** A caller-supplied shell command would bypass the suite registry.
+  Newman is the local runner that does not require Postman cloud login.
+  Collection v3 and the Postman CLI are outside this milestone.
+- **Consequence:** Preview is the default. Dry-run profiles do not start a
+  process. API evidence does not claim database or Kafka verification.
+  Installed CLIs stay unverified until a gated run executes them.
+
